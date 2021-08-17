@@ -19,9 +19,10 @@ import (
 	"context"
 	"strings"
 
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
-	ackcompare "github.com/aws/aws-controllers-k8s/pkg/compare"
-	ackerr "github.com/aws/aws-controllers-k8s/pkg/errors"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
+	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
+	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	"github.com/aws/aws-sdk-go/aws"
 	svcsdk "github.com/aws/aws-sdk-go/service/apigatewayv2"
 	corev1 "k8s.io/api/core/v1"
@@ -45,7 +46,10 @@ var (
 func (rm *resourceManager) sdkFind(
 	ctx context.Context,
 	r *resource,
-) (*resource, error) {
+) (latest *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkFind")
+	defer exit(err)
 	// If any required fields in the input shape are missing, AWS resource is
 	// not created yet. Return NotFound here to indicate to callers that the
 	// resource isn't yet created.
@@ -58,13 +62,14 @@ func (rm *resourceManager) sdkFind(
 		return nil, err
 	}
 
-	resp, respErr := rm.sdkapi.GetApiWithContext(ctx, input)
-	rm.metrics.RecordAPICall("READ_ONE", "GetApi", respErr)
-	if respErr != nil {
-		if awsErr, ok := ackerr.AWSError(respErr); ok && awsErr.Code() == "NotFoundException" {
+	var resp *svcsdk.GetApiOutput
+	resp, err = rm.sdkapi.GetApiWithContext(ctx, input)
+	rm.metrics.RecordAPICall("READ_ONE", "GetApi", err)
+	if err != nil {
+		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "NotFoundException" {
 			return nil, ackerr.NotFound
 		}
-		return nil, respErr
+		return nil, err
 	}
 
 	// Merge in the information we read from the API call above to the copy of
@@ -73,18 +78,26 @@ func (rm *resourceManager) sdkFind(
 
 	if resp.ApiEndpoint != nil {
 		ko.Status.APIEndpoint = resp.ApiEndpoint
+	} else {
+		ko.Status.APIEndpoint = nil
 	}
 	if resp.ApiGatewayManaged != nil {
 		ko.Status.APIGatewayManaged = resp.ApiGatewayManaged
+	} else {
+		ko.Status.APIGatewayManaged = nil
 	}
 	if resp.ApiId != nil {
 		ko.Status.APIID = resp.ApiId
+	} else {
+		ko.Status.APIID = nil
 	}
 	if resp.ApiKeySelectionExpression != nil {
 		ko.Spec.APIKeySelectionExpression = resp.ApiKeySelectionExpression
+	} else {
+		ko.Spec.APIKeySelectionExpression = nil
 	}
 	if resp.CorsConfiguration != nil {
-		f4 := &svcapitypes.Cors{}
+		f4 := &svcapitypes.CORS{}
 		if resp.CorsConfiguration.AllowCredentials != nil {
 			f4.AllowCredentials = resp.CorsConfiguration.AllowCredentials
 		}
@@ -127,19 +140,29 @@ func (rm *resourceManager) sdkFind(
 		if resp.CorsConfiguration.MaxAge != nil {
 			f4.MaxAge = resp.CorsConfiguration.MaxAge
 		}
-		ko.Spec.CorsConfiguration = f4
+		ko.Spec.CORSConfiguration = f4
+	} else {
+		ko.Spec.CORSConfiguration = nil
 	}
 	if resp.CreatedDate != nil {
 		ko.Status.CreatedDate = &metav1.Time{*resp.CreatedDate}
+	} else {
+		ko.Status.CreatedDate = nil
 	}
 	if resp.Description != nil {
 		ko.Spec.Description = resp.Description
+	} else {
+		ko.Spec.Description = nil
 	}
 	if resp.DisableExecuteApiEndpoint != nil {
 		ko.Spec.DisableExecuteAPIEndpoint = resp.DisableExecuteApiEndpoint
+	} else {
+		ko.Spec.DisableExecuteAPIEndpoint = nil
 	}
 	if resp.DisableSchemaValidation != nil {
 		ko.Spec.DisableSchemaValidation = resp.DisableSchemaValidation
+	} else {
+		ko.Spec.DisableSchemaValidation = nil
 	}
 	if resp.ImportInfo != nil {
 		f9 := []*string{}
@@ -149,15 +172,23 @@ func (rm *resourceManager) sdkFind(
 			f9 = append(f9, &f9elem)
 		}
 		ko.Status.ImportInfo = f9
+	} else {
+		ko.Status.ImportInfo = nil
 	}
 	if resp.Name != nil {
 		ko.Spec.Name = resp.Name
+	} else {
+		ko.Spec.Name = nil
 	}
 	if resp.ProtocolType != nil {
 		ko.Spec.ProtocolType = resp.ProtocolType
+	} else {
+		ko.Spec.ProtocolType = nil
 	}
 	if resp.RouteSelectionExpression != nil {
 		ko.Spec.RouteSelectionExpression = resp.RouteSelectionExpression
+	} else {
+		ko.Spec.RouteSelectionExpression = nil
 	}
 	if resp.Tags != nil {
 		f13 := map[string]*string{}
@@ -167,9 +198,13 @@ func (rm *resourceManager) sdkFind(
 			f13[f13key] = &f13val
 		}
 		ko.Spec.Tags = f13
+	} else {
+		ko.Spec.Tags = nil
 	}
 	if resp.Version != nil {
 		ko.Spec.Version = resp.Version
+	} else {
+		ko.Spec.Version = nil
 	}
 	if resp.Warnings != nil {
 		f15 := []*string{}
@@ -179,6 +214,8 @@ func (rm *resourceManager) sdkFind(
 			f15 = append(f15, &f15elem)
 		}
 		ko.Status.Warnings = f15
+	} else {
+		ko.Status.Warnings = nil
 	}
 
 	rm.setStatusDefaults(ko)
@@ -186,7 +223,7 @@ func (rm *resourceManager) sdkFind(
 }
 
 // requiredFieldsMissingFromReadOneInput returns true if there are any fields
-// for the ReadOne Input shape that are required by not present in the
+// for the ReadOne Input shape that are required but not present in the
 // resource's Spec or Status
 func (rm *resourceManager) requiredFieldsMissingFromReadOneInput(
 	r *resource,
@@ -210,40 +247,122 @@ func (rm *resourceManager) newDescribeRequestPayload(
 }
 
 // sdkCreate creates the supplied resource in the backend AWS service API and
-// returns a new resource with any fields in the Status field filled in
+// returns a copy of the resource with resource fields (in both Spec and
+// Status) filled in with values from the CREATE API operation's Output shape.
 func (rm *resourceManager) sdkCreate(
 	ctx context.Context,
-	r *resource,
-) (*resource, error) {
-	customResp, customRespErr := rm.customCreateApi(ctx, r)
-	if customResp != nil || customRespErr != nil {
-		return customResp, customRespErr
+	desired *resource,
+) (created *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkCreate")
+	defer exit(err)
+	created, err = rm.customCreateApi(ctx, desired)
+	if created != nil || err != nil {
+		return created, err
 	}
-	input, err := rm.newCreateRequestPayload(r)
+	input, err := rm.newCreateRequestPayload(ctx, desired)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, respErr := rm.sdkapi.CreateApiWithContext(ctx, input)
-	rm.metrics.RecordAPICall("CREATE", "CreateApi", respErr)
-	if respErr != nil {
-		return nil, respErr
+	var resp *svcsdk.CreateApiOutput
+	_ = resp
+	resp, err = rm.sdkapi.CreateApiWithContext(ctx, input)
+	rm.metrics.RecordAPICall("CREATE", "CreateApi", err)
+	if err != nil {
+		return nil, err
 	}
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
-	ko := r.ko.DeepCopy()
+	ko := desired.ko.DeepCopy()
 
 	if resp.ApiEndpoint != nil {
 		ko.Status.APIEndpoint = resp.ApiEndpoint
+	} else {
+		ko.Status.APIEndpoint = nil
 	}
 	if resp.ApiGatewayManaged != nil {
 		ko.Status.APIGatewayManaged = resp.ApiGatewayManaged
+	} else {
+		ko.Status.APIGatewayManaged = nil
 	}
 	if resp.ApiId != nil {
 		ko.Status.APIID = resp.ApiId
+	} else {
+		ko.Status.APIID = nil
+	}
+	if resp.ApiKeySelectionExpression != nil {
+		ko.Spec.APIKeySelectionExpression = resp.ApiKeySelectionExpression
+	} else {
+		ko.Spec.APIKeySelectionExpression = nil
+	}
+	if resp.CorsConfiguration != nil {
+		f4 := &svcapitypes.CORS{}
+		if resp.CorsConfiguration.AllowCredentials != nil {
+			f4.AllowCredentials = resp.CorsConfiguration.AllowCredentials
+		}
+		if resp.CorsConfiguration.AllowHeaders != nil {
+			f4f1 := []*string{}
+			for _, f4f1iter := range resp.CorsConfiguration.AllowHeaders {
+				var f4f1elem string
+				f4f1elem = *f4f1iter
+				f4f1 = append(f4f1, &f4f1elem)
+			}
+			f4.AllowHeaders = f4f1
+		}
+		if resp.CorsConfiguration.AllowMethods != nil {
+			f4f2 := []*string{}
+			for _, f4f2iter := range resp.CorsConfiguration.AllowMethods {
+				var f4f2elem string
+				f4f2elem = *f4f2iter
+				f4f2 = append(f4f2, &f4f2elem)
+			}
+			f4.AllowMethods = f4f2
+		}
+		if resp.CorsConfiguration.AllowOrigins != nil {
+			f4f3 := []*string{}
+			for _, f4f3iter := range resp.CorsConfiguration.AllowOrigins {
+				var f4f3elem string
+				f4f3elem = *f4f3iter
+				f4f3 = append(f4f3, &f4f3elem)
+			}
+			f4.AllowOrigins = f4f3
+		}
+		if resp.CorsConfiguration.ExposeHeaders != nil {
+			f4f4 := []*string{}
+			for _, f4f4iter := range resp.CorsConfiguration.ExposeHeaders {
+				var f4f4elem string
+				f4f4elem = *f4f4iter
+				f4f4 = append(f4f4, &f4f4elem)
+			}
+			f4.ExposeHeaders = f4f4
+		}
+		if resp.CorsConfiguration.MaxAge != nil {
+			f4.MaxAge = resp.CorsConfiguration.MaxAge
+		}
+		ko.Spec.CORSConfiguration = f4
+	} else {
+		ko.Spec.CORSConfiguration = nil
 	}
 	if resp.CreatedDate != nil {
 		ko.Status.CreatedDate = &metav1.Time{*resp.CreatedDate}
+	} else {
+		ko.Status.CreatedDate = nil
+	}
+	if resp.Description != nil {
+		ko.Spec.Description = resp.Description
+	} else {
+		ko.Spec.Description = nil
+	}
+	if resp.DisableExecuteApiEndpoint != nil {
+		ko.Spec.DisableExecuteAPIEndpoint = resp.DisableExecuteApiEndpoint
+	} else {
+		ko.Spec.DisableExecuteAPIEndpoint = nil
+	}
+	if resp.DisableSchemaValidation != nil {
+		ko.Spec.DisableSchemaValidation = resp.DisableSchemaValidation
+	} else {
+		ko.Spec.DisableSchemaValidation = nil
 	}
 	if resp.ImportInfo != nil {
 		f9 := []*string{}
@@ -253,6 +372,39 @@ func (rm *resourceManager) sdkCreate(
 			f9 = append(f9, &f9elem)
 		}
 		ko.Status.ImportInfo = f9
+	} else {
+		ko.Status.ImportInfo = nil
+	}
+	if resp.Name != nil {
+		ko.Spec.Name = resp.Name
+	} else {
+		ko.Spec.Name = nil
+	}
+	if resp.ProtocolType != nil {
+		ko.Spec.ProtocolType = resp.ProtocolType
+	} else {
+		ko.Spec.ProtocolType = nil
+	}
+	if resp.RouteSelectionExpression != nil {
+		ko.Spec.RouteSelectionExpression = resp.RouteSelectionExpression
+	} else {
+		ko.Spec.RouteSelectionExpression = nil
+	}
+	if resp.Tags != nil {
+		f13 := map[string]*string{}
+		for f13key, f13valiter := range resp.Tags {
+			var f13val string
+			f13val = *f13valiter
+			f13[f13key] = &f13val
+		}
+		ko.Spec.Tags = f13
+	} else {
+		ko.Spec.Tags = nil
+	}
+	if resp.Version != nil {
+		ko.Spec.Version = resp.Version
+	} else {
+		ko.Spec.Version = nil
 	}
 	if resp.Warnings != nil {
 		f15 := []*string{}
@@ -262,16 +414,18 @@ func (rm *resourceManager) sdkCreate(
 			f15 = append(f15, &f15elem)
 		}
 		ko.Status.Warnings = f15
+	} else {
+		ko.Status.Warnings = nil
 	}
 
 	rm.setStatusDefaults(ko)
-
 	return &resource{ko}, nil
 }
 
 // newCreateRequestPayload returns an SDK-specific struct for the HTTP request
 // payload of the Create API call for the resource
 func (rm *resourceManager) newCreateRequestPayload(
+	ctx context.Context,
 	r *resource,
 ) (*svcsdk.CreateApiInput, error) {
 	res := &svcsdk.CreateApiInput{}
@@ -279,49 +433,49 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.APIKeySelectionExpression != nil {
 		res.SetApiKeySelectionExpression(*r.ko.Spec.APIKeySelectionExpression)
 	}
-	if r.ko.Spec.CorsConfiguration != nil {
+	if r.ko.Spec.CORSConfiguration != nil {
 		f1 := &svcsdk.Cors{}
-		if r.ko.Spec.CorsConfiguration.AllowCredentials != nil {
-			f1.SetAllowCredentials(*r.ko.Spec.CorsConfiguration.AllowCredentials)
+		if r.ko.Spec.CORSConfiguration.AllowCredentials != nil {
+			f1.SetAllowCredentials(*r.ko.Spec.CORSConfiguration.AllowCredentials)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowHeaders != nil {
+		if r.ko.Spec.CORSConfiguration.AllowHeaders != nil {
 			f1f1 := []*string{}
-			for _, f1f1iter := range r.ko.Spec.CorsConfiguration.AllowHeaders {
+			for _, f1f1iter := range r.ko.Spec.CORSConfiguration.AllowHeaders {
 				var f1f1elem string
 				f1f1elem = *f1f1iter
 				f1f1 = append(f1f1, &f1f1elem)
 			}
 			f1.SetAllowHeaders(f1f1)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowMethods != nil {
+		if r.ko.Spec.CORSConfiguration.AllowMethods != nil {
 			f1f2 := []*string{}
-			for _, f1f2iter := range r.ko.Spec.CorsConfiguration.AllowMethods {
+			for _, f1f2iter := range r.ko.Spec.CORSConfiguration.AllowMethods {
 				var f1f2elem string
 				f1f2elem = *f1f2iter
 				f1f2 = append(f1f2, &f1f2elem)
 			}
 			f1.SetAllowMethods(f1f2)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowOrigins != nil {
+		if r.ko.Spec.CORSConfiguration.AllowOrigins != nil {
 			f1f3 := []*string{}
-			for _, f1f3iter := range r.ko.Spec.CorsConfiguration.AllowOrigins {
+			for _, f1f3iter := range r.ko.Spec.CORSConfiguration.AllowOrigins {
 				var f1f3elem string
 				f1f3elem = *f1f3iter
 				f1f3 = append(f1f3, &f1f3elem)
 			}
 			f1.SetAllowOrigins(f1f3)
 		}
-		if r.ko.Spec.CorsConfiguration.ExposeHeaders != nil {
+		if r.ko.Spec.CORSConfiguration.ExposeHeaders != nil {
 			f1f4 := []*string{}
-			for _, f1f4iter := range r.ko.Spec.CorsConfiguration.ExposeHeaders {
+			for _, f1f4iter := range r.ko.Spec.CORSConfiguration.ExposeHeaders {
 				var f1f4elem string
 				f1f4elem = *f1f4iter
 				f1f4 = append(f1f4, &f1f4elem)
 			}
 			f1.SetExposeHeaders(f1f4)
 		}
-		if r.ko.Spec.CorsConfiguration.MaxAge != nil {
-			f1.SetMaxAge(*r.ko.Spec.CorsConfiguration.MaxAge)
+		if r.ko.Spec.CORSConfiguration.MaxAge != nil {
+			f1.SetMaxAge(*r.ko.Spec.CORSConfiguration.MaxAge)
 		}
 		res.SetCorsConfiguration(f1)
 	}
@@ -374,23 +528,28 @@ func (rm *resourceManager) sdkUpdate(
 	ctx context.Context,
 	desired *resource,
 	latest *resource,
-	diffReporter *ackcompare.Reporter,
+	delta *ackcompare.Delta,
 ) (*resource, error) {
-	return rm.customUpdateApi(ctx, desired, latest, diffReporter)
+	return rm.customUpdateApi(ctx, desired, latest, delta)
 }
 
 // sdkDelete deletes the supplied resource in the backend AWS service API
 func (rm *resourceManager) sdkDelete(
 	ctx context.Context,
 	r *resource,
-) error {
+) (latest *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkDelete")
+	defer exit(err)
 	input, err := rm.newDeleteRequestPayload(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	_, respErr := rm.sdkapi.DeleteApiWithContext(ctx, input)
-	rm.metrics.RecordAPICall("DELETE", "DeleteApi", respErr)
-	return respErr
+	var resp *svcsdk.DeleteApiOutput
+	_ = resp
+	resp, err = rm.sdkapi.DeleteApiWithContext(ctx, input)
+	rm.metrics.RecordAPICall("DELETE", "DeleteApi", err)
+	return nil, err
 }
 
 // newDeleteRequestPayload returns an SDK-specific struct for the HTTP request
@@ -426,6 +585,7 @@ func (rm *resourceManager) setStatusDefaults(
 // else it returns nil, false
 func (rm *resourceManager) updateConditions(
 	r *resource,
+	onSuccess bool,
 	err error,
 ) (*resource, bool) {
 	ko := r.ko.DeepCopy()
@@ -433,29 +593,66 @@ func (rm *resourceManager) updateConditions(
 
 	// Terminal condition
 	var terminalCondition *ackv1alpha1.Condition = nil
+	var recoverableCondition *ackv1alpha1.Condition = nil
+	var syncCondition *ackv1alpha1.Condition = nil
 	for _, condition := range ko.Status.Conditions {
 		if condition.Type == ackv1alpha1.ConditionTypeTerminal {
 			terminalCondition = condition
-			break
+		}
+		if condition.Type == ackv1alpha1.ConditionTypeRecoverable {
+			recoverableCondition = condition
+		}
+		if condition.Type == ackv1alpha1.ConditionTypeResourceSynced {
+			syncCondition = condition
 		}
 	}
 
-	if rm.terminalAWSError(err) {
+	if rm.terminalAWSError(err) || err == ackerr.SecretTypeNotSupported || err == ackerr.SecretNotFound {
 		if terminalCondition == nil {
 			terminalCondition = &ackv1alpha1.Condition{
 				Type: ackv1alpha1.ConditionTypeTerminal,
 			}
 			ko.Status.Conditions = append(ko.Status.Conditions, terminalCondition)
 		}
+		var errorMessage = ""
+		if err == ackerr.SecretTypeNotSupported || err == ackerr.SecretNotFound {
+			errorMessage = err.Error()
+		} else {
+			awsErr, _ := ackerr.AWSError(err)
+			errorMessage = awsErr.Message()
+		}
 		terminalCondition.Status = corev1.ConditionTrue
-		awsErr, _ := ackerr.AWSError(err)
-		errorMessage := awsErr.Message()
 		terminalCondition.Message = &errorMessage
-	} else if terminalCondition != nil {
-		terminalCondition.Status = corev1.ConditionFalse
-		terminalCondition.Message = nil
+	} else {
+		// Clear the terminal condition if no longer present
+		if terminalCondition != nil {
+			terminalCondition.Status = corev1.ConditionFalse
+			terminalCondition.Message = nil
+		}
+		// Handling Recoverable Conditions
+		if err != nil {
+			if recoverableCondition == nil {
+				// Add a new Condition containing a non-terminal error
+				recoverableCondition = &ackv1alpha1.Condition{
+					Type: ackv1alpha1.ConditionTypeRecoverable,
+				}
+				ko.Status.Conditions = append(ko.Status.Conditions, recoverableCondition)
+			}
+			recoverableCondition.Status = corev1.ConditionTrue
+			awsErr, _ := ackerr.AWSError(err)
+			errorMessage := err.Error()
+			if awsErr != nil {
+				errorMessage = awsErr.Message()
+			}
+			recoverableCondition.Message = &errorMessage
+		} else if recoverableCondition != nil {
+			recoverableCondition.Status = corev1.ConditionFalse
+			recoverableCondition.Message = nil
+		}
 	}
-	if terminalCondition != nil {
+	// Required to avoid the "declared but not used" error in the default case
+	_ = syncCondition
+	if terminalCondition != nil || recoverableCondition != nil || syncCondition != nil {
 		return &resource{ko}, true // updated
 	}
 	return nil, false // not updated

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	ackcompare "github.com/aws/aws-controllers-k8s/pkg/compare"
 	"github.com/aws-controllers-k8s/apigatewayv2-controller/apis/v1alpha1"
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	"github.com/aws/aws-sdk-go/service/apigatewayv2"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -43,7 +43,7 @@ func (rm *resourceManager) customCreateApi(
 func (rm *resourceManager) customUpdateApi(ctx context.Context,
 	desired *resource,
 	latest *resource,
-	diffReporter *ackcompare.Reporter,
+	diffReporter *ackcompare.Delta,
 ) (*resource, error) {
 	// Based on the fields in desired, find whether we need to reimport or update
 	if rm.importFieldsPresent(desired.ko) {
@@ -332,52 +332,49 @@ func (rm *resourceManager) updateApiInput(
 	if r.ko.Status.APIID != nil {
 		res.SetApiId(*r.ko.Status.APIID)
 	}
-	if r.ko.Spec.APIKeySelectionExpression != nil {
-		res.SetApiKeySelectionExpression(*r.ko.Spec.APIKeySelectionExpression)
-	}
-	if r.ko.Spec.CorsConfiguration != nil {
+	if r.ko.Spec.CORSConfiguration != nil {
 		f2 := &apigatewayv2.Cors{}
-		if r.ko.Spec.CorsConfiguration.AllowCredentials != nil {
-			f2.SetAllowCredentials(*r.ko.Spec.CorsConfiguration.AllowCredentials)
+		if r.ko.Spec.CORSConfiguration.AllowCredentials != nil {
+			f2.SetAllowCredentials(*r.ko.Spec.CORSConfiguration.AllowCredentials)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowHeaders != nil {
+		if r.ko.Spec.CORSConfiguration.AllowHeaders != nil {
 			f2f1 := []*string{}
-			for _, f2f1iter := range r.ko.Spec.CorsConfiguration.AllowHeaders {
+			for _, f2f1iter := range r.ko.Spec.CORSConfiguration.AllowHeaders {
 				var f2f1elem string
 				f2f1elem = *f2f1iter
 				f2f1 = append(f2f1, &f2f1elem)
 			}
 			f2.SetAllowHeaders(f2f1)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowMethods != nil {
+		if r.ko.Spec.CORSConfiguration.AllowMethods != nil {
 			f2f2 := []*string{}
-			for _, f2f2iter := range r.ko.Spec.CorsConfiguration.AllowMethods {
+			for _, f2f2iter := range r.ko.Spec.CORSConfiguration.AllowMethods {
 				var f2f2elem string
 				f2f2elem = *f2f2iter
 				f2f2 = append(f2f2, &f2f2elem)
 			}
 			f2.SetAllowMethods(f2f2)
 		}
-		if r.ko.Spec.CorsConfiguration.AllowOrigins != nil {
+		if r.ko.Spec.CORSConfiguration.AllowOrigins != nil {
 			f2f3 := []*string{}
-			for _, f2f3iter := range r.ko.Spec.CorsConfiguration.AllowOrigins {
+			for _, f2f3iter := range r.ko.Spec.CORSConfiguration.AllowOrigins {
 				var f2f3elem string
 				f2f3elem = *f2f3iter
 				f2f3 = append(f2f3, &f2f3elem)
 			}
 			f2.SetAllowOrigins(f2f3)
 		}
-		if r.ko.Spec.CorsConfiguration.ExposeHeaders != nil {
+		if r.ko.Spec.CORSConfiguration.ExposeHeaders != nil {
 			f2f4 := []*string{}
-			for _, f2f4iter := range r.ko.Spec.CorsConfiguration.ExposeHeaders {
+			for _, f2f4iter := range r.ko.Spec.CORSConfiguration.ExposeHeaders {
 				var f2f4elem string
 				f2f4elem = *f2f4iter
 				f2f4 = append(f2f4, &f2f4elem)
 			}
 			f2.SetExposeHeaders(f2f4)
 		}
-		if r.ko.Spec.CorsConfiguration.MaxAge != nil {
-			f2.SetMaxAge(*r.ko.Spec.CorsConfiguration.MaxAge)
+		if r.ko.Spec.CORSConfiguration.MaxAge != nil {
+			f2.SetMaxAge(*r.ko.Spec.CORSConfiguration.MaxAge)
 		}
 		res.SetCorsConfiguration(f2)
 	}

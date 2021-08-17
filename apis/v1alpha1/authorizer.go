@@ -16,25 +16,38 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// AuthorizerSpec defines the desired state of Authorizer
+// AuthorizerSpec defines the desired state of Authorizer.
+//
+// Represents an authorizer.
 type AuthorizerSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID                          *string `json:"apiID"`
-	AuthorizerCredentialsARN       *string `json:"authorizerCredentialsARN,omitempty"`
+	APIID *string `json:"apiID"`
+
+	AuthorizerCredentialsARN *string `json:"authorizerCredentialsARN,omitempty"`
+
 	AuthorizerPayloadFormatVersion *string `json:"authorizerPayloadFormatVersion,omitempty"`
-	AuthorizerResultTtlInSeconds   *int64  `json:"authorizerResultTtlInSeconds,omitempty"`
+
+	AuthorizerResultTtlInSeconds *int64 `json:"authorizerResultTtlInSeconds,omitempty"`
+
 	// +kubebuilder:validation:Required
-	AuthorizerType        *string `json:"authorizerType"`
-	AuthorizerURI         *string `json:"authorizerURI,omitempty"`
-	EnableSimpleResponses *bool   `json:"enableSimpleResponses,omitempty"`
+	AuthorizerType *string `json:"authorizerType"`
+
+	AuthorizerURI *string `json:"authorizerURI,omitempty"`
+
+	EnableSimpleResponses *bool `json:"enableSimpleResponses,omitempty"`
+
 	// +kubebuilder:validation:Required
-	IDentitySource               []*string         `json:"identitySource"`
-	IDentityValidationExpression *string           `json:"identityValidationExpression,omitempty"`
-	JWTConfiguration             *JWTConfiguration `json:"jwtConfiguration,omitempty"`
+	IdentitySource []*string `json:"identitySource"`
+
+	IdentityValidationExpression *string `json:"identityValidationExpression,omitempty"`
+
+	JWTConfiguration *JWTConfiguration `json:"jwtConfiguration,omitempty"`
+
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 }
@@ -44,13 +57,17 @@ type AuthorizerStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions   []*ackv1alpha1.Condition `json:"conditions"`
-	AuthorizerID *string                  `json:"authorizerID,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	AuthorizerID *string `json:"authorizerID,omitempty"`
 }
 
 // Authorizer is the Schema for the Authorizers API

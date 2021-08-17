@@ -16,18 +16,24 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// VPCLinkSpec defines the desired state of VPCLink
+// VpcLinkSpec defines the desired state of VpcLink.
+//
+// Represents a VPC link.
 type VPCLinkSpec struct {
+
 	// +kubebuilder:validation:Required
-	Name             *string   `json:"name"`
+	Name *string `json:"name"`
+
 	SecurityGroupIDs []*string `json:"securityGroupIDs,omitempty"`
+
 	// +kubebuilder:validation:Required
-	SubnetIDs []*string          `json:"subnetIDs"`
-	Tags      map[string]*string `json:"tags,omitempty"`
+	SubnetIDs []*string `json:"subnetIDs"`
+
+	Tags map[string]*string `json:"tags,omitempty"`
 }
 
 // VPCLinkStatus defines the observed state of VPCLink
@@ -35,17 +41,29 @@ type VPCLinkStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions           []*ackv1alpha1.Condition `json:"conditions"`
-	CreatedDate          *metav1.Time             `json:"createdDate,omitempty"`
-	VPCLinkID            *string                  `json:"vpcLinkID,omitempty"`
-	VPCLinkStatus        *string                  `json:"vpcLinkStatus,omitempty"`
-	VPCLinkStatusMessage *string                  `json:"vpcLinkStatusMessage,omitempty"`
-	VPCLinkVersion       *string                  `json:"vpcLinkVersion,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	VPCLinkID *string `json:"vpcLinkID,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	VPCLinkStatus *string `json:"vpcLinkStatus,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	VPCLinkStatusMessage *string `json:"vpcLinkStatusMessage,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	VPCLinkVersion *string `json:"vpcLinkVersion,omitempty"`
 }
 
 // VPCLink is the Schema for the VPCLinks API

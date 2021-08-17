@@ -16,28 +16,45 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// APISpec defines the desired state of API
+// ApiSpec defines the desired state of Api.
+//
+// Represents an API.
 type APISpec struct {
-	APIKeySelectionExpression *string            `json:"apiKeySelectionExpression,omitempty"`
-	Basepath                  *string            `json:"basepath,omitempty"`
-	Body                      *string            `json:"body,omitempty"`
-	CorsConfiguration         *Cors              `json:"corsConfiguration,omitempty"`
-	CredentialsARN            *string            `json:"credentialsARN,omitempty"`
-	Description               *string            `json:"description,omitempty"`
-	DisableExecuteAPIEndpoint *bool              `json:"disableExecuteAPIEndpoint,omitempty"`
-	DisableSchemaValidation   *bool              `json:"disableSchemaValidation,omitempty"`
-	FailOnWarnings            *bool              `json:"failOnWarnings,omitempty"`
-	Name                      *string            `json:"name,omitempty"`
-	ProtocolType              *string            `json:"protocolType,omitempty"`
-	RouteKey                  *string            `json:"routeKey,omitempty"`
-	RouteSelectionExpression  *string            `json:"routeSelectionExpression,omitempty"`
-	Tags                      map[string]*string `json:"tags,omitempty"`
-	Target                    *string            `json:"target,omitempty"`
-	Version                   *string            `json:"version,omitempty"`
+	APIKeySelectionExpression *string `json:"apiKeySelectionExpression,omitempty"`
+
+	Basepath *string `json:"basepath,omitempty"`
+
+	Body *string `json:"body,omitempty"`
+
+	CORSConfiguration *CORS `json:"corsConfiguration,omitempty"`
+
+	CredentialsARN *string `json:"credentialsARN,omitempty"`
+
+	Description *string `json:"description,omitempty"`
+
+	DisableExecuteAPIEndpoint *bool `json:"disableExecuteAPIEndpoint,omitempty"`
+
+	DisableSchemaValidation *bool `json:"disableSchemaValidation,omitempty"`
+
+	FailOnWarnings *bool `json:"failOnWarnings,omitempty"`
+
+	Name *string `json:"name,omitempty"`
+
+	ProtocolType *string `json:"protocolType,omitempty"`
+
+	RouteKey *string `json:"routeKey,omitempty"`
+
+	RouteSelectionExpression *string `json:"routeSelectionExpression,omitempty"`
+
+	Tags map[string]*string `json:"tags,omitempty"`
+
+	Target *string `json:"target,omitempty"`
+
+	Version *string `json:"version,omitempty"`
 }
 
 // APIStatus defines the observed state of API
@@ -45,18 +62,32 @@ type APIStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions        []*ackv1alpha1.Condition `json:"conditions"`
-	APIEndpoint       *string                  `json:"apiEndpoint,omitempty"`
-	APIGatewayManaged *bool                    `json:"apiGatewayManaged,omitempty"`
-	APIID             *string                  `json:"apiID,omitempty"`
-	CreatedDate       *metav1.Time             `json:"createdDate,omitempty"`
-	ImportInfo        []*string                `json:"importInfo,omitempty"`
-	Warnings          []*string                `json:"warnings,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	APIEndpoint *string `json:"apiEndpoint,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	APIID *string `json:"apiID,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	ImportInfo []*string `json:"importInfo,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	Warnings []*string `json:"warnings,omitempty"`
 }
 
 // API is the Schema for the APIS API

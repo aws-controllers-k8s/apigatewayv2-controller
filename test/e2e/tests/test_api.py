@@ -42,7 +42,9 @@ test_resource_values = REPLACEMENT_VALUES.copy()
 
 @pytest.fixture(scope="module")
 def api_resource():
-    api_resource_name = test_resource_values['API_NAME']
+    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
+    api_resource_name = test_resource_values['API_NAME'] + f'-{random_suffix}'
+    test_resource_values['API_NAME'] = api_resource_name
     api_ref, api_data = helper.api_ref_and_data(api_resource_name=api_resource_name,
                                                 replacement_values=test_resource_values)
     if k8s.get_resource_exists(api_ref):
@@ -65,7 +67,9 @@ def api_resource():
 
 @pytest.fixture(scope="module")
 def integration_resource(api_resource):
-    integration_resource_name = test_resource_values['INTEGRATION_NAME']
+    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
+    integration_resource_name = test_resource_values['INTEGRATION_NAME'] + f'-{random_suffix}'
+    test_resource_values['INTEGRATION_NAME'] = integration_resource_name
     integration_ref, integration_data = helper.integration_ref_and_data(
         integration_resource_name=integration_resource_name,
         replacement_values=test_resource_values)
@@ -89,7 +93,9 @@ def integration_resource(api_resource):
 
 @pytest.fixture(scope="module")
 def authorizer_resource(api_resource):
-    authorizer_resource_name = test_resource_values['AUTHORIZER_NAME']
+    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
+    authorizer_resource_name = test_resource_values['AUTHORIZER_NAME'] + f'-{random_suffix}'
+    test_resource_values['AUTHORIZER_NAME'] = authorizer_resource_name
     authorizer_uri = f'arn:aws:apigateway:{get_region()}:lambda:path/2015-03-31/functions/{get_bootstrap_resources().AuthorizerFunctionArn}/invocations'
     test_resource_values["AUTHORIZER_URI"] = authorizer_uri
     authorizer_ref, authorizer_data = helper.authorizer_ref_and_data(authorizer_resource_name=authorizer_resource_name,
@@ -116,7 +122,7 @@ def authorizer_resource(api_resource):
     )
     lambda_client = boto3.client("lambda")
     lambda_client.add_permission(FunctionName=get_bootstrap_resources().AuthorizerFunctionName,
-                                 StatementId='apigatewayv2-authorizer-invoke-permissions',
+                                 StatementId=f'apigatewayv2-authorizer-invoke-permissions-{random_suffix}',
                                  Action='lambda:InvokeFunction',
                                  Principal='apigateway.amazonaws.com',
                                  SourceArn=authorizer_arn)
@@ -128,7 +134,9 @@ def authorizer_resource(api_resource):
 
 @pytest.fixture(scope="module")
 def route_resource(integration_resource, authorizer_resource):
-    route_resource_name = test_resource_values['ROUTE_NAME']
+    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
+    route_resource_name = test_resource_values['ROUTE_NAME'] + f'-{random_suffix}'
+    test_resource_values['ROUTE_NAME'] = route_resource_name
     route_ref, route_data = helper.route_ref_and_data(route_resource_name=route_resource_name,
                                                       replacement_values=test_resource_values)
     if k8s.get_resource_exists(route_ref):
@@ -151,7 +159,9 @@ def route_resource(integration_resource, authorizer_resource):
 
 @pytest.fixture(scope="module")
 def stage_resource(route_resource):
-    stage_resource_name = test_resource_values['STAGE_NAME']
+    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
+    stage_resource_name = test_resource_values['STAGE_NAME'] + f'-{random_suffix}'
+    test_resource_values['STAGE_NAME'] = stage_resource_name
     stage_ref, stage_data = helper.stage_ref_and_data(stage_resource_name=stage_resource_name,
                                                       replacement_values=test_resource_values)
     if k8s.get_resource_exists(stage_ref):
@@ -356,7 +366,7 @@ class TestApiGatewayV2:
         test_data['AUTHORIZER_NAME'] = authorizer_name
         test_data['AUTHORIZER_TITLE'] = authorizer_name
         test_data['API_ID'] = api_id
-        test_data['AUTHORIZER_URI'] = test_resource_values['AUTHORIZER_URI']
+        test_data['AUTHORIZER_URI'] = f'arn:aws:apigateway:{get_region()}:lambda:path/2015-03-31/functions/{get_bootstrap_resources().AuthorizerFunctionArn}/invocations'
         authorizer_ref, authorizer_data = helper.authorizer_ref_and_data(authorizer_resource_name=authorizer_name,
                                                                          replacement_values=test_data)
         logging.debug(f"http api authorizer resource. name: {authorizer_name}, data: {authorizer_data}")

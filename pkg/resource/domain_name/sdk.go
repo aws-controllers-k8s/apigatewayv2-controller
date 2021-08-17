@@ -19,9 +19,10 @@ import (
 	"context"
 	"strings"
 
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
-	ackcompare "github.com/aws/aws-controllers-k8s/pkg/compare"
-	ackerr "github.com/aws/aws-controllers-k8s/pkg/errors"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
+	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
+	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	"github.com/aws/aws-sdk-go/aws"
 	svcsdk "github.com/aws/aws-sdk-go/service/apigatewayv2"
 	corev1 "k8s.io/api/core/v1"
@@ -45,7 +46,10 @@ var (
 func (rm *resourceManager) sdkFind(
 	ctx context.Context,
 	r *resource,
-) (*resource, error) {
+) (latest *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkFind")
+	defer exit(err)
 	// If any required fields in the input shape are missing, AWS resource is
 	// not created yet. Return NotFound here to indicate to callers that the
 	// resource isn't yet created.
@@ -58,13 +62,14 @@ func (rm *resourceManager) sdkFind(
 		return nil, err
 	}
 
-	resp, respErr := rm.sdkapi.GetDomainNameWithContext(ctx, input)
-	rm.metrics.RecordAPICall("READ_ONE", "GetDomainName", respErr)
-	if respErr != nil {
-		if awsErr, ok := ackerr.AWSError(respErr); ok && awsErr.Code() == "NotFoundException" {
+	var resp *svcsdk.GetDomainNameOutput
+	resp, err = rm.sdkapi.GetDomainNameWithContext(ctx, input)
+	rm.metrics.RecordAPICall("READ_ONE", "GetDomainName", err)
+	if err != nil {
+		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "NotFoundException" {
 			return nil, ackerr.NotFound
 		}
-		return nil, respErr
+		return nil, err
 	}
 
 	// Merge in the information we read from the API call above to the copy of
@@ -73,9 +78,13 @@ func (rm *resourceManager) sdkFind(
 
 	if resp.ApiMappingSelectionExpression != nil {
 		ko.Status.APIMappingSelectionExpression = resp.ApiMappingSelectionExpression
+	} else {
+		ko.Status.APIMappingSelectionExpression = nil
 	}
 	if resp.DomainName != nil {
 		ko.Spec.DomainName = resp.DomainName
+	} else {
+		ko.Spec.DomainName = nil
 	}
 	if resp.DomainNameConfigurations != nil {
 		f2 := []*svcapitypes.DomainNameConfiguration{}
@@ -111,6 +120,8 @@ func (rm *resourceManager) sdkFind(
 			f2 = append(f2, f2elem)
 		}
 		ko.Spec.DomainNameConfigurations = f2
+	} else {
+		ko.Spec.DomainNameConfigurations = nil
 	}
 	if resp.MutualTlsAuthentication != nil {
 		f3 := &svcapitypes.MutualTLSAuthenticationInput{}
@@ -121,6 +132,8 @@ func (rm *resourceManager) sdkFind(
 			f3.TruststoreVersion = resp.MutualTlsAuthentication.TruststoreVersion
 		}
 		ko.Spec.MutualTLSAuthentication = f3
+	} else {
+		ko.Spec.MutualTLSAuthentication = nil
 	}
 	if resp.Tags != nil {
 		f4 := map[string]*string{}
@@ -130,6 +143,8 @@ func (rm *resourceManager) sdkFind(
 			f4[f4key] = &f4val
 		}
 		ko.Spec.Tags = f4
+	} else {
+		ko.Spec.Tags = nil
 	}
 
 	rm.setStatusDefaults(ko)
@@ -137,7 +152,7 @@ func (rm *resourceManager) sdkFind(
 }
 
 // requiredFieldsMissingFromReadOneInput returns true if there are any fields
-// for the ReadOne Input shape that are required by not present in the
+// for the ReadOne Input shape that are required but not present in the
 // resource's Spec or Status
 func (rm *resourceManager) requiredFieldsMissingFromReadOneInput(
 	r *resource,
@@ -161,37 +176,110 @@ func (rm *resourceManager) newDescribeRequestPayload(
 }
 
 // sdkCreate creates the supplied resource in the backend AWS service API and
-// returns a new resource with any fields in the Status field filled in
+// returns a copy of the resource with resource fields (in both Spec and
+// Status) filled in with values from the CREATE API operation's Output shape.
 func (rm *resourceManager) sdkCreate(
 	ctx context.Context,
-	r *resource,
-) (*resource, error) {
-	input, err := rm.newCreateRequestPayload(r)
+	desired *resource,
+) (created *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkCreate")
+	defer exit(err)
+	input, err := rm.newCreateRequestPayload(ctx, desired)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, respErr := rm.sdkapi.CreateDomainNameWithContext(ctx, input)
-	rm.metrics.RecordAPICall("CREATE", "CreateDomainName", respErr)
-	if respErr != nil {
-		return nil, respErr
+	var resp *svcsdk.CreateDomainNameOutput
+	_ = resp
+	resp, err = rm.sdkapi.CreateDomainNameWithContext(ctx, input)
+	rm.metrics.RecordAPICall("CREATE", "CreateDomainName", err)
+	if err != nil {
+		return nil, err
 	}
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
-	ko := r.ko.DeepCopy()
+	ko := desired.ko.DeepCopy()
 
 	if resp.ApiMappingSelectionExpression != nil {
 		ko.Status.APIMappingSelectionExpression = resp.ApiMappingSelectionExpression
+	} else {
+		ko.Status.APIMappingSelectionExpression = nil
+	}
+	if resp.DomainName != nil {
+		ko.Spec.DomainName = resp.DomainName
+	} else {
+		ko.Spec.DomainName = nil
+	}
+	if resp.DomainNameConfigurations != nil {
+		f2 := []*svcapitypes.DomainNameConfiguration{}
+		for _, f2iter := range resp.DomainNameConfigurations {
+			f2elem := &svcapitypes.DomainNameConfiguration{}
+			if f2iter.ApiGatewayDomainName != nil {
+				f2elem.APIGatewayDomainName = f2iter.ApiGatewayDomainName
+			}
+			if f2iter.CertificateArn != nil {
+				f2elem.CertificateARN = f2iter.CertificateArn
+			}
+			if f2iter.CertificateName != nil {
+				f2elem.CertificateName = f2iter.CertificateName
+			}
+			if f2iter.CertificateUploadDate != nil {
+				f2elem.CertificateUploadDate = &metav1.Time{*f2iter.CertificateUploadDate}
+			}
+			if f2iter.DomainNameStatus != nil {
+				f2elem.DomainNameStatus = f2iter.DomainNameStatus
+			}
+			if f2iter.DomainNameStatusMessage != nil {
+				f2elem.DomainNameStatusMessage = f2iter.DomainNameStatusMessage
+			}
+			if f2iter.EndpointType != nil {
+				f2elem.EndpointType = f2iter.EndpointType
+			}
+			if f2iter.HostedZoneId != nil {
+				f2elem.HostedZoneID = f2iter.HostedZoneId
+			}
+			if f2iter.SecurityPolicy != nil {
+				f2elem.SecurityPolicy = f2iter.SecurityPolicy
+			}
+			f2 = append(f2, f2elem)
+		}
+		ko.Spec.DomainNameConfigurations = f2
+	} else {
+		ko.Spec.DomainNameConfigurations = nil
+	}
+	if resp.MutualTlsAuthentication != nil {
+		f3 := &svcapitypes.MutualTLSAuthenticationInput{}
+		if resp.MutualTlsAuthentication.TruststoreUri != nil {
+			f3.TruststoreURI = resp.MutualTlsAuthentication.TruststoreUri
+		}
+		if resp.MutualTlsAuthentication.TruststoreVersion != nil {
+			f3.TruststoreVersion = resp.MutualTlsAuthentication.TruststoreVersion
+		}
+		ko.Spec.MutualTLSAuthentication = f3
+	} else {
+		ko.Spec.MutualTLSAuthentication = nil
+	}
+	if resp.Tags != nil {
+		f4 := map[string]*string{}
+		for f4key, f4valiter := range resp.Tags {
+			var f4val string
+			f4val = *f4valiter
+			f4[f4key] = &f4val
+		}
+		ko.Spec.Tags = f4
+	} else {
+		ko.Spec.Tags = nil
 	}
 
 	rm.setStatusDefaults(ko)
-
 	return &resource{ko}, nil
 }
 
 // newCreateRequestPayload returns an SDK-specific struct for the HTTP request
 // payload of the Create API call for the resource
 func (rm *resourceManager) newCreateRequestPayload(
+	ctx context.Context,
 	r *resource,
 ) (*svcsdk.CreateDomainNameInput, error) {
 	res := &svcsdk.CreateDomainNameInput{}
@@ -263,18 +351,22 @@ func (rm *resourceManager) sdkUpdate(
 	ctx context.Context,
 	desired *resource,
 	latest *resource,
-	diffReporter *ackcompare.Reporter,
-) (*resource, error) {
-
-	input, err := rm.newUpdateRequestPayload(desired)
+	delta *ackcompare.Delta,
+) (updated *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkUpdate")
+	defer exit(err)
+	input, err := rm.newUpdateRequestPayload(ctx, desired)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, respErr := rm.sdkapi.UpdateDomainNameWithContext(ctx, input)
-	rm.metrics.RecordAPICall("UPDATE", "UpdateDomainName", respErr)
-	if respErr != nil {
-		return nil, respErr
+	var resp *svcsdk.UpdateDomainNameOutput
+	_ = resp
+	resp, err = rm.sdkapi.UpdateDomainNameWithContext(ctx, input)
+	rm.metrics.RecordAPICall("UPDATE", "UpdateDomainName", err)
+	if err != nil {
+		return nil, err
 	}
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
@@ -282,16 +374,83 @@ func (rm *resourceManager) sdkUpdate(
 
 	if resp.ApiMappingSelectionExpression != nil {
 		ko.Status.APIMappingSelectionExpression = resp.ApiMappingSelectionExpression
+	} else {
+		ko.Status.APIMappingSelectionExpression = nil
+	}
+	if resp.DomainName != nil {
+		ko.Spec.DomainName = resp.DomainName
+	} else {
+		ko.Spec.DomainName = nil
+	}
+	if resp.DomainNameConfigurations != nil {
+		f2 := []*svcapitypes.DomainNameConfiguration{}
+		for _, f2iter := range resp.DomainNameConfigurations {
+			f2elem := &svcapitypes.DomainNameConfiguration{}
+			if f2iter.ApiGatewayDomainName != nil {
+				f2elem.APIGatewayDomainName = f2iter.ApiGatewayDomainName
+			}
+			if f2iter.CertificateArn != nil {
+				f2elem.CertificateARN = f2iter.CertificateArn
+			}
+			if f2iter.CertificateName != nil {
+				f2elem.CertificateName = f2iter.CertificateName
+			}
+			if f2iter.CertificateUploadDate != nil {
+				f2elem.CertificateUploadDate = &metav1.Time{*f2iter.CertificateUploadDate}
+			}
+			if f2iter.DomainNameStatus != nil {
+				f2elem.DomainNameStatus = f2iter.DomainNameStatus
+			}
+			if f2iter.DomainNameStatusMessage != nil {
+				f2elem.DomainNameStatusMessage = f2iter.DomainNameStatusMessage
+			}
+			if f2iter.EndpointType != nil {
+				f2elem.EndpointType = f2iter.EndpointType
+			}
+			if f2iter.HostedZoneId != nil {
+				f2elem.HostedZoneID = f2iter.HostedZoneId
+			}
+			if f2iter.SecurityPolicy != nil {
+				f2elem.SecurityPolicy = f2iter.SecurityPolicy
+			}
+			f2 = append(f2, f2elem)
+		}
+		ko.Spec.DomainNameConfigurations = f2
+	} else {
+		ko.Spec.DomainNameConfigurations = nil
+	}
+	if resp.MutualTlsAuthentication != nil {
+		f3 := &svcapitypes.MutualTLSAuthenticationInput{}
+		if resp.MutualTlsAuthentication.TruststoreUri != nil {
+			f3.TruststoreURI = resp.MutualTlsAuthentication.TruststoreUri
+		}
+		if resp.MutualTlsAuthentication.TruststoreVersion != nil {
+			f3.TruststoreVersion = resp.MutualTlsAuthentication.TruststoreVersion
+		}
+		ko.Spec.MutualTLSAuthentication = f3
+	} else {
+		ko.Spec.MutualTLSAuthentication = nil
+	}
+	if resp.Tags != nil {
+		f4 := map[string]*string{}
+		for f4key, f4valiter := range resp.Tags {
+			var f4val string
+			f4val = *f4valiter
+			f4[f4key] = &f4val
+		}
+		ko.Spec.Tags = f4
+	} else {
+		ko.Spec.Tags = nil
 	}
 
 	rm.setStatusDefaults(ko)
-
 	return &resource{ko}, nil
 }
 
 // newUpdateRequestPayload returns an SDK-specific struct for the HTTP request
 // payload of the Update API call for the resource
 func (rm *resourceManager) newUpdateRequestPayload(
+	ctx context.Context,
 	r *resource,
 ) (*svcsdk.UpdateDomainNameInput, error) {
 	res := &svcsdk.UpdateDomainNameInput{}
@@ -352,14 +511,19 @@ func (rm *resourceManager) newUpdateRequestPayload(
 func (rm *resourceManager) sdkDelete(
 	ctx context.Context,
 	r *resource,
-) error {
+) (latest *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkDelete")
+	defer exit(err)
 	input, err := rm.newDeleteRequestPayload(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	_, respErr := rm.sdkapi.DeleteDomainNameWithContext(ctx, input)
-	rm.metrics.RecordAPICall("DELETE", "DeleteDomainName", respErr)
-	return respErr
+	var resp *svcsdk.DeleteDomainNameOutput
+	_ = resp
+	resp, err = rm.sdkapi.DeleteDomainNameWithContext(ctx, input)
+	rm.metrics.RecordAPICall("DELETE", "DeleteDomainName", err)
+	return nil, err
 }
 
 // newDeleteRequestPayload returns an SDK-specific struct for the HTTP request
@@ -395,6 +559,7 @@ func (rm *resourceManager) setStatusDefaults(
 // else it returns nil, false
 func (rm *resourceManager) updateConditions(
 	r *resource,
+	onSuccess bool,
 	err error,
 ) (*resource, bool) {
 	ko := r.ko.DeepCopy()
@@ -402,29 +567,66 @@ func (rm *resourceManager) updateConditions(
 
 	// Terminal condition
 	var terminalCondition *ackv1alpha1.Condition = nil
+	var recoverableCondition *ackv1alpha1.Condition = nil
+	var syncCondition *ackv1alpha1.Condition = nil
 	for _, condition := range ko.Status.Conditions {
 		if condition.Type == ackv1alpha1.ConditionTypeTerminal {
 			terminalCondition = condition
-			break
+		}
+		if condition.Type == ackv1alpha1.ConditionTypeRecoverable {
+			recoverableCondition = condition
+		}
+		if condition.Type == ackv1alpha1.ConditionTypeResourceSynced {
+			syncCondition = condition
 		}
 	}
 
-	if rm.terminalAWSError(err) {
+	if rm.terminalAWSError(err) || err == ackerr.SecretTypeNotSupported || err == ackerr.SecretNotFound {
 		if terminalCondition == nil {
 			terminalCondition = &ackv1alpha1.Condition{
 				Type: ackv1alpha1.ConditionTypeTerminal,
 			}
 			ko.Status.Conditions = append(ko.Status.Conditions, terminalCondition)
 		}
+		var errorMessage = ""
+		if err == ackerr.SecretTypeNotSupported || err == ackerr.SecretNotFound {
+			errorMessage = err.Error()
+		} else {
+			awsErr, _ := ackerr.AWSError(err)
+			errorMessage = awsErr.Message()
+		}
 		terminalCondition.Status = corev1.ConditionTrue
-		awsErr, _ := ackerr.AWSError(err)
-		errorMessage := awsErr.Message()
 		terminalCondition.Message = &errorMessage
-	} else if terminalCondition != nil {
-		terminalCondition.Status = corev1.ConditionFalse
-		terminalCondition.Message = nil
+	} else {
+		// Clear the terminal condition if no longer present
+		if terminalCondition != nil {
+			terminalCondition.Status = corev1.ConditionFalse
+			terminalCondition.Message = nil
+		}
+		// Handling Recoverable Conditions
+		if err != nil {
+			if recoverableCondition == nil {
+				// Add a new Condition containing a non-terminal error
+				recoverableCondition = &ackv1alpha1.Condition{
+					Type: ackv1alpha1.ConditionTypeRecoverable,
+				}
+				ko.Status.Conditions = append(ko.Status.Conditions, recoverableCondition)
+			}
+			recoverableCondition.Status = corev1.ConditionTrue
+			awsErr, _ := ackerr.AWSError(err)
+			errorMessage := err.Error()
+			if awsErr != nil {
+				errorMessage = awsErr.Message()
+			}
+			recoverableCondition.Message = &errorMessage
+		} else if recoverableCondition != nil {
+			recoverableCondition.Status = corev1.ConditionFalse
+			recoverableCondition.Message = nil
+		}
 	}
-	if terminalCondition != nil {
+	// Required to avoid the "declared but not used" error in the default case
+	_ = syncCondition
+	if terminalCondition != nil || recoverableCondition != nil || syncCondition != nil {
 		return &resource{ko}, true // updated
 	}
 	return nil, false // not updated
