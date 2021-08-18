@@ -4,7 +4,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.6.1
   creationTimestamp: null
   name: stages.apigatewayv2.services.k8s.aws
 spec:
@@ -34,13 +34,17 @@ spec:
           metadata:
             type: object
           spec:
-            description: StageSpec defines the desired state of Stage
+            description: "StageSpec defines the desired state of Stage. \n Represents
+              an API stage."
             properties:
               accessLogSettings:
+                description: Settings for logging access in a stage.
                 properties:
                   destinationARN:
+                    description: Represents an Amazon Resource Name (ARN).
                     type: string
                   format:
+                    description: A string with a length between [1-1024].
                     type: string
                 type: object
               apiID:
@@ -50,12 +54,14 @@ spec:
               clientCertificateID:
                 type: string
               defaultRouteSettings:
+                description: Represents a collection of route settings.
                 properties:
                   dataTraceEnabled:
                     type: boolean
                   detailedMetricsEnabled:
                     type: boolean
                   loggingLevel:
+                    description: The logging level.
                     type: string
                   throttlingBurstLimit:
                     format: int64
@@ -69,12 +75,14 @@ spec:
                 type: string
               routeSettings:
                 additionalProperties:
+                  description: Represents a collection of route settings.
                   properties:
                     dataTraceEnabled:
                       type: boolean
                     detailedMetricsEnabled:
                       type: boolean
                     loggingLevel:
+                      description: The logging level.
                       type: string
                     throttlingBurstLimit:
                       format: int64
@@ -166,9 +174,6 @@ spec:
               lastUpdatedDate:
                 format: date-time
                 type: string
-            required:
-            - ackResourceMetadata
-            - conditions
             type: object
         type: object
     served: true

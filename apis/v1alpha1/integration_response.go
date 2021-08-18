@@ -16,22 +16,31 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// IntegrationResponseSpec defines the desired state of IntegrationResponse
+// IntegrationResponseSpec defines the desired state of IntegrationResponse.
+//
+// Represents an integration response.
 type IntegrationResponseSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID                   *string `json:"apiID"`
+	APIID *string `json:"apiID"`
+
 	ContentHandlingStrategy *string `json:"contentHandlingStrategy,omitempty"`
+
 	// +kubebuilder:validation:Required
 	IntegrationID *string `json:"integrationID"`
+
 	// +kubebuilder:validation:Required
-	IntegrationResponseKey      *string            `json:"integrationResponseKey"`
-	ResponseParameters          map[string]*string `json:"responseParameters,omitempty"`
-	ResponseTemplates           map[string]*string `json:"responseTemplates,omitempty"`
-	TemplateSelectionExpression *string            `json:"templateSelectionExpression,omitempty"`
+	IntegrationResponseKey *string `json:"integrationResponseKey"`
+
+	ResponseParameters map[string]*string `json:"responseParameters,omitempty"`
+
+	ResponseTemplates map[string]*string `json:"responseTemplates,omitempty"`
+
+	TemplateSelectionExpression *string `json:"templateSelectionExpression,omitempty"`
 }
 
 // IntegrationResponseStatus defines the observed state of IntegrationResponse
@@ -39,13 +48,17 @@ type IntegrationResponseStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions            []*ackv1alpha1.Condition `json:"conditions"`
-	IntegrationResponseID *string                  `json:"integrationResponseID,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	IntegrationResponseID *string `json:"integrationResponseID,omitempty"`
 }
 
 // IntegrationResponse is the Schema for the IntegrationResponses API

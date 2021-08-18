@@ -16,31 +16,50 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// IntegrationSpec defines the desired state of Integration
+// IntegrationSpec defines the desired state of Integration.
+//
+// Represents an integration.
 type IntegrationSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID                   *string `json:"apiID"`
-	ConnectionID            *string `json:"connectionID,omitempty"`
-	ConnectionType          *string `json:"connectionType,omitempty"`
+	APIID *string `json:"apiID"`
+
+	ConnectionID *string `json:"connectionID,omitempty"`
+
+	ConnectionType *string `json:"connectionType,omitempty"`
+
 	ContentHandlingStrategy *string `json:"contentHandlingStrategy,omitempty"`
-	CredentialsARN          *string `json:"credentialsARN,omitempty"`
-	Description             *string `json:"description,omitempty"`
-	IntegrationMethod       *string `json:"integrationMethod,omitempty"`
-	IntegrationSubtype      *string `json:"integrationSubtype,omitempty"`
+
+	CredentialsARN *string `json:"credentialsARN,omitempty"`
+
+	Description *string `json:"description,omitempty"`
+
+	IntegrationMethod *string `json:"integrationMethod,omitempty"`
+
+	IntegrationSubtype *string `json:"integrationSubtype,omitempty"`
+
 	// +kubebuilder:validation:Required
-	IntegrationType             *string            `json:"integrationType"`
-	IntegrationURI              *string            `json:"integrationURI,omitempty"`
-	PassthroughBehavior         *string            `json:"passthroughBehavior,omitempty"`
-	PayloadFormatVersion        *string            `json:"payloadFormatVersion,omitempty"`
-	RequestParameters           map[string]*string `json:"requestParameters,omitempty"`
-	RequestTemplates            map[string]*string `json:"requestTemplates,omitempty"`
-	TemplateSelectionExpression *string            `json:"templateSelectionExpression,omitempty"`
-	TimeoutInMillis             *int64             `json:"timeoutInMillis,omitempty"`
-	TLSConfig                   *TLSConfigInput    `json:"tlsConfig,omitempty"`
+	IntegrationType *string `json:"integrationType"`
+
+	IntegrationURI *string `json:"integrationURI,omitempty"`
+
+	PassthroughBehavior *string `json:"passthroughBehavior,omitempty"`
+
+	PayloadFormatVersion *string `json:"payloadFormatVersion,omitempty"`
+
+	RequestParameters map[string]*string `json:"requestParameters,omitempty"`
+
+	RequestTemplates map[string]*string `json:"requestTemplates,omitempty"`
+
+	TemplateSelectionExpression *string `json:"templateSelectionExpression,omitempty"`
+
+	TimeoutInMillis *int64 `json:"timeoutInMillis,omitempty"`
+
+	TLSConfig *TLSConfigInput `json:"tlsConfig,omitempty"`
 }
 
 // IntegrationStatus defines the observed state of Integration
@@ -48,15 +67,23 @@ type IntegrationStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions                             []*ackv1alpha1.Condition `json:"conditions"`
-	APIGatewayManaged                      *bool                    `json:"apiGatewayManaged,omitempty"`
-	IntegrationID                          *string                  `json:"integrationID,omitempty"`
-	IntegrationResponseSelectionExpression *string                  `json:"integrationResponseSelectionExpression,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	IntegrationID *string `json:"integrationID,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	IntegrationResponseSelectionExpression *string `json:"integrationResponseSelectionExpression,omitempty"`
 }
 
 // Integration is the Schema for the Integrations API

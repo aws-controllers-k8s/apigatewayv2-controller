@@ -16,26 +16,40 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// RouteSpec defines the desired state of Route
+// RouteSpec defines the desired state of Route.
+//
+// Represents a route.
 type RouteSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID                    *string                          `json:"apiID"`
-	APIKeyRequired           *bool                            `json:"apiKeyRequired,omitempty"`
-	AuthorizationScopes      []*string                        `json:"authorizationScopes,omitempty"`
-	AuthorizationType        *string                          `json:"authorizationType,omitempty"`
-	AuthorizerID             *string                          `json:"authorizerID,omitempty"`
-	ModelSelectionExpression *string                          `json:"modelSelectionExpression,omitempty"`
-	OperationName            *string                          `json:"operationName,omitempty"`
-	RequestModels            map[string]*string               `json:"requestModels,omitempty"`
-	RequestParameters        map[string]*ParameterConstraints `json:"requestParameters,omitempty"`
+	APIID *string `json:"apiID"`
+
+	APIKeyRequired *bool `json:"apiKeyRequired,omitempty"`
+
+	AuthorizationScopes []*string `json:"authorizationScopes,omitempty"`
+
+	AuthorizationType *string `json:"authorizationType,omitempty"`
+
+	AuthorizerID *string `json:"authorizerID,omitempty"`
+
+	ModelSelectionExpression *string `json:"modelSelectionExpression,omitempty"`
+
+	OperationName *string `json:"operationName,omitempty"`
+
+	RequestModels map[string]*string `json:"requestModels,omitempty"`
+
+	RequestParameters map[string]*ParameterConstraints `json:"requestParameters,omitempty"`
+
 	// +kubebuilder:validation:Required
-	RouteKey                         *string `json:"routeKey"`
+	RouteKey *string `json:"routeKey"`
+
 	RouteResponseSelectionExpression *string `json:"routeResponseSelectionExpression,omitempty"`
-	Target                           *string `json:"target,omitempty"`
+
+	Target *string `json:"target,omitempty"`
 }
 
 // RouteStatus defines the observed state of Route
@@ -43,14 +57,20 @@ type RouteStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions        []*ackv1alpha1.Condition `json:"conditions"`
-	APIGatewayManaged *bool                    `json:"apiGatewayManaged,omitempty"`
-	RouteID           *string                  `json:"routeID,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	RouteID *string `json:"routeID,omitempty"`
 }
 
 // Route is the Schema for the Routes API

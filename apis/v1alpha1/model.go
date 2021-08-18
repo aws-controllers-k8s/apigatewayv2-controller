@@ -16,18 +16,26 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ModelSpec defines the desired state of Model
+// ModelSpec defines the desired state of Model.
+//
+// Represents a data model for an API. Supported only for WebSocket APIs. See
+// Create Models and Mapping Templates for Request and Response Mappings (https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html).
 type ModelSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID       *string `json:"apiID"`
+	APIID *string `json:"apiID"`
+
 	ContentType *string `json:"contentType,omitempty"`
+
 	Description *string `json:"description,omitempty"`
+
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
+
 	// +kubebuilder:validation:Required
 	Schema *string `json:"schema"`
 }
@@ -37,13 +45,17 @@ type ModelStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
+	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-	ModelID    *string                  `json:"modelID,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	ModelID *string `json:"modelID,omitempty"`
 }
 
 // Model is the Schema for the Models API

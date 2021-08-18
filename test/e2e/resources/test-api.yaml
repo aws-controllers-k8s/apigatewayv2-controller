@@ -1,0 +1,7 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: API
+metadata:
+  name: http-api-test
+spec:
+  name: http-api-test
+  protocolType: HTTP

@@ -4,7 +4,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.0
+    controller-gen.kubebuilder.io/version: v0.6.1
   creationTimestamp: null
   name: apis.apigatewayv2.services.k8s.aws
 spec:
@@ -34,7 +34,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: APISpec defines the desired state of API
+            description: "ApiSpec defines the desired state of Api. \n Represents
+              an API."
             properties:
               apiKeySelectionExpression:
                 type: string
@@ -43,26 +44,39 @@ spec:
               body:
                 type: string
               corsConfiguration:
+                description: Represents a CORS configuration. Supported only for HTTP
+                  APIs. See Configuring CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)
+                  for more information.
                 properties:
                   allowCredentials:
                     type: boolean
                   allowHeaders:
+                    description: Represents a collection of allowed headers. Supported
+                      only for HTTP APIs.
                     items:
                       type: string
                     type: array
                   allowMethods:
+                    description: Represents a collection of methods. Supported only
+                      for HTTP APIs.
                     items:
                       type: string
                     type: array
                   allowOrigins:
+                    description: Represents a collection of origins. Supported only
+                      for HTTP APIs.
                     items:
                       type: string
                     type: array
                   exposeHeaders:
+                    description: Represents a collection of allowed headers. Supported
+                      only for HTTP APIs.
                     items:
                       type: string
                     type: array
                   maxAge:
+                    description: An integer with a value between -1 and 86400. Supported
+                      only for HTTP APIs.
                     format: int64
                     type: integer
                 type: object
@@ -169,9 +183,6 @@ spec:
                 items:
                   type: string
                 type: array
-            required:
-            - ackResourceMetadata
-            - conditions
             type: object
         type: object
     served: true

@@ -16,25 +16,37 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// StageSpec defines the desired state of Stage
+// StageSpec defines the desired state of Stage.
+//
+// Represents an API stage.
 type StageSpec struct {
 	AccessLogSettings *AccessLogSettings `json:"accessLogSettings,omitempty"`
+
 	// +kubebuilder:validation:Required
-	APIID                *string                   `json:"apiID"`
-	AutoDeploy           *bool                     `json:"autoDeploy,omitempty"`
-	ClientCertificateID  *string                   `json:"clientCertificateID,omitempty"`
-	DefaultRouteSettings *RouteSettings            `json:"defaultRouteSettings,omitempty"`
-	DeploymentID         *string                   `json:"deploymentID,omitempty"`
-	Description          *string                   `json:"description,omitempty"`
-	RouteSettings        map[string]*RouteSettings `json:"routeSettings,omitempty"`
+	APIID *string `json:"apiID"`
+
+	AutoDeploy *bool `json:"autoDeploy,omitempty"`
+
+	ClientCertificateID *string `json:"clientCertificateID,omitempty"`
+
+	DefaultRouteSettings *RouteSettings `json:"defaultRouteSettings,omitempty"`
+
+	DeploymentID *string `json:"deploymentID,omitempty"`
+
+	Description *string `json:"description,omitempty"`
+
+	RouteSettings map[string]*RouteSettings `json:"routeSettings,omitempty"`
+
 	// +kubebuilder:validation:Required
-	StageName      *string            `json:"stageName"`
+	StageName *string `json:"stageName"`
+
 	StageVariables map[string]*string `json:"stageVariables,omitempty"`
-	Tags           map[string]*string `json:"tags,omitempty"`
+
+	Tags map[string]*string `json:"tags,omitempty"`
 }
 
 // StageStatus defines the observed state of Stage
@@ -42,16 +54,26 @@ type StageStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions                  []*ackv1alpha1.Condition `json:"conditions"`
-	APIGatewayManaged           *bool                    `json:"apiGatewayManaged,omitempty"`
-	CreatedDate                 *metav1.Time             `json:"createdDate,omitempty"`
-	LastDeploymentStatusMessage *string                  `json:"lastDeploymentStatusMessage,omitempty"`
-	LastUpdatedDate             *metav1.Time             `json:"lastUpdatedDate,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	LastDeploymentStatusMessage *string `json:"lastDeploymentStatusMessage,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	LastUpdatedDate *metav1.Time `json:"lastUpdatedDate,omitempty"`
 }
 
 // Stage is the Schema for the Stages API

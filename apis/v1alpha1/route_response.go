@@ -16,19 +16,27 @@
 package v1alpha1
 
 import (
-	ackv1alpha1 "github.com/aws/aws-controllers-k8s/apis/core/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// RouteResponseSpec defines the desired state of RouteResponse
+// RouteResponseSpec defines the desired state of RouteResponse.
+//
+// Represents a route response.
 type RouteResponseSpec struct {
+
 	// +kubebuilder:validation:Required
-	APIID                    *string                          `json:"apiID"`
-	ModelSelectionExpression *string                          `json:"modelSelectionExpression,omitempty"`
-	ResponseModels           map[string]*string               `json:"responseModels,omitempty"`
-	ResponseParameters       map[string]*ParameterConstraints `json:"responseParameters,omitempty"`
+	APIID *string `json:"apiID"`
+
+	ModelSelectionExpression *string `json:"modelSelectionExpression,omitempty"`
+
+	ResponseModels map[string]*string `json:"responseModels,omitempty"`
+
+	ResponseParameters map[string]*ParameterConstraints `json:"responseParameters,omitempty"`
+
 	// +kubebuilder:validation:Required
 	RouteID *string `json:"routeID"`
+
 	// +kubebuilder:validation:Required
 	RouteResponseKey *string `json:"routeResponseKey"`
 }
@@ -38,13 +46,17 @@ type RouteResponseStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
+	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
 	// All CRS managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
-	Conditions      []*ackv1alpha1.Condition `json:"conditions"`
-	RouteResponseID *string                  `json:"routeResponseID,omitempty"`
+	// +kubebuilder:validation:Optional
+	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+
+	// +kubebuilder:validation:Optional
+	RouteResponseID *string `json:"routeResponseID,omitempty"`
 }
 
 // RouteResponse is the Schema for the RouteResponses API
