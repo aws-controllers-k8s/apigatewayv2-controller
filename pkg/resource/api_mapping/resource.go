@@ -97,10 +97,16 @@ func (r *resource) SetIdentifiers(identifier *ackv1alpha1.AWSIdentifiers) error 
 	}
 	r.ko.Status.APIMappingID = &identifier.NameOrID
 
-	f0, f0ok := identifier.AdditionalKeys["domainName"]
-	if f0ok {
-		r.ko.Spec.DomainName = &f0
+	f1, f1ok := identifier.AdditionalKeys["domainName"]
+	if f1ok {
+		r.ko.Spec.DomainName = &f1
 	}
 
 	return nil
+}
+
+// DeepCopy will return a copy of the resource
+func (r *resource) DeepCopy() acktypes.AWSResource {
+	koCopy := r.ko.DeepCopy()
+	return &resource{koCopy}
 }
