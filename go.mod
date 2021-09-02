@@ -3,7 +3,7 @@ module github.com/aws-controllers-k8s/apigatewayv2-controller
 go 1.14
 
 require (
-	github.com/aws-controllers-k8s/runtime v0.13.0
+	github.com/aws-controllers-k8s/runtime v0.13.1
 	github.com/aws/aws-sdk-go v1.37.10
 	github.com/go-logr/logr v0.1.0
 	github.com/go-logr/zapr v0.1.1 // indirect
