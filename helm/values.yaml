@@ -16,6 +16,9 @@ deployment:
   labels: {}
   containerPort: 8080
 
+nodeSelector:
+  kubernetes.io/os: linux
+
 metrics:
   service:
     # Set to true to automatically create a Kubernetes Service resource for the
