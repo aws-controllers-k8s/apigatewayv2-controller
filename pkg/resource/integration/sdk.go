@@ -21,6 +21,7 @@ import (
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
+	ackcondition "github.com/aws-controllers-k8s/runtime/pkg/condition"
 	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	"github.com/aws/aws-sdk-go/aws"
@@ -40,6 +41,7 @@ var (
 	_ = &svcapitypes.Integration{}
 	_ = ackv1alpha1.AWSAccountID("")
 	_ = &ackerr.NotFound
+	_ = &ackcondition.NotManagedMessage
 )
 
 // sdkFind returns SDK-specific information about a supplied resource
@@ -168,6 +170,21 @@ func (rm *resourceManager) sdkFind(
 	} else {
 		ko.Spec.RequestTemplates = nil
 	}
+	if resp.ResponseParameters != nil {
+		f16 := map[string]map[string]*string{}
+		for f16key, f16valiter := range resp.ResponseParameters {
+			f16val := map[string]*string{}
+			for f16valkey, f16valvaliter := range f16valiter {
+				var f16valval string
+				f16valval = *f16valvaliter
+				f16val[f16valkey] = &f16valval
+			}
+			f16[f16key] = f16val
+		}
+		ko.Spec.ResponseParameters = f16
+	} else {
+		ko.Spec.ResponseParameters = nil
+	}
 	if resp.TemplateSelectionExpression != nil {
 		ko.Spec.TemplateSelectionExpression = resp.TemplateSelectionExpression
 	} else {
@@ -179,11 +196,11 @@ func (rm *resourceManager) sdkFind(
 		ko.Spec.TimeoutInMillis = nil
 	}
 	if resp.TlsConfig != nil {
-		f18 := &svcapitypes.TLSConfigInput{}
+		f19 := &svcapitypes.TLSConfigInput{}
 		if resp.TlsConfig.ServerNameToVerify != nil {
-			f18.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
+			f19.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
 		}
-		ko.Spec.TLSConfig = f18
+		ko.Spec.TLSConfig = f19
 	} else {
 		ko.Spec.TLSConfig = nil
 	}
@@ -337,6 +354,21 @@ func (rm *resourceManager) sdkCreate(
 	} else {
 		ko.Spec.RequestTemplates = nil
 	}
+	if resp.ResponseParameters != nil {
+		f16 := map[string]map[string]*string{}
+		for f16key, f16valiter := range resp.ResponseParameters {
+			f16val := map[string]*string{}
+			for f16valkey, f16valvaliter := range f16valiter {
+				var f16valval string
+				f16valval = *f16valvaliter
+				f16val[f16valkey] = &f16valval
+			}
+			f16[f16key] = f16val
+		}
+		ko.Spec.ResponseParameters = f16
+	} else {
+		ko.Spec.ResponseParameters = nil
+	}
 	if resp.TemplateSelectionExpression != nil {
 		ko.Spec.TemplateSelectionExpression = resp.TemplateSelectionExpression
 	} else {
@@ -348,11 +380,11 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.TimeoutInMillis = nil
 	}
 	if resp.TlsConfig != nil {
-		f18 := &svcapitypes.TLSConfigInput{}
+		f19 := &svcapitypes.TLSConfigInput{}
 		if resp.TlsConfig.ServerNameToVerify != nil {
-			f18.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
+			f19.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
 		}
-		ko.Spec.TLSConfig = f18
+		ko.Spec.TLSConfig = f19
 	} else {
 		ko.Spec.TLSConfig = nil
 	}
@@ -423,6 +455,19 @@ func (rm *resourceManager) newCreateRequestPayload(
 		}
 		res.SetRequestTemplates(f13)
 	}
+	if r.ko.Spec.ResponseParameters != nil {
+		f14 := map[string]map[string]*string{}
+		for f14key, f14valiter := range r.ko.Spec.ResponseParameters {
+			f14val := map[string]*string{}
+			for f14valkey, f14valvaliter := range f14valiter {
+				var f14valval string
+				f14valval = *f14valvaliter
+				f14val[f14valkey] = &f14valval
+			}
+			f14[f14key] = f14val
+		}
+		res.SetResponseParameters(f14)
+	}
 	if r.ko.Spec.TemplateSelectionExpression != nil {
 		res.SetTemplateSelectionExpression(*r.ko.Spec.TemplateSelectionExpression)
 	}
@@ -430,11 +475,11 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.SetTimeoutInMillis(*r.ko.Spec.TimeoutInMillis)
 	}
 	if r.ko.Spec.TLSConfig != nil {
-		f16 := &svcsdk.TlsConfigInput{}
+		f17 := &svcsdk.TlsConfigInput{}
 		if r.ko.Spec.TLSConfig.ServerNameToVerify != nil {
-			f16.SetServerNameToVerify(*r.ko.Spec.TLSConfig.ServerNameToVerify)
+			f17.SetServerNameToVerify(*r.ko.Spec.TLSConfig.ServerNameToVerify)
 		}
-		res.SetTlsConfig(f16)
+		res.SetTlsConfig(f17)
 	}
 
 	return res, nil
@@ -559,6 +604,21 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Spec.RequestTemplates = nil
 	}
+	if resp.ResponseParameters != nil {
+		f16 := map[string]map[string]*string{}
+		for f16key, f16valiter := range resp.ResponseParameters {
+			f16val := map[string]*string{}
+			for f16valkey, f16valvaliter := range f16valiter {
+				var f16valval string
+				f16valval = *f16valvaliter
+				f16val[f16valkey] = &f16valval
+			}
+			f16[f16key] = f16val
+		}
+		ko.Spec.ResponseParameters = f16
+	} else {
+		ko.Spec.ResponseParameters = nil
+	}
 	if resp.TemplateSelectionExpression != nil {
 		ko.Spec.TemplateSelectionExpression = resp.TemplateSelectionExpression
 	} else {
@@ -570,11 +630,11 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.TimeoutInMillis = nil
 	}
 	if resp.TlsConfig != nil {
-		f18 := &svcapitypes.TLSConfigInput{}
+		f19 := &svcapitypes.TLSConfigInput{}
 		if resp.TlsConfig.ServerNameToVerify != nil {
-			f18.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
+			f19.ServerNameToVerify = resp.TlsConfig.ServerNameToVerify
 		}
-		ko.Spec.TLSConfig = f18
+		ko.Spec.TLSConfig = f19
 	} else {
 		ko.Spec.TLSConfig = nil
 	}
@@ -648,6 +708,19 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		}
 		res.SetRequestTemplates(f14)
 	}
+	if r.ko.Spec.ResponseParameters != nil {
+		f15 := map[string]map[string]*string{}
+		for f15key, f15valiter := range r.ko.Spec.ResponseParameters {
+			f15val := map[string]*string{}
+			for f15valkey, f15valvaliter := range f15valiter {
+				var f15valval string
+				f15valval = *f15valvaliter
+				f15val[f15valkey] = &f15valval
+			}
+			f15[f15key] = f15val
+		}
+		res.SetResponseParameters(f15)
+	}
 	if r.ko.Spec.TemplateSelectionExpression != nil {
 		res.SetTemplateSelectionExpression(*r.ko.Spec.TemplateSelectionExpression)
 	}
@@ -655,11 +728,11 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.SetTimeoutInMillis(*r.ko.Spec.TimeoutInMillis)
 	}
 	if r.ko.Spec.TLSConfig != nil {
-		f17 := &svcsdk.TlsConfigInput{}
+		f18 := &svcsdk.TlsConfigInput{}
 		if r.ko.Spec.TLSConfig.ServerNameToVerify != nil {
-			f17.SetServerNameToVerify(*r.ko.Spec.TLSConfig.ServerNameToVerify)
+			f18.SetServerNameToVerify(*r.ko.Spec.TLSConfig.ServerNameToVerify)
 		}
-		res.SetTlsConfig(f17)
+		res.SetTlsConfig(f18)
 	}
 
 	return res, nil

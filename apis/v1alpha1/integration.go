@@ -55,6 +55,8 @@ type IntegrationSpec struct {
 
 	RequestTemplates map[string]*string `json:"requestTemplates,omitempty"`
 
+	ResponseParameters map[string]map[string]*string `json:"responseParameters,omitempty"`
+
 	TemplateSelectionExpression *string `json:"templateSelectionExpression,omitempty"`
 
 	TimeoutInMillis *int64 `json:"timeoutInMillis,omitempty"`

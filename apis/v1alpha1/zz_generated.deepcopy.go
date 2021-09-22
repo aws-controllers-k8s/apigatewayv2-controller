@@ -1713,6 +1713,31 @@ func (in *IntegrationSpec) DeepCopyInto(out *IntegrationSpec) {
 			(*out)[key] = outVal
 		}
 	}
+	if in.ResponseParameters != nil {
+		in, out := &in.ResponseParameters, &out.ResponseParameters
+		*out = make(map[string]map[string]*string, len(*in))
+		for key, val := range *in {
+			var outVal map[string]*string
+			if val == nil {
+				(*out)[key] = nil
+			} else {
+				in, out := &val, &outVal
+				*out = make(map[string]*string, len(*in))
+				for key, val := range *in {
+					var outVal *string
+					if val == nil {
+						(*out)[key] = nil
+					} else {
+						in, out := &val, &outVal
+						*out = new(string)
+						**out = **in
+					}
+					(*out)[key] = outVal
+				}
+			}
+			(*out)[key] = outVal
+		}
+	}
 	if in.TemplateSelectionExpression != nil {
 		in, out := &in.TemplateSelectionExpression, &out.TemplateSelectionExpression
 		*out = new(string)
@@ -1885,6 +1910,31 @@ func (in *Integration_SDK) DeepCopyInto(out *Integration_SDK) {
 				in, out := &val, &outVal
 				*out = new(string)
 				**out = **in
+			}
+			(*out)[key] = outVal
+		}
+	}
+	if in.ResponseParameters != nil {
+		in, out := &in.ResponseParameters, &out.ResponseParameters
+		*out = make(map[string]map[string]*string, len(*in))
+		for key, val := range *in {
+			var outVal map[string]*string
+			if val == nil {
+				(*out)[key] = nil
+			} else {
+				in, out := &val, &outVal
+				*out = make(map[string]*string, len(*in))
+				for key, val := range *in {
+					var outVal *string
+					if val == nil {
+						(*out)[key] = nil
+					} else {
+						in, out := &val, &outVal
+						*out = new(string)
+						**out = **in
+					}
+					(*out)[key] = outVal
+				}
 			}
 			(*out)[key] = outVal
 		}
