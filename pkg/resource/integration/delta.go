@@ -139,6 +139,13 @@ func newResourceDelta(
 			delta.Add("Spec.RequestTemplates", a.ko.Spec.RequestTemplates, b.ko.Spec.RequestTemplates)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
+		delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
+	} else if a.ko.Spec.ResponseParameters != nil && b.ko.Spec.ResponseParameters != nil {
+		if !reflect.DeepEqual(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
+			delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.TemplateSelectionExpression, b.ko.Spec.TemplateSelectionExpression) {
 		delta.Add("Spec.TemplateSelectionExpression", a.ko.Spec.TemplateSelectionExpression, b.ko.Spec.TemplateSelectionExpression)
 	} else if a.ko.Spec.TemplateSelectionExpression != nil && b.ko.Spec.TemplateSelectionExpression != nil {
