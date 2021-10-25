@@ -506,6 +506,10 @@ func (rm *resourceManager) sdkUpdate(
 	if err != nil {
 		return nil, err
 	}
+	// Ignore deploymentId when autodeploy is set to true
+	if *input.AutoDeploy == true {
+		input.DeploymentId = nil
+	}
 
 	var resp *svcsdk.UpdateStageOutput
 	_ = resp

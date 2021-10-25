@@ -27,6 +27,10 @@ resources:
         from:
           operation: CreateDomainName
           path: DomainName
+  Stage:
+    hooks:
+      sdk_update_post_build_request:
+        template_path: hooks/stage/sdk_update_post_build_request.go.tpl
 operations:
   CreateApi:
     custom_implementation: customCreateApi
