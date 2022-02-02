@@ -166,15 +166,17 @@ type DomainNameConfiguration struct {
 	// A string with a length between [1-128].
 	CertificateName       *string      `json:"certificateName,omitempty"`
 	CertificateUploadDate *metav1.Time `json:"certificateUploadDate,omitempty"`
-	// The status of the domain name migration. The valid values are AVAILABLE and
-	// UPDATING. If the status is UPDATING, the domain cannot be modified further
-	// until the existing operation is complete. If it is AVAILABLE, the domain
-	// can be updated.
+	// The status of the domain name migration. The valid values are AVAILABLE,
+	// UPDATING, PENDING_CERTIFICATE_REIMPORT, and PENDING_OWNERSHIP_VERIFICATION.
+	// If the status is UPDATING, the domain cannot be modified further until the
+	// existing operation is complete. If it is AVAILABLE, the domain can be updated.
 	DomainNameStatus        *string `json:"domainNameStatus,omitempty"`
 	DomainNameStatusMessage *string `json:"domainNameStatusMessage,omitempty"`
 	// Represents an endpoint type.
 	EndpointType *string `json:"endpointType,omitempty"`
 	HostedZoneID *string `json:"hostedZoneID,omitempty"`
+	// Represents an Amazon Resource Name (ARN).
+	OwnershipVerificationCertificateARN *string `json:"ownershipVerificationCertificateARN,omitempty"`
 	// The Transport Layer Security (TLS) version of the security policy for this
 	// domain name. The valid values are TLS_1_0 and TLS_1_2.
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`

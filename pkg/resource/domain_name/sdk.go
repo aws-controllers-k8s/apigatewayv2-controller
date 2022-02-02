@@ -118,6 +118,9 @@ func (rm *resourceManager) sdkFind(
 			if f2iter.HostedZoneId != nil {
 				f2elem.HostedZoneID = f2iter.HostedZoneId
 			}
+			if f2iter.OwnershipVerificationCertificateArn != nil {
+				f2elem.OwnershipVerificationCertificateARN = f2iter.OwnershipVerificationCertificateArn
+			}
 			if f2iter.SecurityPolicy != nil {
 				f2elem.SecurityPolicy = f2iter.SecurityPolicy
 			}
@@ -243,6 +246,9 @@ func (rm *resourceManager) sdkCreate(
 			if f2iter.HostedZoneId != nil {
 				f2elem.HostedZoneID = f2iter.HostedZoneId
 			}
+			if f2iter.OwnershipVerificationCertificateArn != nil {
+				f2elem.OwnershipVerificationCertificateARN = f2iter.OwnershipVerificationCertificateArn
+			}
 			if f2iter.SecurityPolicy != nil {
 				f2elem.SecurityPolicy = f2iter.SecurityPolicy
 			}
@@ -318,6 +324,9 @@ func (rm *resourceManager) newCreateRequestPayload(
 			}
 			if f1iter.HostedZoneID != nil {
 				f1elem.SetHostedZoneId(*f1iter.HostedZoneID)
+			}
+			if f1iter.OwnershipVerificationCertificateARN != nil {
+				f1elem.SetOwnershipVerificationCertificateArn(*f1iter.OwnershipVerificationCertificateARN)
 			}
 			if f1iter.SecurityPolicy != nil {
 				f1elem.SetSecurityPolicy(*f1iter.SecurityPolicy)
@@ -414,6 +423,9 @@ func (rm *resourceManager) sdkUpdate(
 			if f2iter.HostedZoneId != nil {
 				f2elem.HostedZoneID = f2iter.HostedZoneId
 			}
+			if f2iter.OwnershipVerificationCertificateArn != nil {
+				f2elem.OwnershipVerificationCertificateARN = f2iter.OwnershipVerificationCertificateArn
+			}
 			if f2iter.SecurityPolicy != nil {
 				f2elem.SecurityPolicy = f2iter.SecurityPolicy
 			}
@@ -489,6 +501,9 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			}
 			if f1iter.HostedZoneID != nil {
 				f1elem.SetHostedZoneId(*f1iter.HostedZoneID)
+			}
+			if f1iter.OwnershipVerificationCertificateARN != nil {
+				f1elem.SetOwnershipVerificationCertificateArn(*f1iter.OwnershipVerificationCertificateARN)
 			}
 			if f1iter.SecurityPolicy != nil {
 				f1elem.SetSecurityPolicy(*f1iter.SecurityPolicy)

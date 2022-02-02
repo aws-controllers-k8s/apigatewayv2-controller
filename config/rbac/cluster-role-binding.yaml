@@ -8,5 +8,5 @@ roleRef:
   name: ack-apigatewayv2-controller
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: ack-apigatewayv2-controller
   namespace: ack-system
