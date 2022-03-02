@@ -34,10 +34,8 @@ import (
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/api"
-	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/api_mapping"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/authorizer"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/deployment"
-	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/domain_name"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/integration"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/integration_response"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/model"
