@@ -31,5 +31,9 @@ REPLACEMENT_VALUES = {
     "INTEGRATION_ID": "integration_id",
     "AUTHORIZER_ID": "authorizer_id",
     "STAGE_NAME": "test",
-    "STAGE_DESCRIPTION": "ack-test-stage"
+    "STAGE_DESCRIPTION": "ack-test-stage",
+    "VPC_LINK_RES_NAME": "ack-test",
+    "VPC_LINK_NAME": "ack-test",
+    "SUBNET_ID_1": "subnet-id-1",
+    "SUBNET_ID_2": "subnet-id-2"
 }

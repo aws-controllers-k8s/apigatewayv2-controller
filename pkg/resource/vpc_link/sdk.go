@@ -319,6 +319,9 @@ func (rm *resourceManager) sdkUpdate(
 	rlog := ackrtlog.FromContext(ctx)
 	exit := rlog.Trace("rm.sdkUpdate")
 	defer exit(err)
+	if latest.ko.Status.VPCLinkStatus != nil && *latest.ko.Status.VPCLinkStatus != svcsdk.VpcLinkStatusAvailable {
+		return nil, waitForAvailableRequeue
+	}
 	input, err := rm.newUpdateRequestPayload(ctx, desired)
 	if err != nil {
 		return nil, err

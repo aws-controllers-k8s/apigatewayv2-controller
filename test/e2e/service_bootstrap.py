@@ -14,74 +14,50 @@
 """
 import logging
 import os
-from pathlib import Path
-import time
 from zipfile import ZipFile
-import random
-import string
 import tempfile
 
 import boto3
 
-from acktest import resources
+from acktest.bootstrapping import Resources, BootstrapFailureException
+from acktest.bootstrapping.iam import Role
+from acktest.bootstrapping.vpc import VPC
+from acktest.resources import random_suffix_name
 from acktest.aws.identity import get_region
 from e2e import bootstrap_directory
-from e2e.bootstrap_resources import TestBootstrapResources
-
-RAND_TEST_SUFFIX = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-AUTHORIZER_IAM_ROLE_NAME = 'ack-apigwv2-authorizer-role-' + RAND_TEST_SUFFIX
-AUTHORIZER_ASSUME_ROLE_POLICY = '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": '\
-                                '"lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]} '
-AUTHORIZER_POLICY_ARN = 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-AUTHORIZER_FUNCTION_NAME = 'ack-apigatewayv2-authorizer-' + RAND_TEST_SUFFIX
+from e2e.bootstrap_resources import BootstrapResources
 
 
-def service_bootstrap() -> dict:
+def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
-    authorizer_role_arn = create_authorizer_role()
-    time.sleep(15)
-    authorizer_function_arn = create_lambda_authorizer(authorizer_role_arn)
 
-    return TestBootstrapResources(
-        AUTHORIZER_IAM_ROLE_NAME,
-        AUTHORIZER_POLICY_ARN,
-        authorizer_role_arn,
-        AUTHORIZER_FUNCTION_NAME,
-        authorizer_function_arn
-    ).__dict__
+    # First create the AuthorizerRole and VPC.
+    # Then use the created AuthorizerRole.arn for
+    # creating Authorizer lambda function.
 
-
-def create_authorizer_role() -> str:
-    region = get_region()
-    iam_client = boto3.client("iam", region_name=region)
-
-    logging.debug(f"Creating authorizer iam role {AUTHORIZER_IAM_ROLE_NAME}")
+    resources = BootstrapResources(
+        AuthorizerRole=Role("ack-apigwv2-authorizer-role",
+                            "lambda.amazonaws.com",
+                            managed_policies=["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]),
+        VPC=VPC(name_prefix="apigwv2-vpc-link")
+    )
 
     try:
-        iam_client.get_role(RoleName=AUTHORIZER_IAM_ROLE_NAME)
-        raise RuntimeError(f"Expected {AUTHORIZER_IAM_ROLE_NAME} role to not exist."
-                           f" Did previous test cleanup successfully?")
-    except iam_client.exceptions.NoSuchEntityException:
-        pass
+        resources.bootstrap()
+    except BootstrapFailureException as ex:
+        exit(254)
 
-    resp = iam_client.create_role(
-        RoleName=AUTHORIZER_IAM_ROLE_NAME,
-        AssumeRolePolicyDocument=AUTHORIZER_ASSUME_ROLE_POLICY
-    )
-    iam_client.attach_role_policy(RoleName=AUTHORIZER_IAM_ROLE_NAME, PolicyArn=AUTHORIZER_POLICY_ARN)
-    return resp['Role']['Arn']
+    authorizer_function_name = random_suffix_name("ack-apigwv2-authorizer", 30)
+    authorizer_function_arn = create_lambda_authorizer(authorizer_function_name, resources.AuthorizerRole.arn)
+
+    resources.AuthorizerFunctionName = authorizer_function_name
+    resources.AuthorizerFunctionArn = authorizer_function_arn
+    return resources
 
 
-def create_lambda_authorizer(authorizer_role_arn : str) -> str:
+def create_lambda_authorizer(authorizer_function_name: str, authorizer_role_arn: str) -> str:
     region = get_region()
     lambda_client = boto3.client("lambda", region)
-
-    try:
-        lambda_client.get_function(FunctionName=AUTHORIZER_FUNCTION_NAME)
-        raise RuntimeError(f"Expected {AUTHORIZER_FUNCTION_NAME} function to not exist. Did previous test cleanup"
-                           f" successfully?")
-    except lambda_client.exceptions.ResourceNotFoundException:
-        pass
 
     with tempfile.TemporaryDirectory() as tempdir:
         current_directory = os.path.dirname(os.path.realpath(__file__))
@@ -93,16 +69,17 @@ def create_lambda_authorizer(authorizer_role_arn : str) -> str:
             b64_encoded_zip_file = f.read()
 
         response = lambda_client.create_function(
-            FunctionName=AUTHORIZER_FUNCTION_NAME,
+            FunctionName=authorizer_function_name,
             Role=authorizer_role_arn,
             Handler='index.handler',
             Runtime='nodejs12.x',
             Code={'ZipFile': b64_encoded_zip_file}
         )
-    
+
     return response['FunctionArn']
+
 
 if __name__ == "__main__":
     config = service_bootstrap()
     # Write config to current directory by default
-    resources.write_bootstrap_config(config, bootstrap_directory)
+    config.serialize(bootstrap_directory)

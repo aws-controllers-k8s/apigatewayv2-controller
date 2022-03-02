@@ -15,34 +15,20 @@
 """
 
 import boto3
-from acktest import resources
+import logging
+
+from acktest.bootstrapping import Resources
 from acktest.aws.identity import get_region
 
 from e2e import bootstrap_directory
-from e2e.bootstrap_resources import TestBootstrapResources
 
 
-def service_cleanup(config: dict):
-    resources = TestBootstrapResources(
-        **config
-    )
-    detach_policy_and_delete_role(iam_role_name=resources.AuthorizerRoleName, iam_policy_arn=resources.AuthorizerPolicyArn)
+def service_cleanup():
+    logging.getLogger().setLevel(logging.INFO)
+
+    resources = Resources.deserialize(bootstrap_directory)
     delete_authorizer_function(function_name=resources.AuthorizerFunctionName)
-
-
-def detach_policy_and_delete_role(iam_role_name: str, iam_policy_arn: str):
-    region = get_region()
-    iam_client = boto3.client("iam", region_name=region)
-
-    try:
-        iam_client.detach_role_policy(RoleName=iam_role_name, PolicyArn=iam_policy_arn)
-    except iam_client.exceptions.NoSuchEntityException:
-        pass
-
-    try:
-        iam_client.delete_role(RoleName=iam_role_name)
-    except iam_client.exceptions.NoSuchEntityException:
-        pass
+    resources.cleanup()
 
 
 def delete_authorizer_function(function_name: str):
@@ -54,6 +40,6 @@ def delete_authorizer_function(function_name: str):
     except lambda_client.exceptions.ResourceNotFoundException:
         pass
 
-if __name__ == "__main__":   
-    bootstrap_config = resources.read_bootstrap_config(bootstrap_directory)
-    service_cleanup(bootstrap_config) 
+
+if __name__ == "__main__":
+    service_cleanup()

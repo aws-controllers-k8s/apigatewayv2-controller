@@ -1,0 +1,9 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: VPCLink
+metadata:
+  name: $VPC_LINK_RES_NAME
+spec:
+  name: $VPC_LINK_NAME
+  subnetIDs:
+    - $SUBNET_ID_1
+    - $SUBNET_ID_2

@@ -20,11 +20,11 @@ import time
 import boto3
 import pytest
 import requests
-import random
-import string
 
 from acktest.k8s import resource as k8s
+from acktest.k8s import condition
 from acktest.aws.identity import get_region, get_account_id
+from acktest.resources import random_suffix_name
 
 from e2e import service_marker, load_apigatewayv2_resource
 from e2e.bootstrap_resources import get_bootstrap_resources
@@ -42,8 +42,7 @@ test_resource_values = REPLACEMENT_VALUES.copy()
 
 @pytest.fixture(scope="module")
 def api_resource():
-    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-    api_resource_name = test_resource_values['API_NAME'] + f'-{random_suffix}'
+    api_resource_name = random_suffix_name(test_resource_values['API_NAME'], 20)
     test_resource_values['API_NAME'] = api_resource_name
     api_ref, api_data = helper.api_ref_and_data(api_resource_name=api_resource_name,
                                                 replacement_values=test_resource_values)
@@ -55,7 +54,7 @@ def api_resource():
     cr = k8s.wait_resource_consumed_by_controller(api_ref)
 
     assert cr is not None
-    assert k8s.get_resource_exists(api_ref)
+    condition.assert_synced(api_ref)
 
     api_id = cr['status']['apiID']
     test_resource_values['API_ID'] = api_id
@@ -67,8 +66,7 @@ def api_resource():
 
 @pytest.fixture(scope="module")
 def integration_resource(api_resource):
-    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-    integration_resource_name = test_resource_values['INTEGRATION_NAME'] + f'-{random_suffix}'
+    integration_resource_name = random_suffix_name(test_resource_values['INTEGRATION_NAME'], 25)
     test_resource_values['INTEGRATION_NAME'] = integration_resource_name
     integration_ref, integration_data = helper.integration_ref_and_data(
         integration_resource_name=integration_resource_name,
@@ -81,7 +79,7 @@ def integration_resource(api_resource):
     cr = k8s.wait_resource_consumed_by_controller(integration_ref)
 
     assert cr is not None
-    assert k8s.get_resource_exists(integration_ref)
+    condition.assert_synced(integration_ref)
 
     integration_id = cr['status']['integrationID']
     test_resource_values['INTEGRATION_ID'] = integration_id
@@ -93,22 +91,17 @@ def integration_resource(api_resource):
 
 @pytest.fixture(scope="module")
 def authorizer_resource(api_resource):
-    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-    authorizer_resource_name = test_resource_values['AUTHORIZER_NAME'] + f'-{random_suffix}'
+    authorizer_resource_name = random_suffix_name(test_resource_values['AUTHORIZER_NAME'], 25)
     test_resource_values['AUTHORIZER_NAME'] = authorizer_resource_name
     authorizer_uri = f'arn:aws:apigateway:{get_region()}:lambda:path/2015-03-31/functions/{get_bootstrap_resources().AuthorizerFunctionArn}/invocations'
     test_resource_values["AUTHORIZER_URI"] = authorizer_uri
     authorizer_ref, authorizer_data = helper.authorizer_ref_and_data(authorizer_resource_name=authorizer_resource_name,
                                                                      replacement_values=test_resource_values)
-    if k8s.get_resource_exists(authorizer_ref):
-        raise Exception(f"expected {authorizer_resource_name} to not exist. Did previous test cleanup?")
-    logging.debug(f"apigatewayv2 authorizer resource. name: {authorizer_resource_name}, data: {authorizer_data}")
-
     k8s.create_custom_resource(authorizer_ref, authorizer_data)
     cr = k8s.wait_resource_consumed_by_controller(authorizer_ref)
 
     assert cr is not None
-    assert k8s.get_resource_exists(authorizer_ref)
+    condition.assert_synced(authorizer_ref)
 
     authorizer_id = cr['status']['authorizerID']
     test_resource_values['AUTHORIZER_ID'] = authorizer_id
@@ -122,7 +115,7 @@ def authorizer_resource(api_resource):
     )
     lambda_client = boto3.client("lambda")
     lambda_client.add_permission(FunctionName=get_bootstrap_resources().AuthorizerFunctionName,
-                                 StatementId=f'apigatewayv2-authorizer-invoke-permissions-{random_suffix}',
+                                 StatementId=random_suffix_name('invoke-permission', 25),
                                  Action='lambda:InvokeFunction',
                                  Principal='apigateway.amazonaws.com',
                                  SourceArn=authorizer_arn)
@@ -134,20 +127,16 @@ def authorizer_resource(api_resource):
 
 @pytest.fixture(scope="module")
 def route_resource(integration_resource, authorizer_resource):
-    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-    route_resource_name = test_resource_values['ROUTE_NAME'] + f'-{random_suffix}'
+    route_resource_name = random_suffix_name(test_resource_values['ROUTE_NAME'], 25)
     test_resource_values['ROUTE_NAME'] = route_resource_name
     route_ref, route_data = helper.route_ref_and_data(route_resource_name=route_resource_name,
                                                       replacement_values=test_resource_values)
-    if k8s.get_resource_exists(route_ref):
-        raise Exception(f"expected {route_resource_name} to not exist. Did previous test cleanup?")
-    logging.debug(f"apigatewayv2 route resource. name: {route_resource_name}, data: {route_data}")
 
     k8s.create_custom_resource(route_ref, route_data)
     cr = k8s.wait_resource_consumed_by_controller(route_ref)
 
     assert cr is not None
-    assert k8s.get_resource_exists(route_ref)
+    condition.assert_synced(route_ref)
 
     route_id = cr['status']['routeID']
     test_resource_values['ROUTE_ID'] = route_id
@@ -159,20 +148,17 @@ def route_resource(integration_resource, authorizer_resource):
 
 @pytest.fixture(scope="module")
 def stage_resource(route_resource):
-    random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-    stage_resource_name = test_resource_values['STAGE_NAME'] + f'-{random_suffix}'
+    stage_resource_name = random_suffix_name(test_resource_values['STAGE_NAME'], 10)
     test_resource_values['STAGE_NAME'] = stage_resource_name
     stage_ref, stage_data = helper.stage_ref_and_data(stage_resource_name=stage_resource_name,
                                                       replacement_values=test_resource_values)
-    if k8s.get_resource_exists(stage_ref):
-        raise Exception(f"expected {stage_resource_name} to not exist. Did previous test cleanup?")
     logging.debug(f"apigatewayv2 stage resource. name: {stage_resource_name}, data: {stage_data}")
 
     k8s.create_custom_resource(stage_ref, stage_data)
     cr = k8s.wait_resource_consumed_by_controller(stage_ref)
 
     assert cr is not None
-    assert k8s.get_resource_exists(stage_ref)
+    condition.assert_synced(stage_ref)
 
     yield stage_ref, cr
 
@@ -196,8 +182,7 @@ class TestApiGatewayV2:
 
     def test_crud_httpapi(self):
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        api_name = "ack-test-httpapi-" + random_suffix
+        api_name = random_suffix_name("ack-test-httpapi", 25)
         test_data['API_NAME'] = api_name
         test_data['API_TITLE'] = api_name
         api_ref, api_data = helper.api_ref_and_data(api_resource_name=api_name,
@@ -209,7 +194,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(api_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(api_ref)
+        condition.assert_synced(api_ref)
 
         api_id = cr['status']['apiID']
 
@@ -234,6 +219,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(api_ref, updated_api_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(api_ref)
         # Let's check that the HTTP Api appears in Amazon API Gateway with updated title
         apigw_validator.assert_api_name(
             api_id=api_id,
@@ -249,8 +235,7 @@ class TestApiGatewayV2:
 
     def test_crud_httpapi_using_import(self):
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        api_name = "ack-test-importapi-" + random_suffix
+        api_name = random_suffix_name("ack-test-importapi", 25)
         test_data['API_NAME'] = api_name
         test_data['API_TITLE'] = api_name
         api_ref, api_data = helper.import_api_ref_and_data(api_resource_name=api_name,
@@ -262,7 +247,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(api_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(api_ref)
+        condition.assert_synced(api_ref)
 
         api_id = cr['status']['apiID']
 
@@ -287,6 +272,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(api_ref, updated_api_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(api_ref)
         # Let's check that the HTTP Api appears in Amazon API Gateway with updated title
         apigw_validator.assert_api_name(
             api_id=api_id,
@@ -304,8 +290,7 @@ class TestApiGatewayV2:
         api_ref, api_cr = api_resource
         api_id = api_cr['status']['apiID']
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        integration_name = "ack-test-integration-" + random_suffix
+        integration_name = random_suffix_name("ack-test-integration", 25)
         test_data['INTEGRATION_NAME'] = integration_name
         test_data['API_ID'] = api_id
         integration_ref, integration_data = helper.integration_ref_and_data(integration_resource_name=integration_name,
@@ -317,7 +302,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(integration_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(integration_ref)
+        condition.assert_synced(integration_ref)
 
         integration_id = cr['status']['integrationID']
 
@@ -343,6 +328,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(integration_ref, updated_integration_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(integration_ref)
         # Let's check that the HTTP Api integration appears in Amazon API Gateway with updated uri
         apigw_validator.assert_integration_uri(
             api_id=api_id,
@@ -361,8 +347,7 @@ class TestApiGatewayV2:
         api_ref, api_cr = api_resource
         api_id = api_cr['status']['apiID']
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        authorizer_name = "ack-test-authorizer-" + random_suffix
+        authorizer_name = random_suffix_name("ack-test-authorizer", 25)
         test_data['AUTHORIZER_NAME'] = authorizer_name
         test_data['AUTHORIZER_TITLE'] = authorizer_name
         test_data['API_ID'] = api_id
@@ -376,7 +361,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(authorizer_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(authorizer_ref)
+        condition.assert_synced(authorizer_ref)
 
         authorizer_id = cr['status']['authorizerID']
 
@@ -402,6 +387,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(authorizer_ref, updated_authorizer_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(authorizer_ref)
         # Let's check that the HTTP Api authorizer appears in Amazon API Gateway with updated title
         apigw_validator.assert_authorizer_name(
             api_id=api_id,
@@ -424,8 +410,7 @@ class TestApiGatewayV2:
         authorizer_ref, authorizer_cr = authorizer_resource
         authorizer_id = authorizer_cr['status']['authorizerID']
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        route_name = "ack-test-route-" + random_suffix
+        route_name = random_suffix_name("ack-test-route", 25)
         test_data['ROUTE_NAME'] = route_name
         test_data['AUTHORIZER_ID'] = authorizer_id
         test_data['INTEGRATION_ID'] = integration_id
@@ -440,7 +425,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(route_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(route_ref)
+        condition.assert_synced(route_ref)
 
         route_id = cr['status']['routeID']
 
@@ -466,6 +451,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(route_ref, updated_route_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(route_ref)
         # Let's check that the HTTP Api route appears in Amazon API Gateway with updated route key
         apigw_validator.assert_route_key(
             api_id=api_id,
@@ -484,8 +470,7 @@ class TestApiGatewayV2:
         api_ref, api_cr = api_resource
         api_id = api_cr['status']['apiID']
         test_data = REPLACEMENT_VALUES.copy()
-        random_suffix = (''.join(random.choice(string.ascii_lowercase) for _ in range(6)))
-        stage_name = "ack-test-stage-" + random_suffix
+        stage_name = random_suffix_name("ack-test-stage", 25)
         test_data['STAGE_NAME'] = stage_name
         test_data['API_ID'] = api_id
         stage_ref, stage_data = helper.stage_ref_and_data(stage_resource_name=stage_name,
@@ -497,7 +482,7 @@ class TestApiGatewayV2:
         cr = k8s.wait_resource_consumed_by_controller(stage_ref)
 
         assert cr is not None
-        assert k8s.get_resource_exists(stage_ref)
+        condition.assert_synced(stage_ref)
 
         # Let's check that the HTTP Api integration appears in Amazon API Gateway
         apigw_validator.assert_stage_is_present(api_id=api_id, stage_name=stage_name)
@@ -522,6 +507,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(stage_ref, updated_stage_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
+        condition.assert_synced(stage_ref)
         # Let's check that the HTTP Api stage appears in Amazon API Gateway with updated description
         apigw_validator.assert_stage_description(
             api_id=api_id,
