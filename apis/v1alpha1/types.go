@@ -185,7 +185,7 @@ type DomainNameConfiguration struct {
 }
 
 // Represents an integration response.
-type IntegrationResponse_SDK struct {
+type IntegrationResponse struct {
 	// Specifies how to handle response payload content type conversions. Supported
 	// only for WebSocket APIs.
 	ContentHandlingStrategy *string `json:"contentHandlingStrategy,omitempty"`
@@ -316,9 +316,7 @@ type JWTConfiguration struct {
 
 // Represents a data model for an API. Supported only for WebSocket APIs. See
 // Create Models and Mapping Templates for Request and Response Mappings (https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html).
-type Model_SDK struct {
-	// A string with a length between [1-256].
-	ContentType *string `json:"contentType,omitempty"`
+type Model struct {
 	// A string with a length between [0-1024].
 	Description *string `json:"description,omitempty"`
 	// The identifier.
@@ -357,7 +355,7 @@ type ParameterConstraints struct {
 }
 
 // Represents a route response.
-type RouteResponse_SDK struct {
+type RouteResponse struct {
 	// An expression used to extract information at runtime. See Selection Expressions
 	// (https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions)
 	// for more information.

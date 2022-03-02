@@ -13,10 +13,7 @@ rules:
   - authorizers
   - deployments
   - integrations
-  - integrationresponses
-  - models
   - routes
-  - routeresponses
   - stages
   - vpclinks
   verbs:
