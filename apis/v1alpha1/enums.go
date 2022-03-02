@@ -53,13 +53,13 @@ const (
 	DeploymentStatus_SDK_DEPLOYED DeploymentStatus_SDK = "DEPLOYED"
 )
 
-type DomainNameStatus_SDK string
+type DomainNameStatus string
 
 const (
-	DomainNameStatus_SDK_AVAILABLE                      DomainNameStatus_SDK = "AVAILABLE"
-	DomainNameStatus_SDK_UPDATING                       DomainNameStatus_SDK = "UPDATING"
-	DomainNameStatus_SDK_PENDING_CERTIFICATE_REIMPORT   DomainNameStatus_SDK = "PENDING_CERTIFICATE_REIMPORT"
-	DomainNameStatus_SDK_PENDING_OWNERSHIP_VERIFICATION DomainNameStatus_SDK = "PENDING_OWNERSHIP_VERIFICATION"
+	DomainNameStatus_AVAILABLE                      DomainNameStatus = "AVAILABLE"
+	DomainNameStatus_UPDATING                       DomainNameStatus = "UPDATING"
+	DomainNameStatus_PENDING_CERTIFICATE_REIMPORT   DomainNameStatus = "PENDING_CERTIFICATE_REIMPORT"
+	DomainNameStatus_PENDING_OWNERSHIP_VERIFICATION DomainNameStatus = "PENDING_OWNERSHIP_VERIFICATION"
 )
 
 type EndpointType string

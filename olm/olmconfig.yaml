@@ -31,15 +31,11 @@ description: |-
 
   Please follow the following link: [Red Hat OpenShift](https://aws-controllers-k8s.github.io/community/docs/user-docs/openshift/)
 samples:
-- kind: APIMapping
-  spec: '{}'
 - kind: API
   spec: '{}'
 - kind: Authorizer
   spec: '{}'
 - kind: Deployment
-  spec: '{}'
-- kind: DomainName
   spec: '{}'
 - kind: IntegrationResponse
   spec: '{}'

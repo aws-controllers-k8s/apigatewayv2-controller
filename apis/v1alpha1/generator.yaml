@@ -1,3 +1,7 @@
+ignore:
+  resource_names:
+    - DomainName
+    - ApiMapping
 resources:
   Api:
     fields:
@@ -19,14 +23,6 @@ resources:
         is_required: false
     update_operation:
       custom_method_name: customUpdateApi
-  DomainName:
-    fields:
-      DomainName:
-        is_primary_key: true
-        is_required: true
-        from:
-          operation: CreateDomainName
-          path: DomainName
   Stage:
     hooks:
       sdk_update_post_build_request:

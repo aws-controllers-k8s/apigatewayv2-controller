@@ -6,6 +6,11 @@ This repository contains source code for the AWS Controllers for Kubernetes
 Please [log issues][ack-issues] and feedback on the main AWS Controllers for
 Kubernetes Github project.
 
+```
+NOTE: Currently APIMapping and DomainName resource are not supported.
+These resource will be added in future releases.
+```
+
 [ack-issues]: https://github.com/aws/aws-controllers-k8s/issues
 
 ## Contributing
