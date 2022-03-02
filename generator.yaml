@@ -1,7 +1,15 @@
 ignore:
   resource_names:
+    # DomainName is ignored due to lack of Public DNS setup in e2e testing
     - DomainName
+    # ApiMapping is ignored due to lack of Public DNS setup in e2e testing
     - ApiMapping
+    # Model is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
+    - Model
+    # IntegrationResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
+    - IntegrationResponse
+    # RouteResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
+    - RouteResponse
 resources:
   Api:
     fields:

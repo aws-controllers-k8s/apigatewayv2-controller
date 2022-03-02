@@ -8,6 +8,8 @@ annotations:
 displayName: AWS Controllers for Kubernetes - Amazon API Gateway v2
 description: |-
   Manage Amazon API Gateway v2 resources in AWS from within your Kubernetes cluster.
+  Currently only HTTP APIs are supported. WebSocket API support will be added soon.
+  For HTTP APIs, DomainName and APIMapping resource support will be added soon.
   
 
   **About Amazon API Gateway v2**

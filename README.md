@@ -7,8 +7,8 @@ Please [log issues][ack-issues] and feedback on the main AWS Controllers for
 Kubernetes Github project.
 
 ```
-NOTE: Currently APIMapping and DomainName resource are not supported.
-These resource will be added in future releases.
+NOTE: Currently only HTTP APIs are supported. WebSocket API support will be added soon.
+For HTTP APIs, DomainName and APIMapping resource support will be added soon.
 ```
 
 [ack-issues]: https://github.com/aws/aws-controllers-k8s/issues
