@@ -17,8 +17,15 @@ package deployment
 
 import (
 	"context"
+	"fmt"
+
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
+	ackcondition "github.com/aws-controllers-k8s/runtime/pkg/condition"
+	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
 
 	svcapitypes "github.com/aws-controllers-k8s/apigatewayv2-controller/apis/v1alpha1"
@@ -36,17 +43,89 @@ func (rm *resourceManager) ResolveReferences(
 	apiReader client.Reader,
 	res acktypes.AWSResource,
 ) (acktypes.AWSResource, error) {
-	return res, nil
+	namespace := res.MetaObject().GetNamespace()
+	ko := rm.concreteResource(res).ko.DeepCopy()
+	err := validateReferenceFields(ko)
+	if err == nil {
+		err = resolveReferenceForAPIID(ctx, apiReader, namespace, ko)
+	}
+
+	if hasNonNilReferences(ko) {
+		return ackcondition.WithReferencesResolvedCondition(&resource{ko}, err)
+	}
+	return &resource{ko}, err
 }
 
 // validateReferenceFields validates the reference field and corresponding
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.Deployment) error {
+	if ko.Spec.APIRef != nil && ko.Spec.APIID != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("APIID", "APIRef")
+	}
+	if ko.Spec.APIRef == nil && ko.Spec.APIID == nil {
+		return ackerr.ResourceReferenceOrIDRequiredFor("APIID", "APIRef")
+	}
 	return nil
 }
 
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Deployment) bool {
-	return false
+	return false || ko.Spec.APIRef != nil
+}
+
+// resolveReferenceForAPIID reads the resource referenced
+// from APIRef field and sets the APIID
+// from referenced resource
+func resolveReferenceForAPIID(
+	ctx context.Context,
+	apiReader client.Reader,
+	namespace string,
+	ko *svcapitypes.Deployment,
+) error {
+	if ko.Spec.APIRef != nil &&
+		ko.Spec.APIRef.From != nil {
+		arr := ko.Spec.APIRef.From
+		if arr == nil || arr.Name == nil || *arr.Name == "" {
+			return fmt.Errorf("provided resource reference is nil or empty")
+		}
+		namespacedName := types.NamespacedName{
+			Namespace: namespace,
+			Name:      *arr.Name,
+		}
+		obj := svcapitypes.API{}
+		err := apiReader.Get(ctx, namespacedName, &obj)
+		if err != nil {
+			return err
+		}
+		var refResourceSynced, refResourceTerminal bool
+		for _, cond := range obj.Status.Conditions {
+			if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+				cond.Status == corev1.ConditionTrue {
+				refResourceSynced = true
+			}
+			if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+				cond.Status == corev1.ConditionTrue {
+				refResourceTerminal = true
+			}
+		}
+		if refResourceTerminal {
+			return ackerr.ResourceReferenceTerminalFor(
+				"API",
+				namespace, *arr.Name)
+		}
+		if !refResourceSynced {
+			return ackerr.ResourceReferenceNotSyncedFor(
+				"API",
+				namespace, *arr.Name)
+		}
+		if obj.Status.APIID == nil {
+			return ackerr.ResourceReferenceMissingTargetFieldFor(
+				"API",
+				namespace, *arr.Name,
+				"Status.APIID")
+		}
+		ko.Spec.APIID = obj.Status.APIID
+	}
+	return nil
 }

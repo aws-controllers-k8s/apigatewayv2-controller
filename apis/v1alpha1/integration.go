@@ -24,11 +24,11 @@ import (
 //
 // Represents an integration.
 type IntegrationSpec struct {
+	APIID  *string                                  `json:"apiID,omitempty"`
+	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 
-	// +kubebuilder:validation:Required
-	APIID *string `json:"apiID"`
-
-	ConnectionID *string `json:"connectionID,omitempty"`
+	ConnectionID  *string                                  `json:"connectionID,omitempty"`
+	ConnectionRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"connectionRef,omitempty"`
 
 	ConnectionType *string `json:"connectionType,omitempty"`
 

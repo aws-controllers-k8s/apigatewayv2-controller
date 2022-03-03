@@ -35,6 +35,54 @@ resources:
     hooks:
       sdk_update_post_build_request:
         template_path: hooks/stage/sdk_update_post_build_request.go.tpl
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+      DeploymentId:
+        references:
+          resource: Deployment
+          path: Status.DeploymentID
+  Authorizer:
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+  Deployment:
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+  Integration:
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+      ConnectionId:
+        references:
+          resource: VPCLink
+          path: Status.VPCLinkID
+  Route:
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+      AuthorizerId:
+        references:
+          resource: Authorizer
+          path: Status.AuthorizerID
+      Target:
+        references:
+          resource: Integration
+          path: Status.IntegrationID
+    hooks:
+      references_post_resolve:
+        template_path: hooks/route/references_post_resolve.go.tpl
   VpcLink:
     hooks:
       sdk_update_pre_build_request:

@@ -55,6 +55,9 @@ func newResourceDelta(
 			delta.Add("Spec.APIKeyRequired", a.ko.Spec.APIKeyRequired, b.ko.Spec.APIKeyRequired)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
+	}
 	if !ackcompare.SliceStringPEqual(a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes) {
 		delta.Add("Spec.AuthorizationScopes", a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes)
 	}
@@ -71,6 +74,9 @@ func newResourceDelta(
 		if *a.ko.Spec.AuthorizerID != *b.ko.Spec.AuthorizerID {
 			delta.Add("Spec.AuthorizerID", a.ko.Spec.AuthorizerID, b.ko.Spec.AuthorizerID)
 		}
+	}
+	if !reflect.DeepEqual(a.ko.Spec.AuthorizerRef, b.ko.Spec.AuthorizerRef) {
+		delta.Add("Spec.AuthorizerRef", a.ko.Spec.AuthorizerRef, b.ko.Spec.AuthorizerRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ModelSelectionExpression, b.ko.Spec.ModelSelectionExpression) {
 		delta.Add("Spec.ModelSelectionExpression", a.ko.Spec.ModelSelectionExpression, b.ko.Spec.ModelSelectionExpression)
@@ -120,6 +126,9 @@ func newResourceDelta(
 		if *a.ko.Spec.Target != *b.ko.Spec.Target {
 			delta.Add("Spec.Target", a.ko.Spec.Target, b.ko.Spec.Target)
 		}
+	}
+	if !reflect.DeepEqual(a.ko.Spec.TargetRef, b.ko.Spec.TargetRef) {
+		delta.Add("Spec.TargetRef", a.ko.Spec.TargetRef, b.ko.Spec.TargetRef)
 	}
 
 	return delta
