@@ -48,12 +48,18 @@ func newResourceDelta(
 			delta.Add("Spec.APIID", a.ko.Spec.APIID, b.ko.Spec.APIID)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ConnectionID, b.ko.Spec.ConnectionID) {
 		delta.Add("Spec.ConnectionID", a.ko.Spec.ConnectionID, b.ko.Spec.ConnectionID)
 	} else if a.ko.Spec.ConnectionID != nil && b.ko.Spec.ConnectionID != nil {
 		if *a.ko.Spec.ConnectionID != *b.ko.Spec.ConnectionID {
 			delta.Add("Spec.ConnectionID", a.ko.Spec.ConnectionID, b.ko.Spec.ConnectionID)
 		}
+	}
+	if !reflect.DeepEqual(a.ko.Spec.ConnectionRef, b.ko.Spec.ConnectionRef) {
+		delta.Add("Spec.ConnectionRef", a.ko.Spec.ConnectionRef, b.ko.Spec.ConnectionRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ConnectionType, b.ko.Spec.ConnectionType) {
 		delta.Add("Spec.ConnectionType", a.ko.Spec.ConnectionType, b.ko.Spec.ConnectionType)

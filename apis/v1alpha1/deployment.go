@@ -25,9 +25,8 @@ import (
 // An immutable representation of an API that can be called by users. A Deployment
 // must be associated with a Stage for it to be callable over the internet.
 type DeploymentSpec struct {
-
-	// +kubebuilder:validation:Required
-	APIID *string `json:"apiID"`
+	APIID  *string                                  `json:"apiID,omitempty"`
+	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 
 	Description *string `json:"description,omitempty"`
 

@@ -18,6 +18,8 @@ APIGatewayV2-specific test variables.
 REPLACEMENT_VALUES = {
     "API_NAME": "ack-test-api",
     "API_TITLE": "ack-test-api",
+    "IMPORT_API_NAME": "ack-test-import-api",
+    "IMPORT_API_TITLE": "ack-test-import-api",
     "API_ID": "api_id",
     "INTEGRATION_NAME": "ack-test-integration",
     "INTEGRATION_URI": "https://httpbin.org/get",
@@ -35,5 +37,10 @@ REPLACEMENT_VALUES = {
     "VPC_LINK_RES_NAME": "ack-test",
     "VPC_LINK_NAME": "ack-test",
     "SUBNET_ID_1": "subnet-id-1",
-    "SUBNET_ID_2": "subnet-id-2"
+    "SUBNET_ID_2": "subnet-id-2",
+    "REF_API_NAME": "ack-test-ref-api",
+    "REF_INTEGRATION_NAME": "ack-test-ref-integration",
+    "REF_ROUTE_NAME": "ack-test-ref-route",
+    "REF_STAGE_NAME": "ack-test-ref-stage",
+    "REF_STAGE_DESCRIPTION": "Stage for ack resource reference testing"
 }

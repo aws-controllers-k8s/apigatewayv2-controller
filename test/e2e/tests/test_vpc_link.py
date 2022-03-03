@@ -29,7 +29,7 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 import e2e.tests.helper as helper
 from e2e.tests.helper import ApiGatewayValidator
 
-DELETE_WAIT_AFTER_SECONDS = 30
+DELETE_WAIT_AFTER_SECONDS = 60
 UPDATE_WAIT_AFTER_SECONDS = 10
 
 apigw_validator = ApiGatewayValidator(boto3.client('apigatewayv2'))

@@ -26,8 +26,8 @@ import (
 type StageSpec struct {
 	AccessLogSettings *AccessLogSettings `json:"accessLogSettings,omitempty"`
 
-	// +kubebuilder:validation:Required
-	APIID *string `json:"apiID"`
+	APIID  *string                                  `json:"apiID,omitempty"`
+	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 
 	AutoDeploy *bool `json:"autoDeploy,omitempty"`
 
@@ -35,7 +35,8 @@ type StageSpec struct {
 
 	DefaultRouteSettings *RouteSettings `json:"defaultRouteSettings,omitempty"`
 
-	DeploymentID *string `json:"deploymentID,omitempty"`
+	DeploymentID  *string                                  `json:"deploymentID,omitempty"`
+	DeploymentRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"deploymentRef,omitempty"`
 
 	Description *string `json:"description,omitempty"`
 

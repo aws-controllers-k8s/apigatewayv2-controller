@@ -1,0 +1,12 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: Route
+metadata:
+  name: $REF_ROUTE_NAME
+spec:
+  apiRef:
+    from:
+      name: $REF_API_NAME
+  routeKey: "GET /httpbin"
+  targetRef:
+    from:
+      name: $REF_INTEGRATION_NAME

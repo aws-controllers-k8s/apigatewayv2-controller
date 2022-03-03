@@ -24,17 +24,17 @@ import (
 //
 // Represents a route.
 type RouteSpec struct {
+	APIID *string `json:"apiID,omitempty"`
 
-	// +kubebuilder:validation:Required
-	APIID *string `json:"apiID"`
-
-	APIKeyRequired *bool `json:"apiKeyRequired,omitempty"`
+	APIKeyRequired *bool                                    `json:"apiKeyRequired,omitempty"`
+	APIRef         *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 
 	AuthorizationScopes []*string `json:"authorizationScopes,omitempty"`
 
 	AuthorizationType *string `json:"authorizationType,omitempty"`
 
-	AuthorizerID *string `json:"authorizerID,omitempty"`
+	AuthorizerID  *string                                  `json:"authorizerID,omitempty"`
+	AuthorizerRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"authorizerRef,omitempty"`
 
 	ModelSelectionExpression *string `json:"modelSelectionExpression,omitempty"`
 
@@ -49,7 +49,8 @@ type RouteSpec struct {
 
 	RouteResponseSelectionExpression *string `json:"routeResponseSelectionExpression,omitempty"`
 
-	Target *string `json:"target,omitempty"`
+	Target    *string                                  `json:"target,omitempty"`
+	TargetRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"targetRef,omitempty"`
 }
 
 // RouteStatus defines the observed state of Route

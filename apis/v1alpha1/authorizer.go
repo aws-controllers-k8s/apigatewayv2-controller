@@ -24,9 +24,8 @@ import (
 //
 // Represents an authorizer.
 type AuthorizerSpec struct {
-
-	// +kubebuilder:validation:Required
-	APIID *string `json:"apiID"`
+	APIID  *string                                  `json:"apiID,omitempty"`
+	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 
 	AuthorizerCredentialsARN *string `json:"authorizerCredentialsARN,omitempty"`
 

@@ -1,0 +1,11 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: Stage
+metadata:
+  name: $REF_STAGE_NAME
+spec:
+  apiRef:
+    from:
+      name: $REF_API_NAME
+  stageName: $REF_STAGE_NAME
+  autoDeploy: true
+  description: $REF_STAGE_DESCRIPTION

@@ -1,0 +1,12 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: Integration
+metadata:
+  name: $REF_INTEGRATION_NAME
+spec:
+  apiRef:
+    from:
+      name: $REF_API_NAME
+  integrationType: HTTP_PROXY
+  integrationURI: https://httpbin.org/get
+  integrationMethod: GET
+  payloadFormatVersion: "1.0"

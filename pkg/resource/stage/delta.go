@@ -66,6 +66,9 @@ func newResourceDelta(
 			delta.Add("Spec.APIID", a.ko.Spec.APIID, b.ko.Spec.APIID)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AutoDeploy, b.ko.Spec.AutoDeploy) {
 		delta.Add("Spec.AutoDeploy", a.ko.Spec.AutoDeploy, b.ko.Spec.AutoDeploy)
 	} else if a.ko.Spec.AutoDeploy != nil && b.ko.Spec.AutoDeploy != nil {
@@ -125,6 +128,9 @@ func newResourceDelta(
 		if *a.ko.Spec.DeploymentID != *b.ko.Spec.DeploymentID {
 			delta.Add("Spec.DeploymentID", a.ko.Spec.DeploymentID, b.ko.Spec.DeploymentID)
 		}
+	}
+	if !reflect.DeepEqual(a.ko.Spec.DeploymentRef, b.ko.Spec.DeploymentRef) {
+		delta.Add("Spec.DeploymentRef", a.ko.Spec.DeploymentRef, b.ko.Spec.DeploymentRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Description, b.ko.Spec.Description) {
 		delta.Add("Spec.Description", a.ko.Spec.Description, b.ko.Spec.Description)

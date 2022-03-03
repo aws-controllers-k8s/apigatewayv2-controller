@@ -25,92 +25,92 @@ STAGE_RESOURCE_PLURAL = 'stages'
 VPC_LINK_RESOURCE_PLURAL = 'vpclinks'
 
 
-def api_ref_and_data(api_resource_name: str, replacement_values: dict):
+def api_ref_and_data(api_resource_name: str, replacement_values: dict, file_name: str = "httpapi"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, API_RESOURCE_PLURAL,
         api_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "httpapi",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def import_api_ref_and_data(api_resource_name: str, replacement_values: dict):
+def import_api_ref_and_data(api_resource_name: str, replacement_values: dict, file_name: str = "import_api"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, API_RESOURCE_PLURAL,
         api_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "import_api",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def integration_ref_and_data(integration_resource_name: str, replacement_values: dict):
+def integration_ref_and_data(integration_resource_name: str, replacement_values: dict, file_name: str = "integration"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, INTEGRATION_RESOURCE_PLURAL,
         integration_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "integration",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def authorizer_ref_and_data(authorizer_resource_name: str, replacement_values: dict):
+def authorizer_ref_and_data(authorizer_resource_name: str, replacement_values: dict, file_name: str = "authorizer"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, AUTHORIZER_RESOURCE_PLURAL,
         authorizer_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "authorizer",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def route_ref_and_data(route_resource_name: str, replacement_values: dict):
+def route_ref_and_data(route_resource_name: str, replacement_values: dict, file_name: str = "route"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, ROUTE_RESOURCE_PLURAL,
         route_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "route",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def stage_ref_and_data(stage_resource_name: str, replacement_values: dict):
+def stage_ref_and_data(stage_resource_name: str, replacement_values: dict, file_name: str = "stage"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, STAGE_RESOURCE_PLURAL,
         stage_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "stage",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
 
 
-def vpc_link_ref_and_data(vpc_link_resource_name: str, replacement_values: dict):
+def vpc_link_ref_and_data(vpc_link_resource_name: str, replacement_values: dict, file_name: str = "vpc-link"):
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, VPC_LINK_RESOURCE_PLURAL,
         vpc_link_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
-        "vpc-link",
+        file_name,
         additional_replacements=replacement_values,
     )
     return ref, resource_data
