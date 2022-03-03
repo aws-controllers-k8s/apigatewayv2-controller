@@ -39,13 +39,7 @@ samples:
   spec: '{}'
 - kind: Deployment
   spec: '{}'
-- kind: IntegrationResponse
-  spec: '{}'
 - kind: Integration
-  spec: '{}'
-- kind: Model
-  spec: '{}'
-- kind: RouteResponse
   spec: '{}'
 - kind: Route
   spec: '{}'

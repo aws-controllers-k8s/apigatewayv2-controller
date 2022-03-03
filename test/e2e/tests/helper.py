@@ -22,6 +22,7 @@ INTEGRATION_RESOURCE_PLURAL = 'integrations'
 AUTHORIZER_RESOURCE_PLURAL = 'authorizers'
 ROUTE_RESOURCE_PLURAL = 'routes'
 STAGE_RESOURCE_PLURAL = 'stages'
+VPC_LINK_RESOURCE_PLURAL = 'vpclinks'
 
 
 def api_ref_and_data(api_resource_name: str, replacement_values: dict):
@@ -102,6 +103,19 @@ def stage_ref_and_data(stage_resource_name: str, replacement_values: dict):
     return ref, resource_data
 
 
+def vpc_link_ref_and_data(vpc_link_resource_name: str, replacement_values: dict):
+    ref = resource.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, VPC_LINK_RESOURCE_PLURAL,
+        vpc_link_resource_name, namespace="default",
+    )
+
+    resource_data = load_apigatewayv2_resource(
+        "vpc-link",
+        additional_replacements=replacement_values,
+    )
+    return ref, resource_data
+
+
 class ApiGatewayValidator:
 
     def __init__(self, apigatewayv2_client):
@@ -125,6 +139,10 @@ class ApiGatewayValidator:
 
     def assert_stage_is_present(self, api_id: str, stage_name: str):
         aws_res = self.apigatewayv2_client.get_stage(ApiId=api_id, StageName=stage_name)
+        assert aws_res is not None
+
+    def assert_vpc_link_is_present(self, vpc_link_id: str):
+        aws_res = self.apigatewayv2_client.get_vpc_link(VpcLinkId=vpc_link_id)
         assert aws_res is not None
 
     def assert_api_is_deleted(self, api_id: str):
@@ -177,6 +195,16 @@ class ApiGatewayValidator:
 
         assert res_found is False
 
+    def assert_vpc_link_is_deleted(self, vpc_link_id: str):
+        res_found = False
+        try:
+            self.apigatewayv2_client.get_vpc_link(VpcLinkId=vpc_link_id)
+            res_found = True
+        except self.apigatewayv2_client.exceptions.NotFoundException:
+            pass
+
+        assert res_found is False
+
     def assert_api_name(self, api_id, expected_api_name):
         aws_res = self.apigatewayv2_client.get_api(ApiId=api_id)
         assert aws_res is not None
@@ -201,3 +229,8 @@ class ApiGatewayValidator:
         aws_res = self.apigatewayv2_client.get_stage(ApiId=api_id, StageName=stage_name)
         assert aws_res is not None
         assert aws_res['Description'] == expected_description
+
+    def assert_vpc_link_name(self, vpc_link_id, expected_vpc_link_name):
+        aws_res = self.apigatewayv2_client.get_vpc_link(VpcLinkId=vpc_link_id)
+        assert aws_res is not None
+        assert aws_res['Name'] == expected_vpc_link_name

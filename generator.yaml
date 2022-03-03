@@ -35,7 +35,15 @@ resources:
     hooks:
       sdk_update_post_build_request:
         template_path: hooks/stage/sdk_update_post_build_request.go.tpl
+  VpcLink:
+    hooks:
+      sdk_update_pre_build_request:
+        template_path: hooks/vpc_link/sdk_update_pre_build_request.go.tpl
+    synced:
+      when:
+        - path: Status.VPCLinkStatus
+          in:
+            - AVAILABLE
 operations:
   CreateApi:
     custom_implementation: customCreateApi
-
