@@ -236,8 +236,8 @@ class TestApiGatewayV2:
     def test_crud_httpapi_using_import(self):
         test_data = REPLACEMENT_VALUES.copy()
         api_name = random_suffix_name("ack-test-importapi", 25)
-        test_data['API_NAME'] = api_name
-        test_data['API_TITLE'] = api_name
+        test_data['IMPORT_API_NAME'] = api_name
+        test_data['IMPORT_API_TITLE'] = api_name
         api_ref, api_data = helper.import_api_ref_and_data(api_resource_name=api_name,
                                                            replacement_values=test_data)
         logging.debug(f"imported http api resource. name: {api_name}, data: {api_data}")
@@ -261,7 +261,7 @@ class TestApiGatewayV2:
 
         # test update
         updated_api_title = 'updated-' + api_name
-        test_data['API_TITLE'] = updated_api_title
+        test_data['IMPORT_API_TITLE'] = updated_api_title
         updated_api_resource_data = load_apigatewayv2_resource(
             "import_api",
             additional_replacements=test_data,

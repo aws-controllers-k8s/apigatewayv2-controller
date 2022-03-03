@@ -18,6 +18,8 @@ APIGatewayV2-specific test variables.
 REPLACEMENT_VALUES = {
     "API_NAME": "ack-test-api",
     "API_TITLE": "ack-test-api",
+    "IMPORT_API_NAME": "ack-test-import-api",
+    "IMPORT_API_TITLE": "ack-test-import-api",
     "API_ID": "api_id",
     "INTEGRATION_NAME": "ack-test-integration",
     "INTEGRATION_URI": "https://httpbin.org/get",
