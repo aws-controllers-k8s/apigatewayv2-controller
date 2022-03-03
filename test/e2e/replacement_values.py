@@ -35,5 +35,10 @@ REPLACEMENT_VALUES = {
     "VPC_LINK_RES_NAME": "ack-test",
     "VPC_LINK_NAME": "ack-test",
     "SUBNET_ID_1": "subnet-id-1",
-    "SUBNET_ID_2": "subnet-id-2"
+    "SUBNET_ID_2": "subnet-id-2",
+    "REF_API_NAME": "ack-test-ref-api",
+    "REF_INTEGRATION_NAME": "ack-test-ref-integration",
+    "REF_ROUTE_NAME": "ack-test-ref-route",
+    "REF_STAGE_NAME": "ack-test-ref-stage",
+    "REF_STAGE_DESCRIPTION": "Stage for ack resource reference testing"
 }
