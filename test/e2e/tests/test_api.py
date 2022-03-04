@@ -114,14 +114,17 @@ def authorizer_resource(api_resource):
         authorizer_id=authorizer_id
     )
     lambda_client = boto3.client("lambda")
-    lambda_client.add_permission(FunctionName=get_bootstrap_resources().AuthorizerFunctionName,
-                                 StatementId=random_suffix_name('invoke-permission', 25),
+    function_name = get_bootstrap_resources().AuthorizerFunctionName
+    statement_id = random_suffix_name('invoke-permission', 25)
+    lambda_client.add_permission(FunctionName=function_name,
+                                 StatementId=statement_id,
                                  Action='lambda:InvokeFunction',
                                  Principal='apigateway.amazonaws.com',
                                  SourceArn=authorizer_arn)
 
     yield authorizer_ref, cr
 
+    lambda_client.remove_permission(FunctionName=function_name, StatementId=statement_id)
     k8s.delete_custom_resource(authorizer_ref)
 
 
