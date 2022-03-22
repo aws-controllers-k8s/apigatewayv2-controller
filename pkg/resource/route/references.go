@@ -72,9 +72,6 @@ func (rm *resourceManager) ResolveReferences(
 // validateReferenceFields validates the reference field and corresponding
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.Route) error {
-	if ko.Spec.TargetRef != nil && ko.Spec.Target != nil {
-		return ackerr.ResourceReferenceAndIDNotSupportedFor("Target", "TargetRef")
-	}
 	if ko.Spec.APIRef != nil && ko.Spec.APIID != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("APIID", "APIRef")
 	}
@@ -84,13 +81,16 @@ func validateReferenceFields(ko *svcapitypes.Route) error {
 	if ko.Spec.AuthorizerRef != nil && ko.Spec.AuthorizerID != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("AuthorizerID", "AuthorizerRef")
 	}
+	if ko.Spec.TargetRef != nil && ko.Spec.Target != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("Target", "TargetRef")
+	}
 	return nil
 }
 
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Route) bool {
-	return false || ko.Spec.TargetRef != nil || ko.Spec.APIRef != nil || ko.Spec.AuthorizerRef != nil
+	return false || ko.Spec.APIRef != nil || ko.Spec.AuthorizerRef != nil || ko.Spec.TargetRef != nil
 }
 
 // resolveReferenceForAPIID reads the resource referenced
