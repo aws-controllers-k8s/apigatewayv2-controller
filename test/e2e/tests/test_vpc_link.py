@@ -29,6 +29,7 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 import e2e.tests.helper as helper
 from e2e.tests.helper import ApiGatewayValidator
 
+CREATE_WAIT_AFTER_SECONDS = 60
 DELETE_WAIT_AFTER_SECONDS = 60
 UPDATE_WAIT_AFTER_SECONDS = 10
 
@@ -55,10 +56,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(vpc_link_ref, vpc_link_data)
-        cr = k8s.wait_resource_consumed_by_controller(vpc_link_ref)
-
-        assert cr is not None
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
         assert k8s.wait_on_condition(vpc_link_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+
+        cr = k8s.get_resource(vpc_link_ref)
+        assert cr is not None
 
         vpc_link_id = cr['status']['vpcLinkID']
 

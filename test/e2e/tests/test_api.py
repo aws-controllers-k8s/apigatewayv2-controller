@@ -32,9 +32,11 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 import e2e.tests.helper as helper
 from e2e.tests.helper import ApiGatewayValidator
 
-DELETE_WAIT_AFTER_SECONDS = 10
-UPDATE_WAIT_AFTER_SECONDS = 10
-APIGW_DEPLOYMENT_WAIT_AFTER_SECONDS = 10
+CREATE_API_WAIT_AFTER_SECONDS = 60
+CREATE_WAIT_AFTER_SECONDS = 5
+DELETE_WAIT_AFTER_SECONDS = 20
+UPDATE_WAIT_AFTER_SECONDS = 20
+APIGW_DEPLOYMENT_WAIT_AFTER_SECONDS = 20
 
 apigw_validator = ApiGatewayValidator(boto3.client('apigatewayv2'))
 test_resource_values = REPLACEMENT_VALUES.copy()
@@ -51,10 +53,11 @@ def api_resource():
     logging.debug(f"http api resource. name: {api_resource_name}, data: {api_data}")
 
     k8s.create_custom_resource(api_ref, api_data)
-    cr = k8s.wait_resource_consumed_by_controller(api_ref)
+    time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
+    assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+    cr = k8s.get_resource(api_ref)
     assert cr is not None
-    condition.assert_synced(api_ref)
 
     api_id = cr['status']['apiID']
     test_resource_values['API_ID'] = api_id
@@ -76,10 +79,11 @@ def integration_resource(api_resource):
     logging.debug(f"apigatewayv2 integration resource. name: {integration_resource_name}, data: {integration_data}")
 
     k8s.create_custom_resource(integration_ref, integration_data)
-    cr = k8s.wait_resource_consumed_by_controller(integration_ref)
+    time.sleep(CREATE_WAIT_AFTER_SECONDS)
+    assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+    cr = k8s.get_resource(integration_ref)
     assert cr is not None
-    condition.assert_synced(integration_ref)
 
     integration_id = cr['status']['integrationID']
     test_resource_values['INTEGRATION_ID'] = integration_id
@@ -98,10 +102,11 @@ def authorizer_resource(api_resource):
     authorizer_ref, authorizer_data = helper.authorizer_ref_and_data(authorizer_resource_name=authorizer_resource_name,
                                                                      replacement_values=test_resource_values)
     k8s.create_custom_resource(authorizer_ref, authorizer_data)
-    cr = k8s.wait_resource_consumed_by_controller(authorizer_ref)
+    time.sleep(CREATE_WAIT_AFTER_SECONDS)
+    assert k8s.wait_on_condition(authorizer_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+    cr = k8s.get_resource(authorizer_ref)
     assert cr is not None
-    condition.assert_synced(authorizer_ref)
 
     authorizer_id = cr['status']['authorizerID']
     test_resource_values['AUTHORIZER_ID'] = authorizer_id
@@ -136,10 +141,11 @@ def route_resource(integration_resource, authorizer_resource):
                                                       replacement_values=test_resource_values)
 
     k8s.create_custom_resource(route_ref, route_data)
-    cr = k8s.wait_resource_consumed_by_controller(route_ref)
+    time.sleep(CREATE_WAIT_AFTER_SECONDS)
+    assert k8s.wait_on_condition(route_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+    cr = k8s.get_resource(route_ref)
     assert cr is not None
-    condition.assert_synced(route_ref)
 
     route_id = cr['status']['routeID']
     test_resource_values['ROUTE_ID'] = route_id
@@ -158,10 +164,11 @@ def stage_resource(route_resource):
     logging.debug(f"apigatewayv2 stage resource. name: {stage_resource_name}, data: {stage_data}")
 
     k8s.create_custom_resource(stage_ref, stage_data)
-    cr = k8s.wait_resource_consumed_by_controller(stage_ref)
+    time.sleep(CREATE_WAIT_AFTER_SECONDS)
+    assert k8s.wait_on_condition(stage_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+    cr = k8s.get_resource(stage_ref)
     assert cr is not None
-    condition.assert_synced(stage_ref)
 
     yield stage_ref, cr
 
@@ -194,10 +201,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(api_ref, api_data)
-        cr = k8s.wait_resource_consumed_by_controller(api_ref)
+        time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(api_ref)
         assert cr is not None
-        condition.assert_synced(api_ref)
 
         api_id = cr['status']['apiID']
 
@@ -247,10 +255,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(api_ref, api_data)
-        cr = k8s.wait_resource_consumed_by_controller(api_ref)
+        time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(api_ref)
         assert cr is not None
-        condition.assert_synced(api_ref)
 
         api_id = cr['status']['apiID']
 
@@ -302,10 +311,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(integration_ref, integration_data)
-        cr = k8s.wait_resource_consumed_by_controller(integration_ref)
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(integration_ref)
         assert cr is not None
-        condition.assert_synced(integration_ref)
 
         integration_id = cr['status']['integrationID']
 
@@ -361,10 +371,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(authorizer_ref, authorizer_data)
-        cr = k8s.wait_resource_consumed_by_controller(authorizer_ref)
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(authorizer_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(authorizer_ref)
         assert cr is not None
-        condition.assert_synced(authorizer_ref)
 
         authorizer_id = cr['status']['authorizerID']
 
@@ -425,10 +436,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(route_ref, route_data)
-        cr = k8s.wait_resource_consumed_by_controller(route_ref)
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(route_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(route_ref)
         assert cr is not None
-        condition.assert_synced(route_ref)
 
         route_id = cr['status']['routeID']
 
@@ -482,10 +494,11 @@ class TestApiGatewayV2:
 
         # test create
         k8s.create_custom_resource(stage_ref, stage_data)
-        cr = k8s.wait_resource_consumed_by_controller(stage_ref)
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
+        assert k8s.wait_on_condition(stage_ref, "ACK.ResourceSynced", "True", wait_periods=10)
 
+        cr = k8s.get_resource(stage_ref)
         assert cr is not None
-        condition.assert_synced(stage_ref)
 
         # Let's check that the HTTP Api integration appears in Amazon API Gateway
         apigw_validator.assert_stage_is_present(api_id=api_id, stage_name=stage_name)
