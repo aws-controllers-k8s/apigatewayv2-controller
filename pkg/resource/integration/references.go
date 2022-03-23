@@ -77,7 +77,7 @@ func validateReferenceFields(ko *svcapitypes.Integration) error {
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Integration) bool {
-	return false || ko.Spec.ConnectionRef != nil || ko.Spec.APIRef != nil
+	return false || ko.Spec.APIRef != nil || ko.Spec.ConnectionRef != nil
 }
 
 // resolveReferenceForAPIID reads the resource referenced

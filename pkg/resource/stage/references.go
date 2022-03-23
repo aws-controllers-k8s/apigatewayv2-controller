@@ -62,14 +62,14 @@ func (rm *resourceManager) ResolveReferences(
 // validateReferenceFields validates the reference field and corresponding
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.Stage) error {
-	if ko.Spec.DeploymentRef != nil && ko.Spec.DeploymentID != nil {
-		return ackerr.ResourceReferenceAndIDNotSupportedFor("DeploymentID", "DeploymentRef")
-	}
 	if ko.Spec.APIRef != nil && ko.Spec.APIID != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("APIID", "APIRef")
 	}
 	if ko.Spec.APIRef == nil && ko.Spec.APIID == nil {
 		return ackerr.ResourceReferenceOrIDRequiredFor("APIID", "APIRef")
+	}
+	if ko.Spec.DeploymentRef != nil && ko.Spec.DeploymentID != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("DeploymentID", "DeploymentRef")
 	}
 	return nil
 }
@@ -77,7 +77,7 @@ func validateReferenceFields(ko *svcapitypes.Stage) error {
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Stage) bool {
-	return false || ko.Spec.DeploymentRef != nil || ko.Spec.APIRef != nil
+	return false || ko.Spec.APIRef != nil || ko.Spec.DeploymentRef != nil
 }
 
 // resolveReferenceForAPIID reads the resource referenced

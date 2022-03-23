@@ -27,6 +27,7 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 import e2e.tests.helper as helper
 from e2e.tests.helper import ApiGatewayValidator
 
+CREATE_WAIT_AFTER_SECONDS = 60
 DELETE_WAIT_AFTER_SECONDS = 20
 
 apigw_validator = ApiGatewayValidator(boto3.client('apigatewayv2'))
@@ -69,23 +70,17 @@ class TestApiGatewayV2References:
 
         # Create stage. Needs API reference
         k8s.create_custom_resource(stage_ref, stage_data)
-        stage_cr = k8s.wait_resource_consumed_by_controller(stage_ref)
-        assert stage_cr is not None
 
         # Create route. Needs API, Integration reference
         k8s.create_custom_resource(route_ref, route_data)
-        route_cr = k8s.wait_resource_consumed_by_controller(route_ref)
-        assert route_cr is not None
 
         # Create integration. Needs API reference
         k8s.create_custom_resource(integration_ref, integration_data)
-        integration_cr = k8s.wait_resource_consumed_by_controller(integration_ref)
-        assert integration_cr is not None
 
         # Create API. Needs no reference
         k8s.create_custom_resource(api_ref, api_data)
-        api_cr = k8s.wait_resource_consumed_by_controller(api_ref)
-        assert api_cr is not None
+
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
 
         assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
         assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
