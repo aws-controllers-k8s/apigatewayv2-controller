@@ -90,7 +90,7 @@ func validateReferenceFields(ko *svcapitypes.Route) error {
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Route) bool {
-	return false || ko.Spec.APIRef != nil || ko.Spec.AuthorizerRef != nil || ko.Spec.TargetRef != nil
+	return false || (ko.Spec.APIRef != nil) || (ko.Spec.AuthorizerRef != nil) || (ko.Spec.TargetRef != nil)
 }
 
 // resolveReferenceForAPIID reads the resource referenced
@@ -144,7 +144,8 @@ func resolveReferenceForAPIID(
 				namespace, *arr.Name,
 				"Status.APIID")
 		}
-		ko.Spec.APIID = obj.Status.APIID
+		referencedValue := string(*obj.Status.APIID)
+		ko.Spec.APIID = &referencedValue
 	}
 	return nil
 }
@@ -200,7 +201,8 @@ func resolveReferenceForAuthorizerID(
 				namespace, *arr.Name,
 				"Status.AuthorizerID")
 		}
-		ko.Spec.AuthorizerID = obj.Status.AuthorizerID
+		referencedValue := string(*obj.Status.AuthorizerID)
+		ko.Spec.AuthorizerID = &referencedValue
 	}
 	return nil
 }
@@ -256,7 +258,8 @@ func resolveReferenceForTarget(
 				namespace, *arr.Name,
 				"Status.IntegrationID")
 		}
-		ko.Spec.Target = obj.Status.IntegrationID
+		referencedValue := string(*obj.Status.IntegrationID)
+		ko.Spec.Target = &referencedValue
 	}
 	return nil
 }

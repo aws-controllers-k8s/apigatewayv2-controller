@@ -77,7 +77,7 @@ func validateReferenceFields(ko *svcapitypes.Stage) error {
 // hasNonNilReferences returns true if resource contains a reference to another
 // resource
 func hasNonNilReferences(ko *svcapitypes.Stage) bool {
-	return false || ko.Spec.APIRef != nil || ko.Spec.DeploymentRef != nil
+	return false || (ko.Spec.APIRef != nil) || (ko.Spec.DeploymentRef != nil)
 }
 
 // resolveReferenceForAPIID reads the resource referenced
@@ -131,7 +131,8 @@ func resolveReferenceForAPIID(
 				namespace, *arr.Name,
 				"Status.APIID")
 		}
-		ko.Spec.APIID = obj.Status.APIID
+		referencedValue := string(*obj.Status.APIID)
+		ko.Spec.APIID = &referencedValue
 	}
 	return nil
 }
@@ -187,7 +188,8 @@ func resolveReferenceForDeploymentID(
 				namespace, *arr.Name,
 				"Status.DeploymentID")
 		}
-		ko.Spec.DeploymentID = obj.Status.DeploymentID
+		referencedValue := string(*obj.Status.DeploymentID)
+		ko.Spec.DeploymentID = &referencedValue
 	}
 	return nil
 }
