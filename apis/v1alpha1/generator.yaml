@@ -50,12 +50,16 @@ resources:
         references:
           resource: API
           path: Status.APIID
+    tags:
+      ignore: true
   Deployment:
     fields:
       ApiId:
         references:
           resource: API
           path: Status.APIID
+    tags:
+      ignore: true
   Integration:
     fields:
       ApiId:
@@ -66,6 +70,8 @@ resources:
         references:
           resource: VPCLink
           path: Status.VPCLinkID
+    tags:
+      ignore: true
   Route:
     fields:
       ApiId:
@@ -83,6 +89,8 @@ resources:
     hooks:
       references_post_resolve:
         template_path: hooks/route/references_post_resolve.go.tpl
+    tags:
+      ignore: true
   VpcLink:
     hooks:
       sdk_update_pre_build_request:
