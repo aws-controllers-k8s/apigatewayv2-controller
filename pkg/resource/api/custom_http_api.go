@@ -96,6 +96,9 @@ func (rm *resourceManager) validateImportApiInputFields(api *v1alpha1.API) error
 		specCopy.Body = nil
 		specCopy.FailOnWarnings = nil
 		specCopy.Basepath = nil
+		// Tags field is added with ACK default tags by ACK reconciler.
+		//Allow tag field to be present with other ImportApi fields.
+		specCopy.Tags = nil
 		opts := []cmp.Option{cmpopts.EquateEmpty()}
 		if cmp.Equal(*specCopy, v1alpha1.APISpec{}, opts...) {
 			return nil
