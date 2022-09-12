@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
   name: stages.apigatewayv2.services.k8s.aws
 spec:
@@ -52,8 +51,7 @@ spec:
               apiRef:
                 description: 'AWSResourceReferenceWrapper provides a wrapper around
                   *AWSResourceReference type to provide more user friendly syntax
-                  for references using ''from'' field Ex: APIIDRef:   from:     name:
-                  my-api'
+                  for references using ''from'' field Ex: APIIDRef: from: name: my-api'
                 properties:
                   from:
                     description: AWSResourceReference provides all the values necessary
@@ -88,8 +86,7 @@ spec:
               deploymentRef:
                 description: 'AWSResourceReferenceWrapper provides a wrapper around
                   *AWSResourceReference type to provide more user friendly syntax
-                  for references using ''from'' field Ex: APIIDRef:   from:     name:
-                  my-api'
+                  for references using ''from'' field Ex: APIIDRef: from: name: my-api'
                 properties:
                   from:
                     description: AWSResourceReference provides all the values necessary
@@ -212,9 +209,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
