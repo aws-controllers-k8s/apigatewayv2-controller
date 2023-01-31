@@ -26,14 +26,11 @@ import (
 type VPCLinkSpec struct {
 
 	// +kubebuilder:validation:Required
-	Name *string `json:"name"`
-
+	Name             *string   `json:"name"`
 	SecurityGroupIDs []*string `json:"securityGroupIDs,omitempty"`
-
 	// +kubebuilder:validation:Required
-	SubnetIDs []*string `json:"subnetIDs"`
-
-	Tags map[string]*string `json:"tags,omitempty"`
+	SubnetIDs []*string          `json:"subnetIDs"`
+	Tags      map[string]*string `json:"tags,omitempty"`
 }
 
 // VPCLinkStatus defines the observed state of VPCLink
@@ -49,19 +46,14 @@ type VPCLinkStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	VPCLinkID *string `json:"vpcLinkID,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	VPCLinkStatus *string `json:"vpcLinkStatus,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	VPCLinkStatusMessage *string `json:"vpcLinkStatusMessage,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	VPCLinkVersion *string `json:"vpcLinkVersion,omitempty"`
 }

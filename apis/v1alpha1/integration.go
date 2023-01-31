@@ -24,44 +24,27 @@ import (
 //
 // Represents an integration.
 type IntegrationSpec struct {
-	APIID  *string                                  `json:"apiID,omitempty"`
-	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
-
-	ConnectionID  *string                                  `json:"connectionID,omitempty"`
-	ConnectionRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"connectionRef,omitempty"`
-
-	ConnectionType *string `json:"connectionType,omitempty"`
-
-	ContentHandlingStrategy *string `json:"contentHandlingStrategy,omitempty"`
-
-	CredentialsARN *string `json:"credentialsARN,omitempty"`
-
-	Description *string `json:"description,omitempty"`
-
-	IntegrationMethod *string `json:"integrationMethod,omitempty"`
-
-	IntegrationSubtype *string `json:"integrationSubtype,omitempty"`
-
+	APIID                   *string                                  `json:"apiID,omitempty"`
+	APIRef                  *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+	ConnectionID            *string                                  `json:"connectionID,omitempty"`
+	ConnectionRef           *ackv1alpha1.AWSResourceReferenceWrapper `json:"connectionRef,omitempty"`
+	ConnectionType          *string                                  `json:"connectionType,omitempty"`
+	ContentHandlingStrategy *string                                  `json:"contentHandlingStrategy,omitempty"`
+	CredentialsARN          *string                                  `json:"credentialsARN,omitempty"`
+	Description             *string                                  `json:"description,omitempty"`
+	IntegrationMethod       *string                                  `json:"integrationMethod,omitempty"`
+	IntegrationSubtype      *string                                  `json:"integrationSubtype,omitempty"`
 	// +kubebuilder:validation:Required
-	IntegrationType *string `json:"integrationType"`
-
-	IntegrationURI *string `json:"integrationURI,omitempty"`
-
-	PassthroughBehavior *string `json:"passthroughBehavior,omitempty"`
-
-	PayloadFormatVersion *string `json:"payloadFormatVersion,omitempty"`
-
-	RequestParameters map[string]*string `json:"requestParameters,omitempty"`
-
-	RequestTemplates map[string]*string `json:"requestTemplates,omitempty"`
-
-	ResponseParameters map[string]map[string]*string `json:"responseParameters,omitempty"`
-
-	TemplateSelectionExpression *string `json:"templateSelectionExpression,omitempty"`
-
-	TimeoutInMillis *int64 `json:"timeoutInMillis,omitempty"`
-
-	TLSConfig *TLSConfigInput `json:"tlsConfig,omitempty"`
+	IntegrationType             *string                       `json:"integrationType"`
+	IntegrationURI              *string                       `json:"integrationURI,omitempty"`
+	PassthroughBehavior         *string                       `json:"passthroughBehavior,omitempty"`
+	PayloadFormatVersion        *string                       `json:"payloadFormatVersion,omitempty"`
+	RequestParameters           map[string]*string            `json:"requestParameters,omitempty"`
+	RequestTemplates            map[string]*string            `json:"requestTemplates,omitempty"`
+	ResponseParameters          map[string]map[string]*string `json:"responseParameters,omitempty"`
+	TemplateSelectionExpression *string                       `json:"templateSelectionExpression,omitempty"`
+	TimeoutInMillis             *int64                        `json:"timeoutInMillis,omitempty"`
+	TLSConfig                   *TLSConfigInput               `json:"tlsConfig,omitempty"`
 }
 
 // IntegrationStatus defines the observed state of Integration
@@ -77,13 +60,10 @@ type IntegrationStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	IntegrationID *string `json:"integrationID,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	IntegrationResponseSelectionExpression *string `json:"integrationResponseSelectionExpression,omitempty"`
 }
