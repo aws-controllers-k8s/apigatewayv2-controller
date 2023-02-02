@@ -25,12 +25,10 @@ import (
 // An immutable representation of an API that can be called by users. A Deployment
 // must be associated with a Stage for it to be callable over the internet.
 type DeploymentSpec struct {
-	APIID  *string                                  `json:"apiID,omitempty"`
-	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
-
-	Description *string `json:"description,omitempty"`
-
-	StageName *string `json:"stageName,omitempty"`
+	APIID       *string                                  `json:"apiID,omitempty"`
+	APIRef      *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+	Description *string                                  `json:"description,omitempty"`
+	StageName   *string                                  `json:"stageName,omitempty"`
 }
 
 // DeploymentStatus defines the observed state of Deployment
@@ -46,19 +44,14 @@ type DeploymentStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	AutoDeployed *bool `json:"autoDeployed,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	DeploymentID *string `json:"deploymentID,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	DeploymentStatus *string `json:"deploymentStatus,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	DeploymentStatusMessage *string `json:"deploymentStatusMessage,omitempty"`
 }

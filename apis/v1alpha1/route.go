@@ -24,33 +24,22 @@ import (
 //
 // Represents a route.
 type RouteSpec struct {
-	APIID *string `json:"apiID,omitempty"`
-
-	APIKeyRequired *bool                                    `json:"apiKeyRequired,omitempty"`
-	APIRef         *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
-
-	AuthorizationScopes []*string `json:"authorizationScopes,omitempty"`
-
-	AuthorizationType *string `json:"authorizationType,omitempty"`
-
-	AuthorizerID  *string                                  `json:"authorizerID,omitempty"`
-	AuthorizerRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"authorizerRef,omitempty"`
-
-	ModelSelectionExpression *string `json:"modelSelectionExpression,omitempty"`
-
-	OperationName *string `json:"operationName,omitempty"`
-
-	RequestModels map[string]*string `json:"requestModels,omitempty"`
-
-	RequestParameters map[string]*ParameterConstraints `json:"requestParameters,omitempty"`
-
+	APIID                    *string                                  `json:"apiID,omitempty"`
+	APIKeyRequired           *bool                                    `json:"apiKeyRequired,omitempty"`
+	APIRef                   *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+	AuthorizationScopes      []*string                                `json:"authorizationScopes,omitempty"`
+	AuthorizationType        *string                                  `json:"authorizationType,omitempty"`
+	AuthorizerID             *string                                  `json:"authorizerID,omitempty"`
+	AuthorizerRef            *ackv1alpha1.AWSResourceReferenceWrapper `json:"authorizerRef,omitempty"`
+	ModelSelectionExpression *string                                  `json:"modelSelectionExpression,omitempty"`
+	OperationName            *string                                  `json:"operationName,omitempty"`
+	RequestModels            map[string]*string                       `json:"requestModels,omitempty"`
+	RequestParameters        map[string]*ParameterConstraints         `json:"requestParameters,omitempty"`
 	// +kubebuilder:validation:Required
-	RouteKey *string `json:"routeKey"`
-
-	RouteResponseSelectionExpression *string `json:"routeResponseSelectionExpression,omitempty"`
-
-	Target    *string                                  `json:"target,omitempty"`
-	TargetRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"targetRef,omitempty"`
+	RouteKey                         *string                                  `json:"routeKey"`
+	RouteResponseSelectionExpression *string                                  `json:"routeResponseSelectionExpression,omitempty"`
+	Target                           *string                                  `json:"target,omitempty"`
+	TargetRef                        *ackv1alpha1.AWSResourceReferenceWrapper `json:"targetRef,omitempty"`
 }
 
 // RouteStatus defines the observed state of Route
@@ -66,10 +55,8 @@ type RouteStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	RouteID *string `json:"routeID,omitempty"`
 }

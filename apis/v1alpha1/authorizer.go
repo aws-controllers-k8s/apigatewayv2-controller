@@ -24,29 +24,19 @@ import (
 //
 // Represents an authorizer.
 type AuthorizerSpec struct {
-	APIID  *string                                  `json:"apiID,omitempty"`
-	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
-
-	AuthorizerCredentialsARN *string `json:"authorizerCredentialsARN,omitempty"`
-
-	AuthorizerPayloadFormatVersion *string `json:"authorizerPayloadFormatVersion,omitempty"`
-
-	AuthorizerResultTtlInSeconds *int64 `json:"authorizerResultTtlInSeconds,omitempty"`
-
+	APIID                          *string                                  `json:"apiID,omitempty"`
+	APIRef                         *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+	AuthorizerCredentialsARN       *string                                  `json:"authorizerCredentialsARN,omitempty"`
+	AuthorizerPayloadFormatVersion *string                                  `json:"authorizerPayloadFormatVersion,omitempty"`
+	AuthorizerResultTtlInSeconds   *int64                                   `json:"authorizerResultTtlInSeconds,omitempty"`
 	// +kubebuilder:validation:Required
-	AuthorizerType *string `json:"authorizerType"`
-
-	AuthorizerURI *string `json:"authorizerURI,omitempty"`
-
-	EnableSimpleResponses *bool `json:"enableSimpleResponses,omitempty"`
-
+	AuthorizerType        *string `json:"authorizerType"`
+	AuthorizerURI         *string `json:"authorizerURI,omitempty"`
+	EnableSimpleResponses *bool   `json:"enableSimpleResponses,omitempty"`
 	// +kubebuilder:validation:Required
-	IdentitySource []*string `json:"identitySource"`
-
-	IdentityValidationExpression *string `json:"identityValidationExpression,omitempty"`
-
-	JWTConfiguration *JWTConfiguration `json:"jwtConfiguration,omitempty"`
-
+	IdentitySource               []*string         `json:"identitySource"`
+	IdentityValidationExpression *string           `json:"identityValidationExpression,omitempty"`
+	JWTConfiguration             *JWTConfiguration `json:"jwtConfiguration,omitempty"`
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 }
@@ -64,7 +54,6 @@ type AuthorizerStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	AuthorizerID *string `json:"authorizerID,omitempty"`
 }
