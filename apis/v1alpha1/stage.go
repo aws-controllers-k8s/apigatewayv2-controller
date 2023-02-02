@@ -24,30 +24,20 @@ import (
 //
 // Represents an API stage.
 type StageSpec struct {
-	AccessLogSettings *AccessLogSettings `json:"accessLogSettings,omitempty"`
-
-	APIID  *string                                  `json:"apiID,omitempty"`
-	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
-
-	AutoDeploy *bool `json:"autoDeploy,omitempty"`
-
-	ClientCertificateID *string `json:"clientCertificateID,omitempty"`
-
-	DefaultRouteSettings *RouteSettings `json:"defaultRouteSettings,omitempty"`
-
-	DeploymentID  *string                                  `json:"deploymentID,omitempty"`
-	DeploymentRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"deploymentRef,omitempty"`
-
-	Description *string `json:"description,omitempty"`
-
-	RouteSettings map[string]*RouteSettings `json:"routeSettings,omitempty"`
-
+	AccessLogSettings    *AccessLogSettings                       `json:"accessLogSettings,omitempty"`
+	APIID                *string                                  `json:"apiID,omitempty"`
+	APIRef               *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+	AutoDeploy           *bool                                    `json:"autoDeploy,omitempty"`
+	ClientCertificateID  *string                                  `json:"clientCertificateID,omitempty"`
+	DefaultRouteSettings *RouteSettings                           `json:"defaultRouteSettings,omitempty"`
+	DeploymentID         *string                                  `json:"deploymentID,omitempty"`
+	DeploymentRef        *ackv1alpha1.AWSResourceReferenceWrapper `json:"deploymentRef,omitempty"`
+	Description          *string                                  `json:"description,omitempty"`
+	RouteSettings        map[string]*RouteSettings                `json:"routeSettings,omitempty"`
 	// +kubebuilder:validation:Required
-	StageName *string `json:"stageName"`
-
+	StageName      *string            `json:"stageName"`
 	StageVariables map[string]*string `json:"stageVariables,omitempty"`
-
-	Tags map[string]*string `json:"tags,omitempty"`
+	Tags           map[string]*string `json:"tags,omitempty"`
 }
 
 // StageStatus defines the observed state of Stage
@@ -63,16 +53,12 @@ type StageStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-
 	// +kubebuilder:validation:Optional
 	APIGatewayManaged *bool `json:"apiGatewayManaged,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	CreatedDate *metav1.Time `json:"createdDate,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	LastDeploymentStatusMessage *string `json:"lastDeploymentStatusMessage,omitempty"`
-
 	// +kubebuilder:validation:Optional
 	LastUpdatedDate *metav1.Time `json:"lastUpdatedDate,omitempty"`
 }
