@@ -41,9 +41,9 @@ spec:
               apiKeyRequired:
                 type: boolean
               apiRef:
-                description: 'AWSResourceReferenceWrapper provides a wrapper around
+                description: "AWSResourceReferenceWrapper provides a wrapper around
                   *AWSResourceReference type to provide more user friendly syntax
-                  for references using ''from'' field Ex: APIIDRef: from: name: my-api'
+                  for references using 'from' field Ex: APIIDRef: \n from: name: my-api"
                 properties:
                   from:
                     description: AWSResourceReference provides all the values necessary
@@ -62,9 +62,9 @@ spec:
               authorizerID:
                 type: string
               authorizerRef:
-                description: 'AWSResourceReferenceWrapper provides a wrapper around
+                description: "AWSResourceReferenceWrapper provides a wrapper around
                   *AWSResourceReference type to provide more user friendly syntax
-                  for references using ''from'' field Ex: APIIDRef: from: name: my-api'
+                  for references using 'from' field Ex: APIIDRef: \n from: name: my-api"
                 properties:
                   from:
                     description: AWSResourceReference provides all the values necessary
@@ -98,9 +98,9 @@ spec:
               target:
                 type: string
               targetRef:
-                description: 'AWSResourceReferenceWrapper provides a wrapper around
+                description: "AWSResourceReferenceWrapper provides a wrapper around
                   *AWSResourceReference type to provide more user friendly syntax
-                  for references using ''from'' field Ex: APIIDRef: from: name: my-api'
+                  for references using 'from' field Ex: APIIDRef: \n from: name: my-api"
                 properties:
                   from:
                     description: AWSResourceReference provides all the values necessary
