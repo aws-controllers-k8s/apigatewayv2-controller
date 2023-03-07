@@ -77,6 +77,9 @@ func (rm *resourceManager) sdkFind(
 	resp, err = rm.sdkapi.GetApiWithContext(ctx, input)
 	rm.metrics.RecordAPICall("READ_ONE", "GetApi", err)
 	if err != nil {
+		if reqErr, ok := ackerr.AWSRequestFailure(err); ok && reqErr.StatusCode() == 404 {
+			return nil, ackerr.NotFound
+		}
 		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "NotFoundException" {
 			return nil, ackerr.NotFound
 		}

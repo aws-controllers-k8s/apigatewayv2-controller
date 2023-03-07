@@ -94,50 +94,68 @@ func resolveReferenceForAPIID(
 	namespace string,
 	ko *svcapitypes.Stage,
 ) error {
-	if ko.Spec.APIRef != nil &&
-		ko.Spec.APIRef.From != nil {
+	if ko.Spec.APIRef != nil && ko.Spec.APIRef.From != nil {
 		arr := ko.Spec.APIRef.From
 		if arr == nil || arr.Name == nil || *arr.Name == "" {
-			return fmt.Errorf("provided resource reference is nil or empty")
+			return fmt.Errorf("provided resource reference is nil or empty: APIRef")
 		}
-		namespacedName := types.NamespacedName{
-			Namespace: namespace,
-			Name:      *arr.Name,
-		}
-		obj := svcapitypes.API{}
-		err := apiReader.Get(ctx, namespacedName, &obj)
-		if err != nil {
+		obj := &svcapitypes.API{}
+		if err := getReferencedResourceState_API(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
 			return err
 		}
-		var refResourceSynced, refResourceTerminal bool
-		for _, cond := range obj.Status.Conditions {
-			if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
-				cond.Status == corev1.ConditionTrue {
-				refResourceSynced = true
-			}
-			if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
-				cond.Status == corev1.ConditionTrue {
-				refResourceTerminal = true
-			}
+		ko.Spec.APIID = (*string)(obj.Status.APIID)
+	}
+
+	return nil
+}
+
+// getReferencedResourceState_API looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_API(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *svcapitypes.API,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceSynced, refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
 		}
-		if refResourceTerminal {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
 			return ackerr.ResourceReferenceTerminalFor(
 				"API",
-				namespace, *arr.Name)
+				namespace, name)
 		}
-		if !refResourceSynced {
-			return ackerr.ResourceReferenceNotSyncedFor(
-				"API",
-				namespace, *arr.Name)
-		}
-		if obj.Status.APIID == nil {
-			return ackerr.ResourceReferenceMissingTargetFieldFor(
-				"API",
-				namespace, *arr.Name,
-				"Status.APIID")
-		}
-		referencedValue := string(*obj.Status.APIID)
-		ko.Spec.APIID = &referencedValue
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"API",
+			namespace, name)
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"API",
+			namespace, name)
+	}
+	if obj.Status.APIID == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"API",
+			namespace, name,
+			"Status.APIID")
 	}
 	return nil
 }
@@ -151,50 +169,68 @@ func resolveReferenceForDeploymentID(
 	namespace string,
 	ko *svcapitypes.Stage,
 ) error {
-	if ko.Spec.DeploymentRef != nil &&
-		ko.Spec.DeploymentRef.From != nil {
+	if ko.Spec.DeploymentRef != nil && ko.Spec.DeploymentRef.From != nil {
 		arr := ko.Spec.DeploymentRef.From
 		if arr == nil || arr.Name == nil || *arr.Name == "" {
-			return fmt.Errorf("provided resource reference is nil or empty")
+			return fmt.Errorf("provided resource reference is nil or empty: DeploymentRef")
 		}
-		namespacedName := types.NamespacedName{
-			Namespace: namespace,
-			Name:      *arr.Name,
-		}
-		obj := svcapitypes.Deployment{}
-		err := apiReader.Get(ctx, namespacedName, &obj)
-		if err != nil {
+		obj := &svcapitypes.Deployment{}
+		if err := getReferencedResourceState_Deployment(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
 			return err
 		}
-		var refResourceSynced, refResourceTerminal bool
-		for _, cond := range obj.Status.Conditions {
-			if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
-				cond.Status == corev1.ConditionTrue {
-				refResourceSynced = true
-			}
-			if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
-				cond.Status == corev1.ConditionTrue {
-				refResourceTerminal = true
-			}
+		ko.Spec.DeploymentID = (*string)(obj.Status.DeploymentID)
+	}
+
+	return nil
+}
+
+// getReferencedResourceState_Deployment looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Deployment(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *svcapitypes.Deployment,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceSynced, refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
 		}
-		if refResourceTerminal {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
 			return ackerr.ResourceReferenceTerminalFor(
 				"Deployment",
-				namespace, *arr.Name)
+				namespace, name)
 		}
-		if !refResourceSynced {
-			return ackerr.ResourceReferenceNotSyncedFor(
-				"Deployment",
-				namespace, *arr.Name)
-		}
-		if obj.Status.DeploymentID == nil {
-			return ackerr.ResourceReferenceMissingTargetFieldFor(
-				"Deployment",
-				namespace, *arr.Name,
-				"Status.DeploymentID")
-		}
-		referencedValue := string(*obj.Status.DeploymentID)
-		ko.Spec.DeploymentID = &referencedValue
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Deployment",
+			namespace, name)
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Deployment",
+			namespace, name)
+	}
+	if obj.Status.DeploymentID == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Deployment",
+			namespace, name,
+			"Status.DeploymentID")
 	}
 	return nil
 }
