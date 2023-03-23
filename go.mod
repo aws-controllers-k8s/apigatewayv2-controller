@@ -3,7 +3,7 @@ module github.com/aws-controllers-k8s/apigatewayv2-controller
 go 1.19
 
 require (
-	github.com/aws-controllers-k8s/runtime v0.24.1
+	github.com/aws-controllers-k8s/runtime v0.25.0
 	github.com/aws/aws-sdk-go v1.44.93
 	github.com/go-logr/logr v1.2.3
 	github.com/google/go-cmp v0.5.9
