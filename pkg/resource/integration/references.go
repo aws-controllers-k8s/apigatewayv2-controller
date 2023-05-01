@@ -24,89 +24,103 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
-	ackcondition "github.com/aws-controllers-k8s/runtime/pkg/condition"
 	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
 
 	svcapitypes "github.com/aws-controllers-k8s/apigatewayv2-controller/apis/v1alpha1"
 )
 
+// ClearResolvedReferences removes any reference values that were made
+// concrete in the spec. It returns a copy of the input AWSResource which
+// contains the original *Ref values, but none of their respective concrete
+// values.
+func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) acktypes.AWSResource {
+	ko := rm.concreteResource(res).ko.DeepCopy()
+
+	if ko.Spec.APIRef != nil {
+		ko.Spec.APIID = nil
+	}
+
+	if ko.Spec.ConnectionRef != nil {
+		ko.Spec.ConnectionID = nil
+	}
+
+	return &resource{ko}
+}
+
 // ResolveReferences finds if there are any Reference field(s) present
-// inside AWSResource passed in the parameter and attempts to resolve
-// those reference field(s) into target field(s).
-// It returns an AWSResource with resolved reference(s), and an error if the
-// passed AWSResource's reference field(s) cannot be resolved.
-// This method also adds/updates the ConditionTypeReferencesResolved for the
-// AWSResource.
+// inside AWSResource passed in the parameter and attempts to resolve those
+// reference field(s) into their respective target field(s). It returns a
+// copy of the input AWSResource with resolved reference(s), a boolean which
+// is set to true if the resource contains any references (regardless of if
+// they are resolved successfully) and an error if the passed AWSResource's
+// reference field(s) could not be resolved.
 func (rm *resourceManager) ResolveReferences(
 	ctx context.Context,
 	apiReader client.Reader,
 	res acktypes.AWSResource,
-) (acktypes.AWSResource, error) {
+) (acktypes.AWSResource, bool, error) {
 	namespace := res.MetaObject().GetNamespace()
-	ko := rm.concreteResource(res).ko.DeepCopy()
+	ko := rm.concreteResource(res).ko
+
+	resourceHasReferences := false
 	err := validateReferenceFields(ko)
-	if err == nil {
-		err = resolveReferenceForAPIID(ctx, apiReader, namespace, ko)
-	}
-	if err == nil {
-		err = resolveReferenceForConnectionID(ctx, apiReader, namespace, ko)
+	if fieldHasReferences, err := rm.resolveReferenceForAPIID(ctx, apiReader, namespace, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
 	}
 
-	// If there was an error while resolving any reference, reset all the
-	// resolved values so that they do not get persisted inside etcd
-	if err != nil {
-		ko = rm.concreteResource(res).ko.DeepCopy()
+	if fieldHasReferences, err := rm.resolveReferenceForConnectionID(ctx, apiReader, namespace, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
 	}
-	if hasNonNilReferences(ko) {
-		return ackcondition.WithReferencesResolvedCondition(&resource{ko}, err)
-	}
-	return &resource{ko}, err
+
+	return &resource{ko}, resourceHasReferences, err
 }
 
 // validateReferenceFields validates the reference field and corresponding
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.Integration) error {
+
 	if ko.Spec.APIRef != nil && ko.Spec.APIID != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("APIID", "APIRef")
 	}
 	if ko.Spec.APIRef == nil && ko.Spec.APIID == nil {
 		return ackerr.ResourceReferenceOrIDRequiredFor("APIID", "APIRef")
 	}
+
 	if ko.Spec.ConnectionRef != nil && ko.Spec.ConnectionID != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("ConnectionID", "ConnectionRef")
 	}
 	return nil
 }
 
-// hasNonNilReferences returns true if resource contains a reference to another
-// resource
-func hasNonNilReferences(ko *svcapitypes.Integration) bool {
-	return false || (ko.Spec.APIRef != nil) || (ko.Spec.ConnectionRef != nil)
-}
-
 // resolveReferenceForAPIID reads the resource referenced
 // from APIRef field and sets the APIID
-// from referenced resource
-func resolveReferenceForAPIID(
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForAPIID(
 	ctx context.Context,
 	apiReader client.Reader,
 	namespace string,
 	ko *svcapitypes.Integration,
-) error {
+) (hasReferences bool, err error) {
 	if ko.Spec.APIRef != nil && ko.Spec.APIRef.From != nil {
+		hasReferences = true
 		arr := ko.Spec.APIRef.From
-		if arr == nil || arr.Name == nil || *arr.Name == "" {
-			return fmt.Errorf("provided resource reference is nil or empty: APIRef")
+		if arr.Name == nil || *arr.Name == "" {
+			return hasReferences, fmt.Errorf("provided resource reference is nil or empty: APIRef")
 		}
 		obj := &svcapitypes.API{}
 		if err := getReferencedResourceState_API(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
-			return err
+			return hasReferences, err
 		}
 		ko.Spec.APIID = (*string)(obj.Status.APIID)
 	}
 
-	return nil
+	return hasReferences, nil
 }
 
 // getReferencedResourceState_API looks up whether a referenced resource
@@ -162,26 +176,28 @@ func getReferencedResourceState_API(
 
 // resolveReferenceForConnectionID reads the resource referenced
 // from ConnectionRef field and sets the ConnectionID
-// from referenced resource
-func resolveReferenceForConnectionID(
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForConnectionID(
 	ctx context.Context,
 	apiReader client.Reader,
 	namespace string,
 	ko *svcapitypes.Integration,
-) error {
+) (hasReferences bool, err error) {
 	if ko.Spec.ConnectionRef != nil && ko.Spec.ConnectionRef.From != nil {
+		hasReferences = true
 		arr := ko.Spec.ConnectionRef.From
-		if arr == nil || arr.Name == nil || *arr.Name == "" {
-			return fmt.Errorf("provided resource reference is nil or empty: ConnectionRef")
+		if arr.Name == nil || *arr.Name == "" {
+			return hasReferences, fmt.Errorf("provided resource reference is nil or empty: ConnectionRef")
 		}
 		obj := &svcapitypes.VPCLink{}
 		if err := getReferencedResourceState_VPCLink(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
-			return err
+			return hasReferences, err
 		}
 		ko.Spec.ConnectionID = (*string)(obj.Status.VPCLinkID)
 	}
 
-	return nil
+	return hasReferences, nil
 }
 
 // getReferencedResourceState_VPCLink looks up whether a referenced resource
