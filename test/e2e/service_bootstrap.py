@@ -72,7 +72,7 @@ def create_lambda_authorizer(authorizer_function_name: str, authorizer_role_arn:
             FunctionName=authorizer_function_name,
             Role=authorizer_role_arn,
             Handler='index.handler',
-            Runtime='nodejs12.x',
+            Runtime='nodejs18.x',
             Code={'ZipFile': b64_encoded_zip_file}
         )
 
