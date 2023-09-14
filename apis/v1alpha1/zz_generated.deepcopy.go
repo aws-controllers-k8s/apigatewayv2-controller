@@ -519,8 +519,8 @@ func (in *AuthorizerSpec) DeepCopyInto(out *AuthorizerSpec) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.AuthorizerResultTtlInSeconds != nil {
-		in, out := &in.AuthorizerResultTtlInSeconds, &out.AuthorizerResultTtlInSeconds
+	if in.AuthorizerResultTTLInSeconds != nil {
+		in, out := &in.AuthorizerResultTTLInSeconds, &out.AuthorizerResultTTLInSeconds
 		*out = new(int64)
 		**out = **in
 	}
@@ -631,8 +631,8 @@ func (in *Authorizer_SDK) DeepCopyInto(out *Authorizer_SDK) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.AuthorizerResultTtlInSeconds != nil {
-		in, out := &in.AuthorizerResultTtlInSeconds, &out.AuthorizerResultTtlInSeconds
+	if in.AuthorizerResultTTLInSeconds != nil {
+		in, out := &in.AuthorizerResultTTLInSeconds, &out.AuthorizerResultTTLInSeconds
 		*out = new(int64)
 		**out = **in
 	}

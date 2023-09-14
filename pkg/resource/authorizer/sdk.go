@@ -106,9 +106,9 @@ func (rm *resourceManager) sdkFind(
 		ko.Spec.AuthorizerPayloadFormatVersion = nil
 	}
 	if resp.AuthorizerResultTtlInSeconds != nil {
-		ko.Spec.AuthorizerResultTtlInSeconds = resp.AuthorizerResultTtlInSeconds
+		ko.Spec.AuthorizerResultTTLInSeconds = resp.AuthorizerResultTtlInSeconds
 	} else {
-		ko.Spec.AuthorizerResultTtlInSeconds = nil
+		ko.Spec.AuthorizerResultTTLInSeconds = nil
 	}
 	if resp.AuthorizerType != nil {
 		ko.Spec.AuthorizerType = resp.AuthorizerType
@@ -240,9 +240,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.AuthorizerPayloadFormatVersion = nil
 	}
 	if resp.AuthorizerResultTtlInSeconds != nil {
-		ko.Spec.AuthorizerResultTtlInSeconds = resp.AuthorizerResultTtlInSeconds
+		ko.Spec.AuthorizerResultTTLInSeconds = resp.AuthorizerResultTtlInSeconds
 	} else {
-		ko.Spec.AuthorizerResultTtlInSeconds = nil
+		ko.Spec.AuthorizerResultTTLInSeconds = nil
 	}
 	if resp.AuthorizerType != nil {
 		ko.Spec.AuthorizerType = resp.AuthorizerType
@@ -320,8 +320,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.AuthorizerPayloadFormatVersion != nil {
 		res.SetAuthorizerPayloadFormatVersion(*r.ko.Spec.AuthorizerPayloadFormatVersion)
 	}
-	if r.ko.Spec.AuthorizerResultTtlInSeconds != nil {
-		res.SetAuthorizerResultTtlInSeconds(*r.ko.Spec.AuthorizerResultTtlInSeconds)
+	if r.ko.Spec.AuthorizerResultTTLInSeconds != nil {
+		res.SetAuthorizerResultTtlInSeconds(*r.ko.Spec.AuthorizerResultTTLInSeconds)
 	}
 	if r.ko.Spec.AuthorizerType != nil {
 		res.SetAuthorizerType(*r.ko.Spec.AuthorizerType)
@@ -412,9 +412,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.AuthorizerPayloadFormatVersion = nil
 	}
 	if resp.AuthorizerResultTtlInSeconds != nil {
-		ko.Spec.AuthorizerResultTtlInSeconds = resp.AuthorizerResultTtlInSeconds
+		ko.Spec.AuthorizerResultTTLInSeconds = resp.AuthorizerResultTtlInSeconds
 	} else {
-		ko.Spec.AuthorizerResultTtlInSeconds = nil
+		ko.Spec.AuthorizerResultTTLInSeconds = nil
 	}
 	if resp.AuthorizerType != nil {
 		ko.Spec.AuthorizerType = resp.AuthorizerType
@@ -496,8 +496,8 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Spec.AuthorizerPayloadFormatVersion != nil {
 		res.SetAuthorizerPayloadFormatVersion(*r.ko.Spec.AuthorizerPayloadFormatVersion)
 	}
-	if r.ko.Spec.AuthorizerResultTtlInSeconds != nil {
-		res.SetAuthorizerResultTtlInSeconds(*r.ko.Spec.AuthorizerResultTtlInSeconds)
+	if r.ko.Spec.AuthorizerResultTTLInSeconds != nil {
+		res.SetAuthorizerResultTtlInSeconds(*r.ko.Spec.AuthorizerResultTTLInSeconds)
 	}
 	if r.ko.Spec.AuthorizerType != nil {
 		res.SetAuthorizerType(*r.ko.Spec.AuthorizerType)

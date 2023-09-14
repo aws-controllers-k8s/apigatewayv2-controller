@@ -67,11 +67,11 @@ func newResourceDelta(
 			delta.Add("Spec.AuthorizerPayloadFormatVersion", a.ko.Spec.AuthorizerPayloadFormatVersion, b.ko.Spec.AuthorizerPayloadFormatVersion)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.AuthorizerResultTtlInSeconds, b.ko.Spec.AuthorizerResultTtlInSeconds) {
-		delta.Add("Spec.AuthorizerResultTtlInSeconds", a.ko.Spec.AuthorizerResultTtlInSeconds, b.ko.Spec.AuthorizerResultTtlInSeconds)
-	} else if a.ko.Spec.AuthorizerResultTtlInSeconds != nil && b.ko.Spec.AuthorizerResultTtlInSeconds != nil {
-		if *a.ko.Spec.AuthorizerResultTtlInSeconds != *b.ko.Spec.AuthorizerResultTtlInSeconds {
-			delta.Add("Spec.AuthorizerResultTtlInSeconds", a.ko.Spec.AuthorizerResultTtlInSeconds, b.ko.Spec.AuthorizerResultTtlInSeconds)
+	if ackcompare.HasNilDifference(a.ko.Spec.AuthorizerResultTTLInSeconds, b.ko.Spec.AuthorizerResultTTLInSeconds) {
+		delta.Add("Spec.AuthorizerResultTTLInSeconds", a.ko.Spec.AuthorizerResultTTLInSeconds, b.ko.Spec.AuthorizerResultTTLInSeconds)
+	} else if a.ko.Spec.AuthorizerResultTTLInSeconds != nil && b.ko.Spec.AuthorizerResultTTLInSeconds != nil {
+		if *a.ko.Spec.AuthorizerResultTTLInSeconds != *b.ko.Spec.AuthorizerResultTTLInSeconds {
+			delta.Add("Spec.AuthorizerResultTTLInSeconds", a.ko.Spec.AuthorizerResultTTLInSeconds, b.ko.Spec.AuthorizerResultTTLInSeconds)
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AuthorizerType, b.ko.Spec.AuthorizerType) {
