@@ -28,7 +28,7 @@ type AuthorizerSpec struct {
 	APIRef                         *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 	AuthorizerCredentialsARN       *string                                  `json:"authorizerCredentialsARN,omitempty"`
 	AuthorizerPayloadFormatVersion *string                                  `json:"authorizerPayloadFormatVersion,omitempty"`
-	AuthorizerResultTtlInSeconds   *int64                                   `json:"authorizerResultTtlInSeconds,omitempty"`
+	AuthorizerResultTTLInSeconds   *int64                                   `json:"authorizerResultTTLInSeconds,omitempty"`
 	// +kubebuilder:validation:Required
 	AuthorizerType        *string `json:"authorizerType"`
 	AuthorizerURI         *string `json:"authorizerURI,omitempty"`

@@ -96,7 +96,7 @@ type Authorizer_SDK struct {
 	// A string with a length between [1-64].
 	AuthorizerPayloadFormatVersion *string `json:"authorizerPayloadFormatVersion,omitempty"`
 	// An integer with a value between [0-3600].
-	AuthorizerResultTtlInSeconds *int64 `json:"authorizerResultTtlInSeconds,omitempty"`
+	AuthorizerResultTTLInSeconds *int64 `json:"authorizerResultTTLInSeconds,omitempty"`
 	// The authorizer type. Specify REQUEST for a Lambda function using incoming
 	// request parameters. Specify JWT to use JSON Web Tokens (supported only for
 	// HTTP APIs).
