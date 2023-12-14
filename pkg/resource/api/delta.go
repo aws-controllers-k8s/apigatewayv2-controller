@@ -74,17 +74,33 @@ func newResourceDelta(
 				delta.Add("Spec.CORSConfiguration.AllowCredentials", a.ko.Spec.CORSConfiguration.AllowCredentials, b.ko.Spec.CORSConfiguration.AllowCredentials)
 			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowHeaders, b.ko.Spec.CORSConfiguration.AllowHeaders) {
+		if len(a.ko.Spec.CORSConfiguration.AllowHeaders) != len(b.ko.Spec.CORSConfiguration.AllowHeaders) {
 			delta.Add("Spec.CORSConfiguration.AllowHeaders", a.ko.Spec.CORSConfiguration.AllowHeaders, b.ko.Spec.CORSConfiguration.AllowHeaders)
+		} else if len(a.ko.Spec.CORSConfiguration.AllowHeaders) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowHeaders, b.ko.Spec.CORSConfiguration.AllowHeaders) {
+				delta.Add("Spec.CORSConfiguration.AllowHeaders", a.ko.Spec.CORSConfiguration.AllowHeaders, b.ko.Spec.CORSConfiguration.AllowHeaders)
+			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowMethods, b.ko.Spec.CORSConfiguration.AllowMethods) {
+		if len(a.ko.Spec.CORSConfiguration.AllowMethods) != len(b.ko.Spec.CORSConfiguration.AllowMethods) {
 			delta.Add("Spec.CORSConfiguration.AllowMethods", a.ko.Spec.CORSConfiguration.AllowMethods, b.ko.Spec.CORSConfiguration.AllowMethods)
+		} else if len(a.ko.Spec.CORSConfiguration.AllowMethods) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowMethods, b.ko.Spec.CORSConfiguration.AllowMethods) {
+				delta.Add("Spec.CORSConfiguration.AllowMethods", a.ko.Spec.CORSConfiguration.AllowMethods, b.ko.Spec.CORSConfiguration.AllowMethods)
+			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowOrigins, b.ko.Spec.CORSConfiguration.AllowOrigins) {
+		if len(a.ko.Spec.CORSConfiguration.AllowOrigins) != len(b.ko.Spec.CORSConfiguration.AllowOrigins) {
 			delta.Add("Spec.CORSConfiguration.AllowOrigins", a.ko.Spec.CORSConfiguration.AllowOrigins, b.ko.Spec.CORSConfiguration.AllowOrigins)
+		} else if len(a.ko.Spec.CORSConfiguration.AllowOrigins) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.AllowOrigins, b.ko.Spec.CORSConfiguration.AllowOrigins) {
+				delta.Add("Spec.CORSConfiguration.AllowOrigins", a.ko.Spec.CORSConfiguration.AllowOrigins, b.ko.Spec.CORSConfiguration.AllowOrigins)
+			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.ExposeHeaders, b.ko.Spec.CORSConfiguration.ExposeHeaders) {
+		if len(a.ko.Spec.CORSConfiguration.ExposeHeaders) != len(b.ko.Spec.CORSConfiguration.ExposeHeaders) {
 			delta.Add("Spec.CORSConfiguration.ExposeHeaders", a.ko.Spec.CORSConfiguration.ExposeHeaders, b.ko.Spec.CORSConfiguration.ExposeHeaders)
+		} else if len(a.ko.Spec.CORSConfiguration.ExposeHeaders) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.CORSConfiguration.ExposeHeaders, b.ko.Spec.CORSConfiguration.ExposeHeaders) {
+				delta.Add("Spec.CORSConfiguration.ExposeHeaders", a.ko.Spec.CORSConfiguration.ExposeHeaders, b.ko.Spec.CORSConfiguration.ExposeHeaders)
+			}
 		}
 		if ackcompare.HasNilDifference(a.ko.Spec.CORSConfiguration.MaxAge, b.ko.Spec.CORSConfiguration.MaxAge) {
 			delta.Add("Spec.CORSConfiguration.MaxAge", a.ko.Spec.CORSConfiguration.MaxAge, b.ko.Spec.CORSConfiguration.MaxAge)

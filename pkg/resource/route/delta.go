@@ -60,8 +60,12 @@ func newResourceDelta(
 	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
 		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
 	}
-	if !ackcompare.SliceStringPEqual(a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes) {
+	if len(a.ko.Spec.AuthorizationScopes) != len(b.ko.Spec.AuthorizationScopes) {
 		delta.Add("Spec.AuthorizationScopes", a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes)
+	} else if len(a.ko.Spec.AuthorizationScopes) > 0 {
+		if !ackcompare.SliceStringPEqual(a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes) {
+			delta.Add("Spec.AuthorizationScopes", a.ko.Spec.AuthorizationScopes, b.ko.Spec.AuthorizationScopes)
+		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AuthorizationType, b.ko.Spec.AuthorizationType) {
 		delta.Add("Spec.AuthorizationType", a.ko.Spec.AuthorizationType, b.ko.Spec.AuthorizationType)
@@ -94,16 +98,16 @@ func newResourceDelta(
 			delta.Add("Spec.OperationName", a.ko.Spec.OperationName, b.ko.Spec.OperationName)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.RequestModels, b.ko.Spec.RequestModels) {
+	if len(a.ko.Spec.RequestModels) != len(b.ko.Spec.RequestModels) {
 		delta.Add("Spec.RequestModels", a.ko.Spec.RequestModels, b.ko.Spec.RequestModels)
-	} else if a.ko.Spec.RequestModels != nil && b.ko.Spec.RequestModels != nil {
+	} else if len(a.ko.Spec.RequestModels) > 0 {
 		if !ackcompare.MapStringStringPEqual(a.ko.Spec.RequestModels, b.ko.Spec.RequestModels) {
 			delta.Add("Spec.RequestModels", a.ko.Spec.RequestModels, b.ko.Spec.RequestModels)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
+	if len(a.ko.Spec.RequestParameters) != len(b.ko.Spec.RequestParameters) {
 		delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
-	} else if a.ko.Spec.RequestParameters != nil && b.ko.Spec.RequestParameters != nil {
+	} else if len(a.ko.Spec.RequestParameters) > 0 {
 		if !reflect.DeepEqual(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
 			delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
 		}
