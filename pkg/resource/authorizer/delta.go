@@ -95,8 +95,12 @@ func newResourceDelta(
 			delta.Add("Spec.EnableSimpleResponses", a.ko.Spec.EnableSimpleResponses, b.ko.Spec.EnableSimpleResponses)
 		}
 	}
-	if !ackcompare.SliceStringPEqual(a.ko.Spec.IdentitySource, b.ko.Spec.IdentitySource) {
+	if len(a.ko.Spec.IdentitySource) != len(b.ko.Spec.IdentitySource) {
 		delta.Add("Spec.IdentitySource", a.ko.Spec.IdentitySource, b.ko.Spec.IdentitySource)
+	} else if len(a.ko.Spec.IdentitySource) > 0 {
+		if !ackcompare.SliceStringPEqual(a.ko.Spec.IdentitySource, b.ko.Spec.IdentitySource) {
+			delta.Add("Spec.IdentitySource", a.ko.Spec.IdentitySource, b.ko.Spec.IdentitySource)
+		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.IdentityValidationExpression, b.ko.Spec.IdentityValidationExpression) {
 		delta.Add("Spec.IdentityValidationExpression", a.ko.Spec.IdentityValidationExpression, b.ko.Spec.IdentityValidationExpression)
@@ -108,8 +112,12 @@ func newResourceDelta(
 	if ackcompare.HasNilDifference(a.ko.Spec.JWTConfiguration, b.ko.Spec.JWTConfiguration) {
 		delta.Add("Spec.JWTConfiguration", a.ko.Spec.JWTConfiguration, b.ko.Spec.JWTConfiguration)
 	} else if a.ko.Spec.JWTConfiguration != nil && b.ko.Spec.JWTConfiguration != nil {
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.JWTConfiguration.Audience, b.ko.Spec.JWTConfiguration.Audience) {
+		if len(a.ko.Spec.JWTConfiguration.Audience) != len(b.ko.Spec.JWTConfiguration.Audience) {
 			delta.Add("Spec.JWTConfiguration.Audience", a.ko.Spec.JWTConfiguration.Audience, b.ko.Spec.JWTConfiguration.Audience)
+		} else if len(a.ko.Spec.JWTConfiguration.Audience) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.JWTConfiguration.Audience, b.ko.Spec.JWTConfiguration.Audience) {
+				delta.Add("Spec.JWTConfiguration.Audience", a.ko.Spec.JWTConfiguration.Audience, b.ko.Spec.JWTConfiguration.Audience)
+			}
 		}
 		if ackcompare.HasNilDifference(a.ko.Spec.JWTConfiguration.Issuer, b.ko.Spec.JWTConfiguration.Issuer) {
 			delta.Add("Spec.JWTConfiguration.Issuer", a.ko.Spec.JWTConfiguration.Issuer, b.ko.Spec.JWTConfiguration.Issuer)

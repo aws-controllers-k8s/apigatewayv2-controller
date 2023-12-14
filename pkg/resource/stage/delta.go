@@ -141,9 +141,9 @@ func newResourceDelta(
 			delta.Add("Spec.Description", a.ko.Spec.Description, b.ko.Spec.Description)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings) {
+	if len(a.ko.Spec.RouteSettings) != len(b.ko.Spec.RouteSettings) {
 		delta.Add("Spec.RouteSettings", a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings)
-	} else if a.ko.Spec.RouteSettings != nil && b.ko.Spec.RouteSettings != nil {
+	} else if len(a.ko.Spec.RouteSettings) > 0 {
 		if !reflect.DeepEqual(a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings) {
 			delta.Add("Spec.RouteSettings", a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings)
 		}
@@ -155,9 +155,9 @@ func newResourceDelta(
 			delta.Add("Spec.StageName", a.ko.Spec.StageName, b.ko.Spec.StageName)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.StageVariables, b.ko.Spec.StageVariables) {
+	if len(a.ko.Spec.StageVariables) != len(b.ko.Spec.StageVariables) {
 		delta.Add("Spec.StageVariables", a.ko.Spec.StageVariables, b.ko.Spec.StageVariables)
-	} else if a.ko.Spec.StageVariables != nil && b.ko.Spec.StageVariables != nil {
+	} else if len(a.ko.Spec.StageVariables) > 0 {
 		if !ackcompare.MapStringStringPEqual(a.ko.Spec.StageVariables, b.ko.Spec.StageVariables) {
 			delta.Add("Spec.StageVariables", a.ko.Spec.StageVariables, b.ko.Spec.StageVariables)
 		}

@@ -133,23 +133,23 @@ func newResourceDelta(
 			delta.Add("Spec.PayloadFormatVersion", a.ko.Spec.PayloadFormatVersion, b.ko.Spec.PayloadFormatVersion)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
+	if len(a.ko.Spec.RequestParameters) != len(b.ko.Spec.RequestParameters) {
 		delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
-	} else if a.ko.Spec.RequestParameters != nil && b.ko.Spec.RequestParameters != nil {
+	} else if len(a.ko.Spec.RequestParameters) > 0 {
 		if !ackcompare.MapStringStringPEqual(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
 			delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.RequestTemplates, b.ko.Spec.RequestTemplates) {
+	if len(a.ko.Spec.RequestTemplates) != len(b.ko.Spec.RequestTemplates) {
 		delta.Add("Spec.RequestTemplates", a.ko.Spec.RequestTemplates, b.ko.Spec.RequestTemplates)
-	} else if a.ko.Spec.RequestTemplates != nil && b.ko.Spec.RequestTemplates != nil {
+	} else if len(a.ko.Spec.RequestTemplates) > 0 {
 		if !ackcompare.MapStringStringPEqual(a.ko.Spec.RequestTemplates, b.ko.Spec.RequestTemplates) {
 			delta.Add("Spec.RequestTemplates", a.ko.Spec.RequestTemplates, b.ko.Spec.RequestTemplates)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
+	if len(a.ko.Spec.ResponseParameters) != len(b.ko.Spec.ResponseParameters) {
 		delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
-	} else if a.ko.Spec.ResponseParameters != nil && b.ko.Spec.ResponseParameters != nil {
+	} else if len(a.ko.Spec.ResponseParameters) > 0 {
 		if !reflect.DeepEqual(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
 			delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
 		}
