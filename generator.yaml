@@ -1,8 +1,6 @@
 ignore:
   resource_names:
-    # ApiMapping is ignored due to lack of Public DNS setup in e2e testing
-    - ApiMapping
-    # Model is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
+    # # Model is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
     - Model
     # IntegrationResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
     - IntegrationResponse
@@ -119,6 +117,21 @@ resources:
       #   type: string
       DomainName:
         is_primary_key: true        
+    tags:
+      ignore: true
+  ApiMapping:
+    exceptions:
+      terminal_codes:
+        - BadRequestException
+    fields:
+      ApiId:
+        references:
+          resource: API
+          path: Status.APIID
+      DomainName:
+        references:
+          resource: DomainName
+          path: Spec.DomainName
     tags:
       ignore: true
 operations:

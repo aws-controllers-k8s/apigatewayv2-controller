@@ -10,6 +10,7 @@ rules:
   - apigatewayv2.services.k8s.aws
   resources:
   - apis
+  - apimappings
   - authorizers
   - deployments
   - domainnames

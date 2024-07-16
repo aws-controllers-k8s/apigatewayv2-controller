@@ -40,6 +40,7 @@ import (
 	svcsdk "github.com/aws/aws-sdk-go/service/apigatewayv2"
 
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/api"
+	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/api_mapping"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/authorizer"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/deployment"
 	_ "github.com/aws-controllers-k8s/apigatewayv2-controller/pkg/resource/domain_name"

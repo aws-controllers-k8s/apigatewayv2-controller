@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - common
   - bases/apigatewayv2.services.k8s.aws_apis.yaml
+  - bases/apigatewayv2.services.k8s.aws_apimappings.yaml
   - bases/apigatewayv2.services.k8s.aws_authorizers.yaml
   - bases/apigatewayv2.services.k8s.aws_deployments.yaml
   - bases/apigatewayv2.services.k8s.aws_domainnames.yaml
