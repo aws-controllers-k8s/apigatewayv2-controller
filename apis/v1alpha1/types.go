@@ -158,30 +158,37 @@ type Deployment_SDK struct {
 	Description *string `json:"description,omitempty"`
 }
 
+// The domain name configuration.
+type DomainNameConfiguration struct {
+	// Represents an Amazon Resource Name (ARN).
+	CertificateARN *string `json:"certificateARN,omitempty"`
+	// A string with a length between [1-128].
+	CertificateName *string `json:"certificateName,omitempty"`
+	// Represents an endpoint type.
+	EndpointType *string `json:"endpointType,omitempty"`
+	// Represents an Amazon Resource Name (ARN).
+	OwnershipVerificationCertificateARN *string `json:"ownershipVerificationCertificateARN,omitempty"`
+	// The Transport Layer Security (TLS) version of the security policy for this
+	// domain name. The valid values are TLS_1_0 and TLS_1_2.
+	SecurityPolicy *string `json:"securityPolicy,omitempty"`
+}
+
 // Represents a domain name.
-type DomainName struct {
+type DomainName_SDK struct {
 	// An expression used to extract information at runtime. See Selection Expressions
 	// (https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions)
 	// for more information.
 	APIMappingSelectionExpression *string `json:"apiMappingSelectionExpression,omitempty"`
 	// A string with a length between [1-512].
 	DomainName *string `json:"domainName,omitempty"`
+	// The domain name configurations.
+	DomainNameConfigurations []*DomainNameConfiguration `json:"domainNameConfigurations,omitempty"`
+	// If specified, API Gateway performs two-way authentication between the client
+	// and the server. Clients must present a trusted certificate to access your
+	// API.
+	MutualTLSAuthentication *MutualTLSAuthentication `json:"mutualTLSAuthentication,omitempty"`
 	// Represents a collection of tags associated with the resource.
 	Tags map[string]*string `json:"tags,omitempty"`
-}
-
-// The domain name configuration.
-type DomainNameConfiguration struct {
-	APIGatewayDomainName *string `json:"apiGatewayDomainName,omitempty"`
-	// Represents an Amazon Resource Name (ARN).
-	CertificateARN *string `json:"certificateARN,omitempty"`
-	// A string with a length between [1-128].
-	CertificateName         *string      `json:"certificateName,omitempty"`
-	CertificateUploadDate   *metav1.Time `json:"certificateUploadDate,omitempty"`
-	DomainNameStatusMessage *string      `json:"domainNameStatusMessage,omitempty"`
-	HostedZoneID            *string      `json:"hostedZoneID,omitempty"`
-	// Represents an Amazon Resource Name (ARN).
-	OwnershipVerificationCertificateARN *string `json:"ownershipVerificationCertificateARN,omitempty"`
 }
 
 // Represents an integration response.

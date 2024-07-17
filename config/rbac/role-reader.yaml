@@ -12,6 +12,7 @@ rules:
   - apis
   - authorizers
   - deployments
+  - domainnames
   - integrations
   - routes
   - stages
