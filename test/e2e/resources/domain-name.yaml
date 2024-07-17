@@ -1,0 +1,9 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: DomainName
+metadata:
+  name: $DOMAIN_RES_NAME
+spec:
+  domainName: $DOMAIN_NAME
+  domainNameConfigurations:
+    - certificateArn: $CERT_ARN
+      

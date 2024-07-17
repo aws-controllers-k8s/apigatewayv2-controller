@@ -140,6 +140,26 @@ rules:
 - apiGroups:
   - apigatewayv2.services.k8s.aws
   resources:
+  - domainnames
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigatewayv2.services.k8s.aws
+  resources:
+  - domainnames/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigatewayv2.services.k8s.aws
+  resources:
   - integrations
   verbs:
   - create

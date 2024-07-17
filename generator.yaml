@@ -1,7 +1,5 @@
 ignore:
   resource_names:
-    # DomainName is ignored due to lack of Public DNS setup in e2e testing
-    - DomainName
     # ApiMapping is ignored due to lack of Public DNS setup in e2e testing
     - ApiMapping
     # Model is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
@@ -10,6 +8,14 @@ ignore:
     - IntegrationResponse
     # RouteResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
     - RouteResponse
+  field_paths:
+    # DomainNameStatus is ignored because it should be a read-only field
+    - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.DomainNameStatus
+    - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.DomainNameStatusMessage
+    - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.ApiGatewayDomainName
+    - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.CertificateUploadDate
+    - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.HostedZoneId
+
 resources:
   Api:
     fields:
@@ -100,6 +106,21 @@ resources:
         - path: Status.VPCLinkStatus
           in:
             - AVAILABLE
+  DomainName:
+    exceptions:
+      terminal_codes:
+        - BadRequestException
+    fields:
+      # DomainNameStatus:
+      #   is_read_only: true
+      #   type: [string]
+      # DomainNameStatusMessage:
+      #   is_read_only: true
+      #   type: string
+      DomainName:
+        is_primary_key: true        
+    tags:
+      ignore: true
 operations:
   CreateApi:
     custom_implementation: customCreateApi

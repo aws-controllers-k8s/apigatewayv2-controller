@@ -23,6 +23,7 @@ AUTHORIZER_RESOURCE_PLURAL = 'authorizers'
 ROUTE_RESOURCE_PLURAL = 'routes'
 STAGE_RESOURCE_PLURAL = 'stages'
 VPC_LINK_RESOURCE_PLURAL = 'vpclinks'
+DOMAIN_NAME_RESOURCE_PLURAL = 'domainnames'
 
 
 def api_ref_and_data(api_resource_name: str, replacement_values: dict, file_name: str = "httpapi"):
@@ -107,6 +108,18 @@ def vpc_link_ref_and_data(vpc_link_resource_name: str, replacement_values: dict,
     ref = resource.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, VPC_LINK_RESOURCE_PLURAL,
         vpc_link_resource_name, namespace="default",
+    )
+
+    resource_data = load_apigatewayv2_resource(
+        file_name,
+        additional_replacements=replacement_values,
+    )
+    return ref, resource_data
+
+def domain_name_ref_and_data(domain_name_resource_name: str, replacement_values: dict, file_name: str = "domain-name"):
+    ref = resource.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, DOMAIN_NAME_RESOURCE_PLURAL,
+        domain_name_resource_name, namespace="default",
     )
 
     resource_data = load_apigatewayv2_resource(
