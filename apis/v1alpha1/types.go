@@ -29,7 +29,7 @@ var (
 )
 
 // Represents an API mapping.
-type APIMapping struct {
+type APIMapping_SDK struct {
 	// The identifier.
 	APIID *string `json:"apiID,omitempty"`
 	// The identifier.

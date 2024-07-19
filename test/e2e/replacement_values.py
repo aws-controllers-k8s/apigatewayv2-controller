@@ -18,6 +18,8 @@ APIGatewayV2-specific test variables.
 REPLACEMENT_VALUES = {
     "API_NAME": "ack-test-api",
     "API_TITLE": "ack-test-api",
+    "API_MAPPING_RES_NAME": "ack-test",
+    "DOMAIN_NAME": "ack-test-domain-name",
     "IMPORT_API_NAME": "ack-test-import-api",
     "IMPORT_API_TITLE": "ack-test-import-api",
     "API_ID": "api_id",

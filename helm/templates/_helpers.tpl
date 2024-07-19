@@ -80,6 +80,26 @@ rules:
 - apiGroups:
   - apigatewayv2.services.k8s.aws
   resources:
+  - apimappings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigatewayv2.services.k8s.aws
+  resources:
+  - apimappings/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigatewayv2.services.k8s.aws
+  resources:
   - apis
   verbs:
   - create
