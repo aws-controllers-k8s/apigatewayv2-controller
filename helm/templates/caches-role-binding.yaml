@@ -8,7 +8,7 @@ roleRef:
   name: ack-namespaces-cache-apigatewayv2-controller
 subjects:
 - kind: ServiceAccount
-  name: ack-apigatewayv2-controller
+  name: {{ include "ack-apigatewayv2-controller.service-account.name" . }}
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -22,5 +22,5 @@ roleRef:
   name: ack-configmaps-cache-apigatewayv2-controller
 subjects:
 - kind: ServiceAccount
-  name: ack-apigatewayv2-controller
+  name: {{ include "ack-apigatewayv2-controller.service-account.name" . }}
   namespace: {{ .Release.Namespace }}
