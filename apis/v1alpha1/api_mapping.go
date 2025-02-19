@@ -26,15 +26,22 @@ import (
 type APIMappingSpec struct {
 
 	// The API identifier.
+
 	APIID *string `json:"apiID,omitempty"`
 	// The API mapping key.
-	APIMappingKey *string                                  `json:"apiMappingKey,omitempty"`
-	APIRef        *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
+
+	APIMappingKey *string `json:"apiMappingKey,omitempty"`
+
+	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 	// The domain name.
-	DomainName *string                                  `json:"domainName,omitempty"`
-	DomainRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"domainRef,omitempty"`
+
+	DomainName *string `json:"domainName,omitempty"`
+
+	DomainRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"domainRef,omitempty"`
 	// The API stage.
+
 	// +kubebuilder:validation:Required
+
 	Stage *string `json:"stage"`
 }
 
@@ -45,7 +52,7 @@ type APIMappingStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource

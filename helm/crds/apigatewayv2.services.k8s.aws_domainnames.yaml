@@ -43,10 +43,8 @@ spec:
               Represents a domain name.
             properties:
               domainName:
-                description: The domain name.
                 type: string
               domainNameConfigurations:
-                description: The domain name configurations.
                 items:
                   description: The domain name configuration.
                   properties:
@@ -70,8 +68,6 @@ spec:
                   type: object
                 type: array
               mutualTLSAuthentication:
-                description: The mutual TLS authentication configuration for a custom
-                  domain name.
                 properties:
                   truststoreURI:
                     description: A string representation of a URI with a length between
@@ -84,7 +80,6 @@ spec:
               tags:
                 additionalProperties:
                   type: string
-                description: The collection of tags associated with a domain name.
                 type: object
             required:
             - domainName
@@ -126,7 +121,7 @@ spec:
                 type: string
               conditions:
                 description: |-
-                  All CRS managed by ACK have a common `Status.Conditions` member that
+                  All CRs managed by ACK have a common `Status.Conditions` member that
                   contains a collection of `ackv1alpha1.Condition` objects that describe
                   the various terminal states of the CR and its backend AWS service API
                   resource

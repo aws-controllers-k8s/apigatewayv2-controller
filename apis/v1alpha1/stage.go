@@ -26,32 +26,46 @@ import (
 type StageSpec struct {
 
 	// Settings for logging access in this stage.
+
 	AccessLogSettings *AccessLogSettings `json:"accessLogSettings,omitempty"`
 	// The API identifier.
-	APIID  *string                                  `json:"apiID,omitempty"`
+
+	APIID *string `json:"apiID,omitempty"`
+
 	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 	// Specifies whether updates to an API automatically trigger a new deployment.
 	// The default value is false.
+
 	AutoDeploy *bool `json:"autoDeploy,omitempty"`
 	// The identifier of a client certificate for a Stage. Supported only for WebSocket
 	// APIs.
+
 	ClientCertificateID *string `json:"clientCertificateID,omitempty"`
 	// The default route settings for the stage.
+
 	DefaultRouteSettings *RouteSettings `json:"defaultRouteSettings,omitempty"`
 	// The deployment identifier of the API stage.
-	DeploymentID  *string                                  `json:"deploymentID,omitempty"`
+
+	DeploymentID *string `json:"deploymentID,omitempty"`
+
 	DeploymentRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"deploymentRef,omitempty"`
 	// The description for the API stage.
+
 	Description *string `json:"description,omitempty"`
 	// Route settings for the stage, by routeKey.
+
 	RouteSettings map[string]*RouteSettings `json:"routeSettings,omitempty"`
 	// The name of the stage.
+
 	// +kubebuilder:validation:Required
+
 	StageName *string `json:"stageName"`
 	// A map that defines the stage variables for a Stage. Variable names can have
 	// alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&=,]+.
+
 	StageVariables map[string]*string `json:"stageVariables,omitempty"`
 	// The collection of tags. Each tag element is associated with a given resource.
+
 	Tags map[string]*string `json:"tags,omitempty"`
 }
 
@@ -62,7 +76,7 @@ type StageStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource

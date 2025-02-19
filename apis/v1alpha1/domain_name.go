@@ -26,13 +26,18 @@ import (
 type DomainNameSpec struct {
 
 	// The domain name.
+
 	// +kubebuilder:validation:Required
+
 	DomainName *string `json:"domainName"`
 	// The domain name configurations.
+
 	DomainNameConfigurations []*DomainNameConfiguration `json:"domainNameConfigurations,omitempty"`
 	// The mutual TLS authentication configuration for a custom domain name.
+
 	MutualTLSAuthentication *MutualTLSAuthenticationInput `json:"mutualTLSAuthentication,omitempty"`
 	// The collection of tags associated with a domain name.
+
 	Tags map[string]*string `json:"tags,omitempty"`
 }
 
@@ -43,7 +48,7 @@ type DomainNameStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource

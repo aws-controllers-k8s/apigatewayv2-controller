@@ -43,7 +43,7 @@ spec:
               Represents an API stage.
             properties:
               accessLogSettings:
-                description: Settings for logging access in this stage.
+                description: Settings for logging access in a stage.
                 properties:
                   destinationARN:
                     description: Represents an Amazon Resource Name (ARN).
@@ -53,7 +53,6 @@ spec:
                     type: string
                 type: object
               apiID:
-                description: The API identifier.
                 type: string
               apiRef:
                 description: "AWSResourceReferenceWrapper provides a wrapper around
@@ -73,17 +72,11 @@ spec:
                     type: object
                 type: object
               autoDeploy:
-                description: |-
-                  Specifies whether updates to an API automatically trigger a new deployment.
-                  The default value is false.
                 type: boolean
               clientCertificateID:
-                description: |-
-                  The identifier of a client certificate for a Stage. Supported only for WebSocket
-                  APIs.
                 type: string
               defaultRouteSettings:
-                description: The default route settings for the stage.
+                description: Represents a collection of route settings.
                 properties:
                   dataTraceEnabled:
                     type: boolean
@@ -99,7 +92,6 @@ spec:
                     type: number
                 type: object
               deploymentID:
-                description: The deployment identifier of the API stage.
                 type: string
               deploymentRef:
                 description: "AWSResourceReferenceWrapper provides a wrapper around
@@ -119,7 +111,6 @@ spec:
                     type: object
                 type: object
               description:
-                description: The description for the API stage.
                 type: string
               routeSettings:
                 additionalProperties:
@@ -138,23 +129,16 @@ spec:
                     throttlingRateLimit:
                       type: number
                   type: object
-                description: Route settings for the stage, by routeKey.
                 type: object
               stageName:
-                description: The name of the stage.
                 type: string
               stageVariables:
                 additionalProperties:
                   type: string
-                description: |-
-                  A map that defines the stage variables for a Stage. Variable names can have
-                  alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&=,]+.
                 type: object
               tags:
                 additionalProperties:
                   type: string
-                description: The collection of tags. Each tag element is associated
-                  with a given resource.
                 type: object
             required:
             - stageName
@@ -199,7 +183,7 @@ spec:
                 type: boolean
               conditions:
                 description: |-
-                  All CRS managed by ACK have a common `Status.Conditions` member that
+                  All CRs managed by ACK have a common `Status.Conditions` member that
                   contains a collection of `ackv1alpha1.Condition` objects that describe
                   the various terminal states of the CR and its backend AWS service API
                   resource

@@ -27,11 +27,15 @@ import (
 type DeploymentSpec struct {
 
 	// The API identifier.
-	APIID  *string                                  `json:"apiID,omitempty"`
+
+	APIID *string `json:"apiID,omitempty"`
+
 	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 	// The description for the deployment resource.
+
 	Description *string `json:"description,omitempty"`
 	// The name of the Stage resource for the Deployment resource to create.
+
 	StageName *string `json:"stageName,omitempty"`
 }
 
@@ -42,7 +46,7 @@ type DeploymentStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource

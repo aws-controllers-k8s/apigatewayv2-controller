@@ -26,27 +26,34 @@ import (
 type AuthorizerSpec struct {
 
 	// The API identifier.
-	APIID  *string                                  `json:"apiID,omitempty"`
+
+	APIID *string `json:"apiID,omitempty"`
+
 	APIRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"apiRef,omitempty"`
 	// Specifies the required credentials as an IAM role for API Gateway to invoke
 	// the authorizer. To specify an IAM role for API Gateway to assume, use the
 	// role's Amazon Resource Name (ARN). To use resource-based permissions on the
 	// Lambda function, don't specify this parameter. Supported only for REQUEST
 	// authorizers.
+
 	AuthorizerCredentialsARN *string `json:"authorizerCredentialsARN,omitempty"`
 	// Specifies the format of the payload sent to an HTTP API Lambda authorizer.
 	// Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0.
 	// To learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html).
+
 	AuthorizerPayloadFormatVersion *string `json:"authorizerPayloadFormatVersion,omitempty"`
 	// The time to live (TTL) for cached authorizer results, in seconds. If it equals
 	// 0, authorization caching is disabled. If it is greater than 0, API Gateway
 	// caches authorizer responses. The maximum value is 3600, or 1 hour. Supported
 	// only for HTTP API Lambda authorizers.
+
 	AuthorizerResultTTLInSeconds *int64 `json:"authorizerResultTTLInSeconds,omitempty"`
 	// The authorizer type. Specify REQUEST for a Lambda function using incoming
 	// request parameters. Specify JWT to use JSON Web Tokens (supported only for
 	// HTTP APIs).
+
 	// +kubebuilder:validation:Required
+
 	AuthorizerType *string `json:"authorizerType"`
 	// The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers,
 	// this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations.
@@ -56,12 +63,14 @@ type AuthorizerSpec struct {
 	// path to the resource, including the initial /. For Lambda functions, this
 	// is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported
 	// only for REQUEST authorizers.
+
 	AuthorizerURI *string `json:"authorizerURI,omitempty"`
 	// Specifies whether a Lambda authorizer returns a response in a simple format.
 	// By default, a Lambda authorizer must return an IAM policy. If enabled, the
 	// Lambda authorizer can return a boolean value instead of an IAM policy. Supported
 	// only for HTTP APIs. To learn more, see Working with AWS Lambda authorizers
 	// for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
+
 	EnableSimpleResponses *bool `json:"enableSimpleResponses,omitempty"`
 	// The identity source for which authorization is requested.
 	//
@@ -83,15 +92,21 @@ type AuthorizerSpec struct {
 	// For JWT, a single entry that specifies where to extract the JSON Web Token
 	// (JWT) from inbound requests. Currently only header-based and query parameter-based
 	// selections are supported, for example $request.header.Authorization.
+
 	// +kubebuilder:validation:Required
+
 	IdentitySource []*string `json:"identitySource"`
 	// This parameter is not used.
+
 	IdentityValidationExpression *string `json:"identityValidationExpression,omitempty"`
 	// Represents the configuration of a JWT authorizer. Required for the JWT authorizer
 	// type. Supported only for HTTP APIs.
+
 	JWTConfiguration *JWTConfiguration `json:"jwtConfiguration,omitempty"`
 	// The name of the authorizer.
+
 	// +kubebuilder:validation:Required
+
 	Name *string `json:"name"`
 }
 
@@ -102,7 +117,7 @@ type AuthorizerStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
