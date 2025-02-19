@@ -43,22 +43,18 @@ spec:
               Represents a VPC link.
             properties:
               name:
-                description: The name of the VPC link.
                 type: string
               securityGroupIDs:
-                description: A list of security group IDs for the VPC link.
                 items:
                   type: string
                 type: array
               subnetIDs:
-                description: A list of subnet IDs to include in the VPC link.
                 items:
                   type: string
                 type: array
               tags:
                 additionalProperties:
                   type: string
-                description: A list of tags.
                 type: object
             required:
             - name
@@ -98,7 +94,7 @@ spec:
                 type: object
               conditions:
                 description: |-
-                  All CRS managed by ACK have a common `Status.Conditions` member that
+                  All CRs managed by ACK have a common `Status.Conditions` member that
                   contains a collection of `ackv1alpha1.Condition` objects that describe
                   the various terminal states of the CR and its backend AWS service API
                   resource

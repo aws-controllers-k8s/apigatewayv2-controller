@@ -44,7 +44,6 @@ spec:
               must be associated with a Stage for it to be callable over the internet.
             properties:
               apiID:
-                description: The API identifier.
                 type: string
               apiRef:
                 description: "AWSResourceReferenceWrapper provides a wrapper around
@@ -64,11 +63,8 @@ spec:
                     type: object
                 type: object
               description:
-                description: The description for the deployment resource.
                 type: string
               stageName:
-                description: The name of the Stage resource for the Deployment resource
-                  to create.
                 type: string
             type: object
           status:
@@ -108,7 +104,7 @@ spec:
                 type: boolean
               conditions:
                 description: |-
-                  All CRS managed by ACK have a common `Status.Conditions` member that
+                  All CRs managed by ACK have a common `Status.Conditions` member that
                   contains a collection of `ackv1alpha1.Condition` objects that describe
                   the various terminal states of the CR and its backend AWS service API
                   resource
