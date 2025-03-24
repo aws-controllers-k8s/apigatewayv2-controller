@@ -15,6 +15,7 @@ rules:
   - deployments
   - domainnames
   - integrations
+  - integrationresponses
   - routes
   - stages
   - vpclinks
