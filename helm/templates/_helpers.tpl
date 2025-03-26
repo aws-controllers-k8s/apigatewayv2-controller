@@ -77,6 +77,7 @@ rules:
   - authorizers
   - deployments
   - domainnames
+  - integrationresponses
   - integrations
   - routes
   - stages
@@ -97,6 +98,7 @@ rules:
   - authorizers/status
   - deployments/status
   - domainnames/status
+  - integrationresponses/status
   - integrations/status
   - routes/status
   - stages/status

@@ -1,0 +1,11 @@
+apiVersion: apigatewayv2.services.k8s.aws/v1alpha1
+kind: IntegrationResponse
+metadata:
+  name: $INTEGRATION_RESPONSE_NAME
+spec:
+  apiID: $API_ID
+  integrationID: $INTEGRATION_ID
+  integrationResponseKey: "/2\\d{2}/"
+  contentHandlingStrategy: $CONTENT_HANDLING_STRATEGY
+  responseParameters: $RESPONSE_PARAMETERS
+  responseTemplates: $RESPONSE_TEMPLATES

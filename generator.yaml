@@ -2,8 +2,8 @@ ignore:
   resource_names:
     # # Model is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
     - Model
-    # IntegrationResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
-    - IntegrationResponse
+    # # IntegrationResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
+    # - IntegrationResponse
     # RouteResponse is not supported for HTTP APIs. Remove when adding support for WebSocket APIs
     - RouteResponse
   field_paths:
@@ -132,6 +132,9 @@ resources:
         references:
           resource: DomainName
           path: Spec.DomainName
+    tags:
+      ignore: true
+  IntegrationResponse:
     tags:
       ignore: true
 operations:

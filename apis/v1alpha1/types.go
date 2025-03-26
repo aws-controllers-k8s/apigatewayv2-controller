@@ -189,7 +189,7 @@ type DomainName_SDK struct {
 }
 
 // Represents an integration response.
-type IntegrationResponse struct {
+type IntegrationResponse_SDK struct {
 	// Specifies how to handle response payload content type conversions. Supported
 	// only for WebSocket APIs.
 	ContentHandlingStrategy *string `json:"contentHandlingStrategy,omitempty"`

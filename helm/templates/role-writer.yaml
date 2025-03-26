@@ -15,6 +15,7 @@ rules:
   - deployments
   - domainnames
   - integrations
+  - integrationresponses
   - routes
   - stages
   - vpclinks
@@ -35,6 +36,7 @@ rules:
   - deployments
   - domainnames
   - integrations
+  - integrationresponses
   - routes
   - stages
   - vpclinks

@@ -4,7 +4,7 @@
 # not use this file except in compliance with the License. A copy of the
 # License is located at
 #
-#	 http://aws.amazon.com/apache2.0/
+# http://aws.amazon.com/apache2.0/
 #
 # or in the "license" file accompanying this file. This file is distributed
 # on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
@@ -45,5 +45,9 @@ REPLACEMENT_VALUES = {
     "REF_INTEGRATION_NAME": "ack-test-ref-integration",
     "REF_ROUTE_NAME": "ack-test-ref-route",
     "REF_STAGE_NAME": "ack-test-ref-stage",
-    "REF_STAGE_DESCRIPTION": "Stage for ack resource reference testing"
+    "REF_STAGE_DESCRIPTION": "Stage for ack resource reference testing",
+    "INTEGRATION_RESPONSE_NAME": "ack-test-integration-response",
+    "INTEGRATION_RESPONSE_KEY": "/200/",
+    "CONTENT_HANDLING_STRATEGY": "CONVERT_TO_TEXT",
+    "TEMPLATE_SELECTION_EXPRESSION": "$request.body.name",
 }
