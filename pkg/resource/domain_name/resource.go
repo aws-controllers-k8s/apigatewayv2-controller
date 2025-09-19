@@ -97,11 +97,11 @@ func (r *resource) SetIdentifiers(identifier *ackv1alpha1.AWSIdentifiers) error 
 
 // PopulateResourceFromAnnotation populates the fields passed from adoption annotation
 func (r *resource) PopulateResourceFromAnnotation(fields map[string]string) error {
-	tmp, ok := fields["domainName"]
+	primaryKey, ok := fields["domainName"]
 	if !ok {
 		return ackerrors.NewTerminalError(fmt.Errorf("required field missing: domainName"))
 	}
-	r.ko.Spec.DomainName = &tmp
+	r.ko.Spec.DomainName = &primaryKey
 
 	return nil
 }
