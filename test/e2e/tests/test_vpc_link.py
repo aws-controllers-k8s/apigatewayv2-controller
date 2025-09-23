@@ -57,7 +57,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(vpc_link_ref, vpc_link_data)
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(vpc_link_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(vpc_link_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(vpc_link_ref)
         assert cr is not None
@@ -85,7 +85,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(vpc_link_ref, updated_vpc_link_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        assert k8s.wait_on_condition(vpc_link_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(vpc_link_ref, "Ready", "True", wait_periods=10)
         # Let's check that the VPCLink appears in Amazon API Gateway with updated name
         apigw_validator.assert_vpc_link_name(
             vpc_link_id=vpc_link_id,

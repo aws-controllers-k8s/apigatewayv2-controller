@@ -54,7 +54,7 @@ def api_resource():
 
     k8s.create_custom_resource(api_ref, api_data)
     time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
-    assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+    assert k8s.wait_on_condition(api_ref, "Ready", "True", wait_periods=10)
 
     cr = k8s.get_resource(api_ref)
     assert cr is not None
@@ -80,7 +80,7 @@ def integration_resource(api_resource):
 
     k8s.create_custom_resource(integration_ref, integration_data)
     time.sleep(CREATE_WAIT_AFTER_SECONDS)
-    assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+    assert k8s.wait_on_condition(integration_ref, "Ready", "True", wait_periods=10)
 
     cr = k8s.get_resource(integration_ref)
     assert cr is not None
@@ -103,7 +103,7 @@ def authorizer_resource(api_resource):
                                                                      replacement_values=test_resource_values)
     k8s.create_custom_resource(authorizer_ref, authorizer_data)
     time.sleep(CREATE_WAIT_AFTER_SECONDS)
-    assert k8s.wait_on_condition(authorizer_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+    assert k8s.wait_on_condition(authorizer_ref, "Ready", "True", wait_periods=10)
 
     cr = k8s.get_resource(authorizer_ref)
     assert cr is not None
@@ -142,7 +142,7 @@ def route_resource(integration_resource, authorizer_resource):
 
     k8s.create_custom_resource(route_ref, route_data)
     time.sleep(CREATE_WAIT_AFTER_SECONDS)
-    assert k8s.wait_on_condition(route_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+    assert k8s.wait_on_condition(route_ref, "Ready", "True", wait_periods=10)
 
     cr = k8s.get_resource(route_ref)
     assert cr is not None
@@ -165,7 +165,7 @@ def stage_resource(route_resource):
 
     k8s.create_custom_resource(stage_ref, stage_data)
     time.sleep(CREATE_WAIT_AFTER_SECONDS)
-    assert k8s.wait_on_condition(stage_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+    assert k8s.wait_on_condition(stage_ref, "Ready", "True", wait_periods=10)
 
     cr = k8s.get_resource(stage_ref)
     assert cr is not None
@@ -202,7 +202,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(api_ref, api_data)
         time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(api_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(api_ref)
         assert cr is not None
@@ -230,7 +230,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(api_ref, updated_api_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(api_ref)
+        condition.assert_ready(api_ref)
         # Let's check that the HTTP Api appears in Amazon API Gateway with updated title
         apigw_validator.assert_api_name(
             api_id=api_id,
@@ -256,7 +256,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(api_ref, api_data)
         time.sleep(CREATE_API_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(api_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(api_ref)
         assert cr is not None
@@ -284,7 +284,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(api_ref, updated_api_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(api_ref)
+        condition.assert_ready(api_ref)
         # Let's check that the HTTP Api appears in Amazon API Gateway with updated title
         apigw_validator.assert_api_name(
             api_id=api_id,
@@ -312,7 +312,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(integration_ref, integration_data)
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(integration_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(integration_ref)
         assert cr is not None
@@ -341,7 +341,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(integration_ref, updated_integration_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(integration_ref)
+        condition.assert_ready(integration_ref)
         # Let's check that the HTTP Api integration appears in Amazon API Gateway with updated uri
         apigw_validator.assert_integration_uri(
             api_id=api_id,
@@ -372,7 +372,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(authorizer_ref, authorizer_data)
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(authorizer_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(authorizer_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(authorizer_ref)
         assert cr is not None
@@ -401,7 +401,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(authorizer_ref, updated_authorizer_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(authorizer_ref)
+        condition.assert_ready(authorizer_ref)
         # Let's check that the HTTP Api authorizer appears in Amazon API Gateway with updated title
         apigw_validator.assert_authorizer_name(
             api_id=api_id,
@@ -437,7 +437,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(route_ref, route_data)
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(route_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(route_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(route_ref)
         assert cr is not None
@@ -466,7 +466,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(route_ref, updated_route_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(route_ref)
+        condition.assert_ready(route_ref)
         # Let's check that the HTTP Api route appears in Amazon API Gateway with updated route key
         apigw_validator.assert_route_key(
             api_id=api_id,
@@ -495,7 +495,7 @@ class TestApiGatewayV2:
         # test create
         k8s.create_custom_resource(stage_ref, stage_data)
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
-        assert k8s.wait_on_condition(stage_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(stage_ref, "Ready", "True", wait_periods=10)
 
         cr = k8s.get_resource(stage_ref)
         assert cr is not None
@@ -523,7 +523,7 @@ class TestApiGatewayV2:
         k8s.patch_custom_resource(stage_ref, updated_stage_resource_data)
         time.sleep(UPDATE_WAIT_AFTER_SECONDS)
 
-        condition.assert_synced(stage_ref)
+        condition.assert_ready(stage_ref)
         # Let's check that the HTTP Api stage appears in Amazon API Gateway with updated description
         apigw_validator.assert_stage_description(
             api_id=api_id,
