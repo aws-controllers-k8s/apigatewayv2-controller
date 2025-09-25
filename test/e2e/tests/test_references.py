@@ -82,10 +82,10 @@ class TestApiGatewayV2References:
 
         time.sleep(CREATE_WAIT_AFTER_SECONDS)
 
-        assert k8s.wait_on_condition(api_ref, "ACK.ResourceSynced", "True", wait_periods=10)
-        assert k8s.wait_on_condition(integration_ref, "ACK.ResourceSynced", "True", wait_periods=10)
-        assert k8s.wait_on_condition(route_ref, "ACK.ResourceSynced", "True", wait_periods=10)
-        assert k8s.wait_on_condition(stage_ref, "ACK.ResourceSynced", "True", wait_periods=10)
+        assert k8s.wait_on_condition(api_ref, "Ready", "True", wait_periods=10)
+        assert k8s.wait_on_condition(integration_ref, "Ready", "True", wait_periods=10)
+        assert k8s.wait_on_condition(route_ref, "Ready", "True", wait_periods=10)
+        assert k8s.wait_on_condition(stage_ref, "Ready", "True", wait_periods=10)
 
         assert k8s.wait_on_condition(integration_ref, "ACK.ReferencesResolved", "True", wait_periods=10)
         assert k8s.wait_on_condition(route_ref, "ACK.ReferencesResolved", "True", wait_periods=10)
