@@ -20,7 +20,7 @@ import time
 import boto3
 import pytest
 
-from acktest.k8s import resource as k8s
+from acktest.k8s import resource as k8s, condition
 from acktest.k8s import condition
 from acktest.resources import random_suffix_name
 
@@ -53,13 +53,9 @@ class TestApiGatewayV2:
         # Attempting Create expecting BadRequestException
         k8s.create_custom_resource(api_mapping_ref, api_mapping_data)
         k8s.wait_resource_consumed_by_controller(api_mapping_ref)
-        condition.assert_type_status(api_mapping_ref, condition.CONDITION_TYPE_TERMINAL) 
 
         expected_msg = "BadRequestException"
-        terminal_condition = k8s.get_resource_condition(api_mapping_ref, condition.CONDITION_TYPE_TERMINAL)
-        # Example condition message: 
-        # An error occurred (BadRequestException) when calling the CreateApiMapping operation: 
-        # Invalid API identifier specified: xxxxxxxx 
-        assert expected_msg in terminal_condition['message']
+        condition.assert_terminal(api_mapping_ref, expected_msg)
+
 
         

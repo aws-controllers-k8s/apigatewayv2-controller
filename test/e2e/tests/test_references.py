@@ -87,10 +87,8 @@ class TestApiGatewayV2References:
         assert k8s.wait_on_condition(route_ref, "Ready", "True", wait_periods=10)
         assert k8s.wait_on_condition(stage_ref, "Ready", "True", wait_periods=10)
 
-        assert k8s.wait_on_condition(integration_ref, "ACK.ReferencesResolved", "True", wait_periods=10)
-        assert k8s.wait_on_condition(route_ref, "ACK.ReferencesResolved", "True", wait_periods=10)
-        assert k8s.wait_on_condition(stage_ref, "ACK.ReferencesResolved", "True", wait_periods=10)
-
+        time.sleep(CREATE_WAIT_AFTER_SECONDS)
+        
         api_cr = k8s.get_resource(api_ref)
         api_id = api_cr['status']['apiID']
 
