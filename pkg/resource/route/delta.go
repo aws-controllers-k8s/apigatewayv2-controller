@@ -17,16 +17,15 @@ package route
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -57,7 +56,7 @@ func newResourceDelta(
 			delta.Add("Spec.APIKeyRequired", a.ko.Spec.APIKeyRequired, b.ko.Spec.APIKeyRequired)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
 		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
 	}
 	if len(a.ko.Spec.AuthorizationScopes) != len(b.ko.Spec.AuthorizationScopes) {
@@ -81,7 +80,7 @@ func newResourceDelta(
 			delta.Add("Spec.AuthorizerID", a.ko.Spec.AuthorizerID, b.ko.Spec.AuthorizerID)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.AuthorizerRef, b.ko.Spec.AuthorizerRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.AuthorizerRef, b.ko.Spec.AuthorizerRef) {
 		delta.Add("Spec.AuthorizerRef", a.ko.Spec.AuthorizerRef, b.ko.Spec.AuthorizerRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ModelSelectionExpression, b.ko.Spec.ModelSelectionExpression) {
@@ -108,7 +107,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.RequestParameters) != len(b.ko.Spec.RequestParameters) {
 		delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
 	} else if len(a.ko.Spec.RequestParameters) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters) {
 			delta.Add("Spec.RequestParameters", a.ko.Spec.RequestParameters, b.ko.Spec.RequestParameters)
 		}
 	}
@@ -133,7 +132,7 @@ func newResourceDelta(
 			delta.Add("Spec.Target", a.ko.Spec.Target, b.ko.Spec.Target)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.TargetRef, b.ko.Spec.TargetRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.TargetRef, b.ko.Spec.TargetRef) {
 		delta.Add("Spec.TargetRef", a.ko.Spec.TargetRef, b.ko.Spec.TargetRef)
 	}
 
