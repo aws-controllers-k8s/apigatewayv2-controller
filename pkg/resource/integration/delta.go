@@ -17,16 +17,15 @@ package integration
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -50,7 +49,7 @@ func newResourceDelta(
 			delta.Add("Spec.APIID", a.ko.Spec.APIID, b.ko.Spec.APIID)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
 		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ConnectionID, b.ko.Spec.ConnectionID) {
@@ -60,7 +59,7 @@ func newResourceDelta(
 			delta.Add("Spec.ConnectionID", a.ko.Spec.ConnectionID, b.ko.Spec.ConnectionID)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.ConnectionRef, b.ko.Spec.ConnectionRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ConnectionRef, b.ko.Spec.ConnectionRef) {
 		delta.Add("Spec.ConnectionRef", a.ko.Spec.ConnectionRef, b.ko.Spec.ConnectionRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ConnectionType, b.ko.Spec.ConnectionType) {
@@ -150,7 +149,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.ResponseParameters) != len(b.ko.Spec.ResponseParameters) {
 		delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
 	} else if len(a.ko.Spec.ResponseParameters) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters) {
 			delta.Add("Spec.ResponseParameters", a.ko.Spec.ResponseParameters, b.ko.Spec.ResponseParameters)
 		}
 	}

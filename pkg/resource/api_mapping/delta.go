@@ -17,16 +17,15 @@ package api_mapping
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -57,7 +56,7 @@ func newResourceDelta(
 			delta.Add("Spec.APIMappingKey", a.ko.Spec.APIMappingKey, b.ko.Spec.APIMappingKey)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
 		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.DomainName, b.ko.Spec.DomainName) {
@@ -67,7 +66,7 @@ func newResourceDelta(
 			delta.Add("Spec.DomainName", a.ko.Spec.DomainName, b.ko.Spec.DomainName)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.DomainRef, b.ko.Spec.DomainRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.DomainRef, b.ko.Spec.DomainRef) {
 		delta.Add("Spec.DomainRef", a.ko.Spec.DomainRef, b.ko.Spec.DomainRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Stage, b.ko.Spec.Stage) {

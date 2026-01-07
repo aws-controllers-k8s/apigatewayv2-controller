@@ -17,16 +17,15 @@ package stage
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -68,7 +67,7 @@ func newResourceDelta(
 			delta.Add("Spec.APIID", a.ko.Spec.APIID, b.ko.Spec.APIID)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.APIRef, b.ko.Spec.APIRef) {
 		delta.Add("Spec.APIRef", a.ko.Spec.APIRef, b.ko.Spec.APIRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AutoDeploy, b.ko.Spec.AutoDeploy) {
@@ -131,7 +130,7 @@ func newResourceDelta(
 			delta.Add("Spec.DeploymentID", a.ko.Spec.DeploymentID, b.ko.Spec.DeploymentID)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.DeploymentRef, b.ko.Spec.DeploymentRef) {
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.DeploymentRef, b.ko.Spec.DeploymentRef) {
 		delta.Add("Spec.DeploymentRef", a.ko.Spec.DeploymentRef, b.ko.Spec.DeploymentRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Description, b.ko.Spec.Description) {
@@ -144,7 +143,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.RouteSettings) != len(b.ko.Spec.RouteSettings) {
 		delta.Add("Spec.RouteSettings", a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings)
 	} else if len(a.ko.Spec.RouteSettings) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings) {
 			delta.Add("Spec.RouteSettings", a.ko.Spec.RouteSettings, b.ko.Spec.RouteSettings)
 		}
 	}
