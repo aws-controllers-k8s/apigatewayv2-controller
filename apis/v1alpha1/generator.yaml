@@ -18,6 +18,7 @@ resources:
   Api:
     fields:
       Body:
+        is_document: true
         from:
           operation: ImportApi
           path: Body
