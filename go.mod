@@ -3,7 +3,7 @@ module github.com/aws-controllers-k8s/apigatewayv2-controller
 go 1.25.0
 
 require (
-	github.com/aws-controllers-k8s/runtime v0.59.1
+	github.com/aws-controllers-k8s/runtime v0.60.0
 	github.com/aws/aws-sdk-go v1.49.0
 	github.com/aws/aws-sdk-go-v2 v1.35.0
 	github.com/aws/aws-sdk-go-v2/service/apigatewayv2 v1.24.15
