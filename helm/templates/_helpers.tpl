@@ -70,6 +70,14 @@ rules:
   - list
   - watch
 - apiGroups:
+  - acm.services.k8s.aws
+  resources:
+  - certificates
+  - certificates/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - apigatewayv2.services.k8s.aws
   resources:
   - apimappings
@@ -105,6 +113,22 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - cloudwatchlogs.services.k8s.aws
+  resources:
+  - loggroups
+  - loggroups/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - iam.services.k8s.aws
+  resources:
+  - roles
+  - roles/status
+  verbs:
+  - get
+  - list
 - apiGroups:
   - services.k8s.aws
   resources:

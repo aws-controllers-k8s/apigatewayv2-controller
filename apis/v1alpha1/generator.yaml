@@ -34,6 +34,11 @@ resources:
         is_required: false
       ProtocolType:
         is_required: false
+      CredentialsARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     update_operation:
       custom_method_name: customUpdateApi
   Stage:
@@ -49,12 +54,22 @@ resources:
         references:
           resource: Deployment
           path: Status.DeploymentID
+      AccessLogSettings.DestinationARN:
+        references:
+          resource: LogGroup
+          service_name: cloudwatchlogs
+          path: Status.ACKResourceMetadata.ARN
   Authorizer:
     fields:
       ApiId:
         references:
           resource: API
           path: Status.APIID
+      AuthorizerCredentialsARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     tags:
       ignore: true
   Deployment:
@@ -75,6 +90,11 @@ resources:
         references:
           resource: VPCLink
           path: Status.VPCLinkID
+      CredentialsARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     tags:
       ignore: true
   Route:
@@ -118,6 +138,11 @@ resources:
       #   type: string
       DomainName:
         is_primary_key: true        
+      DomainNameConfigurations.CertificateARN:
+        references:
+          resource: Certificate
+          service_name: acm
+          path: Status.ACKResourceMetadata.ARN
     tags:
       ignore: true
   ApiMapping:

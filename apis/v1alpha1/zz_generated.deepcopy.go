@@ -286,6 +286,11 @@ func (in *APISpec) DeepCopyInto(out *APISpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.CredentialsRef != nil {
+		in, out := &in.CredentialsRef, &out.CredentialsRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Description != nil {
 		in, out := &in.Description, &out.Description
 		*out = new(string)
@@ -561,6 +566,11 @@ func (in *AccessLogSettings) DeepCopyInto(out *AccessLogSettings) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.DestinationRef != nil {
+		in, out := &in.DestinationRef, &out.DestinationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Format != nil {
 		in, out := &in.Format, &out.Format
 		*out = new(string)
@@ -654,6 +664,11 @@ func (in *AuthorizerSpec) DeepCopyInto(out *AuthorizerSpec) {
 		in, out := &in.AuthorizerCredentialsARN, &out.AuthorizerCredentialsARN
 		*out = new(string)
 		**out = **in
+	}
+	if in.AuthorizerCredentialsRef != nil {
+		in, out := &in.AuthorizerCredentialsRef, &out.AuthorizerCredentialsRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.AuthorizerPayloadFormatVersion != nil {
 		in, out := &in.AuthorizerPayloadFormatVersion, &out.AuthorizerPayloadFormatVersion
@@ -1132,6 +1147,11 @@ func (in *DomainNameConfiguration) DeepCopyInto(out *DomainNameConfiguration) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.CertificateRef != nil {
+		in, out := &in.CertificateRef, &out.CertificateRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.EndpointType != nil {
 		in, out := &in.EndpointType, &out.EndpointType
 		*out = new(string)
@@ -1499,6 +1519,11 @@ func (in *IntegrationSpec) DeepCopyInto(out *IntegrationSpec) {
 		in, out := &in.CredentialsARN, &out.CredentialsARN
 		*out = new(string)
 		**out = **in
+	}
+	if in.CredentialsRef != nil {
+		in, out := &in.CredentialsRef, &out.CredentialsRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Description != nil {
 		in, out := &in.Description, &out.Description
