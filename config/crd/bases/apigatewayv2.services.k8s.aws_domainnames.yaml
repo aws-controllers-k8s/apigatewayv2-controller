@@ -56,6 +56,20 @@ spec:
                     certificateName:
                       description: A string with a length between [1-128].
                       type: string
+                    certificateRef:
+                      description: Reference field for CertificateARN
+                      properties:
+                        from:
+                          description: |-
+                            AWSResourceReference provides all the values necessary to reference another
+                            k8s resource for finding the identifier(Id/ARN/Name)
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                          type: object
+                      type: object
                     endpointType:
                       description: Represents an endpoint type.
                       type: string

@@ -48,6 +48,20 @@ spec:
                   destinationARN:
                     description: Represents an Amazon Resource Name (ARN).
                     type: string
+                  destinationRef:
+                    description: Reference field for DestinationARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   format:
                     description: A string with a length between [1-1024].
                     type: string
