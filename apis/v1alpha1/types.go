@@ -83,6 +83,8 @@ type API_SDK struct {
 type AccessLogSettings struct {
 	// Represents an Amazon Resource Name (ARN).
 	DestinationARN *string `json:"destinationARN,omitempty"`
+	// Reference field for DestinationARN
+	DestinationRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"destinationRef,omitempty"`
 	// A string with a length between [1-1024].
 	Format *string `json:"format,omitempty"`
 }

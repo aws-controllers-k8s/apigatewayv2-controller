@@ -266,18 +266,6 @@ func (rm *resourceManager) sdkCreate(
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
 
-	if resp.AccessLogSettings != nil {
-		f0 := &svcapitypes.AccessLogSettings{}
-		if resp.AccessLogSettings.DestinationArn != nil {
-			f0.DestinationARN = resp.AccessLogSettings.DestinationArn
-		}
-		if resp.AccessLogSettings.Format != nil {
-			f0.Format = resp.AccessLogSettings.Format
-		}
-		ko.Spec.AccessLogSettings = f0
-	} else {
-		ko.Spec.AccessLogSettings = nil
-	}
 	if resp.ApiGatewayManaged != nil {
 		ko.Status.APIGatewayManaged = resp.ApiGatewayManaged
 	} else {
@@ -517,18 +505,6 @@ func (rm *resourceManager) sdkUpdate(
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
 
-	if resp.AccessLogSettings != nil {
-		f0 := &svcapitypes.AccessLogSettings{}
-		if resp.AccessLogSettings.DestinationArn != nil {
-			f0.DestinationARN = resp.AccessLogSettings.DestinationArn
-		}
-		if resp.AccessLogSettings.Format != nil {
-			f0.Format = resp.AccessLogSettings.Format
-		}
-		ko.Spec.AccessLogSettings = f0
-	} else {
-		ko.Spec.AccessLogSettings = nil
-	}
 	if resp.ApiGatewayManaged != nil {
 		ko.Status.APIGatewayManaged = resp.ApiGatewayManaged
 	} else {

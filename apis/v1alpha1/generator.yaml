@@ -34,6 +34,11 @@ resources:
         is_required: false
       ProtocolType:
         is_required: false
+      CredentialsArn:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     update_operation:
       custom_method_name: customUpdateApi
   Stage:
@@ -49,12 +54,33 @@ resources:
         references:
           resource: Deployment
           path: Status.DeploymentID
+      # destinationArn below carries a reference, and both sdkCreate and
+      # sdkUpdate wrote this struct back into the spec from the response, which
+      # carries the resolved ARN but not the *Ref companion. No late_initialize
+      # is needed: the struct has only destinationArn and format, both
+      # user-supplied, and AWS returns nothing for it when access logging is off.
+      AccessLogSettings:
+        set:
+          - method: Create
+            ignore: true
+          - method: Update
+            ignore: true
+      AccessLogSettings.DestinationArn:
+        references:
+          resource: LogGroup
+          service_name: cloudwatchlogs
+          path: Status.ACKResourceMetadata.ARN
   Authorizer:
     fields:
       ApiId:
         references:
           resource: API
           path: Status.APIID
+      AuthorizerCredentialsArn:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     tags:
       ignore: true
   Deployment:
@@ -75,6 +101,11 @@ resources:
         references:
           resource: VPCLink
           path: Status.VPCLinkID
+      CredentialsArn:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     tags:
       ignore: true
   Route:
@@ -97,6 +128,17 @@ resources:
     tags:
       ignore: true
   VpcLink:
+    fields:
+      SubnetIds:
+        references:
+          resource: Subnet
+          service_name: ec2
+          path: Status.SubnetID
+      SecurityGroupIds:
+        references:
+          resource: SecurityGroup
+          service_name: ec2
+          path: Status.ID
     hooks:
       sdk_update_pre_build_request:
         template_path: hooks/vpc_link/sdk_update_pre_build_request.go.tpl
@@ -117,7 +159,13 @@ resources:
       #   is_read_only: true
       #   type: string
       DomainName:
-        is_primary_key: true        
+        is_primary_key: true
+      # Both certificate ARNs below carry references, and both sdkCreate and
+      # sdkUpdate wrote this list back into the spec from the response, which
+      # carries the resolved ARNs but not the *Ref companions inside each item.
+      # Suppressing the write-back also stops the AWS-assigned endpointType and
+      # securityPolicy defaults from landing in the spec, which is what the
+      # late_initialize entries below absorb instead.
     tags:
       ignore: true
   ApiMapping:

@@ -46,7 +46,8 @@ type APISpec struct {
 	// through from the request, specify arn:aws:iam::*:user/*. To use resource-based
 	// permissions on supported AWS services, specify null. Currently, this property
 	// is not used for HTTP integrations. Supported only for HTTP APIs.
-	CredentialsARN *string `json:"credentialsARN,omitempty"`
+	CredentialsARN *string                                  `json:"credentialsARN,omitempty"`
+	CredentialsRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"credentialsRef,omitempty"`
 	// The description of the API.
 	Description *string `json:"description,omitempty"`
 	// Specifies whether clients can invoke your API by using the default execute-api

@@ -59,6 +59,9 @@ func newResourceDelta(
 			delta.Add("Spec.AuthorizerCredentialsARN", a.ko.Spec.AuthorizerCredentialsARN, b.ko.Spec.AuthorizerCredentialsARN)
 		}
 	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.AuthorizerCredentialsRef, b.ko.Spec.AuthorizerCredentialsRef) {
+		delta.Add("Spec.AuthorizerCredentialsRef", a.ko.Spec.AuthorizerCredentialsRef, b.ko.Spec.AuthorizerCredentialsRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.AuthorizerPayloadFormatVersion, b.ko.Spec.AuthorizerPayloadFormatVersion) {
 		delta.Add("Spec.AuthorizerPayloadFormatVersion", a.ko.Spec.AuthorizerPayloadFormatVersion, b.ko.Spec.AuthorizerPayloadFormatVersion)
 	} else if a.ko.Spec.AuthorizerPayloadFormatVersion != nil && b.ko.Spec.AuthorizerPayloadFormatVersion != nil {
