@@ -76,6 +76,9 @@ func newResourceDelta(
 			delta.Add("Spec.Stage", a.ko.Spec.Stage, b.ko.Spec.Stage)
 		}
 	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.StageRef, b.ko.Spec.StageRef) {
+		delta.Add("Spec.StageRef", a.ko.Spec.StageRef, b.ko.Spec.StageRef)
+	}
 
 	return delta
 }

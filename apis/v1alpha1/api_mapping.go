@@ -34,8 +34,8 @@ type APIMappingSpec struct {
 	DomainName *string                                  `json:"domainName,omitempty"`
 	DomainRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"domainRef,omitempty"`
 	// The API stage.
-	// +kubebuilder:validation:Required
-	Stage *string `json:"stage"`
+	Stage    *string                                  `json:"stage,omitempty"`
+	StageRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"stageRef,omitempty"`
 }
 
 // APIMappingStatus defines the observed state of APIMapping
