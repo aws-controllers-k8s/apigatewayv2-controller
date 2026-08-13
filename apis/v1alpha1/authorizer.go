@@ -33,7 +33,8 @@ type AuthorizerSpec struct {
 	// role's Amazon Resource Name (ARN). To use resource-based permissions on the
 	// Lambda function, don't specify this parameter. Supported only for REQUEST
 	// authorizers.
-	AuthorizerCredentialsARN *string `json:"authorizerCredentialsARN,omitempty"`
+	AuthorizerCredentialsARN *string                                  `json:"authorizerCredentialsARN,omitempty"`
+	AuthorizerCredentialsRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"authorizerCredentialsRef,omitempty"`
 	// Specifies the format of the payload sent to an HTTP API Lambda authorizer.
 	// Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0.
 	// To learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html).

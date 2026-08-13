@@ -29,10 +29,11 @@ type VPCLinkSpec struct {
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 	// A list of security group IDs for the VPC link.
-	SecurityGroupIDs []*string `json:"securityGroupIDs,omitempty"`
+	SecurityGroupIDs  []*string                                  `json:"securityGroupIDs,omitempty"`
+	SecurityGroupRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"securityGroupRefs,omitempty"`
 	// A list of subnet IDs to include in the VPC link.
-	// +kubebuilder:validation:Required
-	SubnetIDs []*string `json:"subnetIDs"`
+	SubnetIDs  []*string                                  `json:"subnetIDs,omitempty"`
+	SubnetRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"subnetRefs,omitempty"`
 	// A list of tags.
 	Tags map[string]*string `json:"tags,omitempty"`
 }

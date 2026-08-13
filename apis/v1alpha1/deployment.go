@@ -32,7 +32,8 @@ type DeploymentSpec struct {
 	// The description for the deployment resource.
 	Description *string `json:"description,omitempty"`
 	// The name of the Stage resource for the Deployment resource to create.
-	StageName *string `json:"stageName,omitempty"`
+	StageName *string                                  `json:"stageName,omitempty"`
+	StageRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"stageRef,omitempty"`
 }
 
 // DeploymentStatus defines the observed state of Deployment
