@@ -171,6 +171,12 @@ type DomainNameConfiguration struct {
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`
 }
 
+// Custom ACK type for DomainNameEndpointConfiguration
+type DomainNameEndpointConfiguration struct {
+	APIGatewayDomainName *string `json:"apiGatewayDomainName,omitempty"`
+	HostedZoneID         *string `json:"hostedZoneID,omitempty"`
+}
+
 // Represents a domain name.
 type DomainName_SDK struct {
 	// An expression used to extract information at runtime. See Selection Expressions

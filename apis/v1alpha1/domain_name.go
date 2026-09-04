@@ -52,6 +52,8 @@ type DomainNameStatus struct {
 	// The API mapping selection expression.
 	// +kubebuilder:validation:Optional
 	APIMappingSelectionExpression *string `json:"apiMappingSelectionExpression,omitempty"`
+	// +kubebuilder:validation:Optional
+	DomainNameConfigurations []*DomainNameEndpointConfiguration `json:"domainNameConfigurations,omitempty"`
 }
 
 // DomainName is the Schema for the DomainNames API

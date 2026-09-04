@@ -14,6 +14,15 @@ ignore:
     - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.CertificateUploadDate
     - CreateDomainNameInput.DomainNameConfigurations.DomainNameConfiguration.HostedZoneId
 
+custom_shapes:
+  # Status-only view of DomainNameConfiguration. The SDK shape is shared by the
+  # Create/Update input and the Get output, so the service-assigned members above
+  # stay ignored to keep them out of Spec, and are surfaced through this narrowed
+  # shape instead.
+  DomainNameEndpointConfiguration:
+    ApiGatewayDomainName: string
+    HostedZoneId: string
+
 resources:
   Api:
     fields:
@@ -133,6 +142,9 @@ resources:
     exceptions:
       terminal_codes:
         - BadRequestException
+    hooks:
+      sdk_read_one_post_set_output:
+        template_path: hooks/domain_name/sdk_read_one_post_set_output.go.tpl
     fields:
       # DomainNameStatus:
       #   is_read_only: true
@@ -142,6 +154,10 @@ resources:
       #   type: string
       DomainName:
         is_primary_key: true        
+      DomainNameConfigurations:
+        custom_field:
+          list_of: DomainNameEndpointConfiguration
+        is_read_only: true
     tags:
       ignore: true
   ApiMapping:

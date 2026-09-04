@@ -1,0 +1,1 @@
+	setDomainNameEndpointConfigurations(ko, resp)
