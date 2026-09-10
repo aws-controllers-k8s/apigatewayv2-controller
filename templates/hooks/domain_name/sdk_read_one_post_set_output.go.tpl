@@ -1,0 +1,1 @@
+	setEndpointConfigurations(ko, resp)

@@ -186,6 +186,12 @@ type DomainName_SDK struct {
 	Tags map[string]*string `json:"tags,omitempty"`
 }
 
+// Custom ACK type for EndpointConfiguration
+type EndpointConfiguration struct {
+	APIGatewayDomainName *string `json:"apiGatewayDomainName,omitempty"`
+	HostedZoneID         *string `json:"hostedZoneID,omitempty"`
+}
+
 // Represents an integration response.
 type IntegrationResponse struct {
 	// Specifies how to handle response payload content type conversions. Supported
