@@ -171,12 +171,6 @@ type DomainNameConfiguration struct {
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`
 }
 
-// Custom ACK type for DomainNameEndpointConfiguration
-type DomainNameEndpointConfiguration struct {
-	APIGatewayDomainName *string `json:"apiGatewayDomainName,omitempty"`
-	HostedZoneID         *string `json:"hostedZoneID,omitempty"`
-}
-
 // Represents a domain name.
 type DomainName_SDK struct {
 	// An expression used to extract information at runtime. See Selection Expressions
@@ -190,6 +184,12 @@ type DomainName_SDK struct {
 	MutualTLSAuthentication  *MutualTLSAuthentication   `json:"mutualTLSAuthentication,omitempty"`
 	// Represents a collection of tags associated with the resource.
 	Tags map[string]*string `json:"tags,omitempty"`
+}
+
+// Custom ACK type for EndpointConfiguration
+type EndpointConfiguration struct {
+	APIGatewayDomainName *string `json:"apiGatewayDomainName,omitempty"`
+	HostedZoneID         *string `json:"hostedZoneID,omitempty"`
 }
 
 // Represents an integration response.

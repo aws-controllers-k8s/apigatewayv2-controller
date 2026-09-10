@@ -144,7 +144,7 @@ func (rm *resourceManager) sdkFind(
 	}
 
 	rm.setStatusDefaults(ko)
-	setDomainNameEndpointConfigurations(ko, resp)
+	setEndpointConfigurations(ko, resp)
 
 	return &resource{ko}, nil
 }

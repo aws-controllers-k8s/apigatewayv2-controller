@@ -1,1 +1,1 @@
-	setDomainNameEndpointConfigurations(ko, resp)
+	setEndpointConfigurations(ko, resp)

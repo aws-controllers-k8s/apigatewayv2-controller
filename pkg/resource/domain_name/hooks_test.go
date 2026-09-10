@@ -23,11 +23,11 @@ import (
 	svcapitypes "github.com/aws-controllers-k8s/apigatewayv2-controller/apis/v1alpha1"
 )
 
-func TestSetDomainNameEndpointConfigurations(t *testing.T) {
+func TestSetEndpointConfigurations(t *testing.T) {
 	tests := []struct {
 		name string
 		resp *svcsdk.GetDomainNameOutput
-		want []*svcapitypes.DomainNameEndpointConfiguration
+		want []*svcapitypes.EndpointConfiguration
 	}{
 		{
 			name: "nil response clears status",
@@ -44,7 +44,7 @@ func TestSetDomainNameEndpointConfigurations(t *testing.T) {
 			resp: &svcsdk.GetDomainNameOutput{
 				DomainNameConfigurations: []svcsdktypes.DomainNameConfiguration{},
 			},
-			want: []*svcapitypes.DomainNameEndpointConfiguration{},
+			want: []*svcapitypes.EndpointConfiguration{},
 		},
 		{
 			name: "single configuration",
@@ -57,7 +57,7 @@ func TestSetDomainNameEndpointConfigurations(t *testing.T) {
 					},
 				},
 			},
-			want: []*svcapitypes.DomainNameEndpointConfiguration{
+			want: []*svcapitypes.EndpointConfiguration{
 				{
 					APIGatewayDomainName: aws.String("d-abc123.execute-api.eu-central-1.amazonaws.com"),
 					HostedZoneID:         aws.String("Z1UJRXOUMOOFQ8"),
@@ -78,7 +78,7 @@ func TestSetDomainNameEndpointConfigurations(t *testing.T) {
 					},
 				},
 			},
-			want: []*svcapitypes.DomainNameEndpointConfiguration{
+			want: []*svcapitypes.EndpointConfiguration{
 				{
 					APIGatewayDomainName: aws.String("d-first.execute-api.eu-central-1.amazonaws.com"),
 					HostedZoneID:         aws.String("Z1UJRXOUMOOFQ8"),
@@ -96,7 +96,7 @@ func TestSetDomainNameEndpointConfigurations(t *testing.T) {
 					{HostedZoneId: aws.String("Z1UJRXOUMOOFQ8")},
 				},
 			},
-			want: []*svcapitypes.DomainNameEndpointConfiguration{
+			want: []*svcapitypes.EndpointConfiguration{
 				{HostedZoneID: aws.String("Z1UJRXOUMOOFQ8")},
 			},
 		},
@@ -106,13 +106,13 @@ func TestSetDomainNameEndpointConfigurations(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			// Seed a stale value so the clearing cases are meaningful.
 			ko := &svcapitypes.DomainName{}
-			ko.Status.DomainNameConfigurations = []*svcapitypes.DomainNameEndpointConfiguration{
+			ko.Status.EndpointConfigurations = []*svcapitypes.EndpointConfiguration{
 				{APIGatewayDomainName: aws.String("stale")},
 			}
 
-			setDomainNameEndpointConfigurations(ko, test.resp)
+			setEndpointConfigurations(ko, test.resp)
 
-			got := ko.Status.DomainNameConfigurations
+			got := ko.Status.EndpointConfigurations
 			if test.want == nil {
 				if got != nil {
 					t.Fatalf("expected nil status, got %d element(s)", len(got))

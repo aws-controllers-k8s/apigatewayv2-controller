@@ -19,24 +19,24 @@ import (
 	svcapitypes "github.com/aws-controllers-k8s/apigatewayv2-controller/apis/v1alpha1"
 )
 
-// setDomainNameEndpointConfigurations copies the service-assigned endpoint
-// values from a GetDomainName response into Status. They sit on an SDK shape
-// shared with the Create/Update input, so they stay ignored during generation
-// to keep them out of Spec and are projected here instead.
-func setDomainNameEndpointConfigurations(
+// setEndpointConfigurations copies the service-assigned endpoint values from a
+// GetDomainName response into Status. They sit on an SDK shape shared with the
+// Create/Update input, so they stay ignored during generation to keep them out
+// of Spec and are projected here instead.
+func setEndpointConfigurations(
 	ko *svcapitypes.DomainName,
 	resp *svcsdk.GetDomainNameOutput,
 ) {
 	if resp == nil || resp.DomainNameConfigurations == nil {
-		ko.Status.DomainNameConfigurations = nil
+		ko.Status.EndpointConfigurations = nil
 		return
 	}
-	cfgs := make([]*svcapitypes.DomainNameEndpointConfiguration, 0, len(resp.DomainNameConfigurations))
+	cfgs := make([]*svcapitypes.EndpointConfiguration, 0, len(resp.DomainNameConfigurations))
 	for _, elem := range resp.DomainNameConfigurations {
-		cfgs = append(cfgs, &svcapitypes.DomainNameEndpointConfiguration{
+		cfgs = append(cfgs, &svcapitypes.EndpointConfiguration{
 			APIGatewayDomainName: elem.ApiGatewayDomainName,
 			HostedZoneID:         elem.HostedZoneId,
 		})
 	}
-	ko.Status.DomainNameConfigurations = cfgs
+	ko.Status.EndpointConfigurations = cfgs
 }

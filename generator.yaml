@@ -19,7 +19,7 @@ custom_shapes:
   # Create/Update input and the Get output, so the service-assigned members above
   # stay ignored to keep them out of Spec, and are surfaced through this narrowed
   # shape instead.
-  DomainNameEndpointConfiguration:
+  EndpointConfiguration:
     ApiGatewayDomainName: string
     HostedZoneId: string
 
@@ -154,9 +154,9 @@ resources:
       #   type: string
       DomainName:
         is_primary_key: true        
-      DomainNameConfigurations:
+      EndpointConfigurations:
         custom_field:
-          list_of: DomainNameEndpointConfiguration
+          list_of: EndpointConfiguration
         is_read_only: true
     tags:
       ignore: true

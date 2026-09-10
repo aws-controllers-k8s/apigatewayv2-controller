@@ -163,9 +163,14 @@ spec:
                   - type
                   type: object
                 type: array
-              domainNameConfigurations:
+              endpointConfigurations:
+                description: |-
+                  The endpoint configuration assigned by API Gateway for this domain name.
+                  apiGatewayDomainName is the target hostname and hostedZoneID is the hosted
+                  zone of that API Gateway endpoint; together they identify the alias target
+                  for a Route 53 record.
                 items:
-                  description: Custom ACK type for DomainNameEndpointConfiguration
+                  description: Custom ACK type for EndpointConfiguration
                   properties:
                     apiGatewayDomainName:
                       type: string

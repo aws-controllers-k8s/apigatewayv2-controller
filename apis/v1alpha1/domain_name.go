@@ -52,8 +52,12 @@ type DomainNameStatus struct {
 	// The API mapping selection expression.
 	// +kubebuilder:validation:Optional
 	APIMappingSelectionExpression *string `json:"apiMappingSelectionExpression,omitempty"`
+	// The endpoint configuration assigned by API Gateway for this domain name.
+	// apiGatewayDomainName is the target hostname and hostedZoneID is the hosted
+	// zone of that API Gateway endpoint; together they identify the alias target
+	// for a Route 53 record.
 	// +kubebuilder:validation:Optional
-	DomainNameConfigurations []*DomainNameEndpointConfiguration `json:"domainNameConfigurations,omitempty"`
+	EndpointConfigurations []*EndpointConfiguration `json:"endpointConfigurations,omitempty"`
 }
 
 // DomainName is the Schema for the DomainNames API
