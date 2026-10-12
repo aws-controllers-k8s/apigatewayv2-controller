@@ -17,13 +17,13 @@ import (
 	"fmt"
 
 	ackrequeue "github.com/aws-controllers-k8s/runtime/pkg/requeue"
-	svcsdk "github.com/aws/aws-sdk-go/service/apigatewayv2"
+	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/apigatewayv2/types"
 )
 
 var (
 	waitForAvailableRequeue = ackrequeue.NeededAfter(
 		fmt.Errorf("VPCLink not in '%s' state, cannot be modified",
-			svcsdk.VpcLinkStatusAvailable),
+			svcsdktypes.VpcLinkStatusAvailable),
 		ackrequeue.DefaultRequeueAfterDuration,
 	)
 )
